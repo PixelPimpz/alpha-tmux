@@ -1,0 +1,23 @@
+icons:
+  - name: git
+    glyph: "f02a2"
+  - name: neovim
+    glyph: "e6ae"
+  - name: tmux
+    glyph: "ebc8"
+  - name: new_session
+    glyph: "ec84"
+  - name: script
+    glyph: "f4ed"
+  - name: prog_0
+    glyph: "ee00"
+  - name: prog_1
+    glyph: "ee01"
+  - name: prog_2
+    glyph: "ee02"
+  - name: prog_3
+    glyph: "ee03"
+  - name: prog_4
+    glyph: "ee04"
+  - name: prog_5
+    glyph: "ee05"
