@@ -1,6 +1,18 @@
 icons:
   - name: git
     glyph: "f02a2"
+  - name: table
+    glyph: "f525"
+  - name: pause
+    glyph: "f03e8"
+  - name: kill
+    glyph: "f0bc8"
+  - name: tick
+    glyph: "f52f"
+  - name: cancel
+    glyph: "f102c"
+  - name: github
+    glyph: "f02a4"
   - name: neovim
     glyph: "e6ae"
   - name: tmux
@@ -9,6 +21,14 @@ icons:
     glyph: "ec84"
   - name: script
     glyph: "f4ed"
+  - name: undo
+    glyph: "f0e2"
+  - name: history
+    glyph: "f02da"
+  - name: update
+    glyph: "f06b0"
+  - name: dotfiles
+    glyph: "ebd3"
   - name: prog_0
     glyph: "ee00"
   - name: prog_1
