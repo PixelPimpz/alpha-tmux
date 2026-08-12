@@ -23,6 +23,11 @@ is_session() {
   fi
   echo "$bool"
 }
+ac() {
+# ac  = "AllClear. Used printf to clear the terminal and scrollback 
+# and leave cursor atr top-left
+  printf "\033[2J\033[H"
+}
 # ----- Generator functions 
 banner_gen() {
   while read -r line; do
@@ -35,15 +40,16 @@ banner_gen() {
 #
 menu_gen() {
   local len max; max=0
-  local button name icon key comm glyph 
-  local Buttons=()
+  local button name icon key glyph 
+  local menu Buttons=()
+  menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}"
 # first find out how long the longest .name is 
   while read -r name; do
     len="${#name}"
     (( len > max )) && max="$len"
-  done < <(yq '.Buttons[].name' "$PLUGIN_ROOT/lib/menu.yaml")
+  done < <(yq '.Buttons[].name' "$menu")
 # now construct the buttons themselves
-  while IFS="|" read -r name icon key comm; do
+  while IFS="|" read -r name icon key; do
     glyph=$(yq ".icons[] | select(.name == \"$icon\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
 
     case "${#glyph}" in
@@ -56,7 +62,7 @@ menu_gen() {
     esac
     button="$(printf "%s  %-${max}s  [%s] %s" "$icon" "$name" "$key")"
     Buttons+=("$button")
-  done < <(yq '.Buttons[] | [.name, .icon, .key, .comm] | join("|")' "$PLUGIN_ROOT/lib/menu.yaml")
+  done < <(yq '.Buttons[] | [.name, .icon, .key] | join("|")' "$menu")
   # all the variables involveed in 
   local buttonw buttonc maxb margin rowc roww spacer spacerw
   buttonw="${#button}"
@@ -110,8 +116,10 @@ menu_gen() {
 }
 # ------ END of GENERATORS
 main() {
+  local menu
+  menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}"
   banner_gen
   center " "
-  menu_gen
-}
+  menu_gen "$menu"
+ }
 main
