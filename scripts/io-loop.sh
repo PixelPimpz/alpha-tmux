@@ -24,7 +24,7 @@ main () {
     comm="$(yq eval ".Buttons[] | select(.key == \"$pressed\") | .comm" "$menu")"
     if [[ -n "$comm" && "$comm" != "null" ]]; then 
       printf "\033[2J\033[H"
-      exec "$comm"
+      eval "$comm"
     else
       tmux status -R "Key $comm not recognized/"
     fi
