@@ -27,7 +27,6 @@ Buttons:
   - name: "Push to GitHub"
     icon: "github"
     key:  "p"
-
     comm: "$SCRIPTS/push"
   - name: "Push all Projects"
     icon: "git"
