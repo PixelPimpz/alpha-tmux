@@ -10,7 +10,8 @@ fatal() {
 if [[ ! -d "$PROJECTS" ]]; then
   fatal "No \"Projects\" directory specified."
 else
-  ls -1 "$PROJECTS/"
+  #ls -1 "$PROJECTS/"
+  find "$PROJECTS" -type d
   ITEMC="$(find "$PROJECTS/" -type d | wc -l)"
   REPO="$( git info | grep -e "(push)" | awk '{print $2}' )"
   read -rp "Push $ITEMC projects to $REPO? [Y|n]" -n 1 key 
