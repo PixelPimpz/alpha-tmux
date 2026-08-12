@@ -18,7 +18,7 @@ main () {
     "$PLUGIN_ROOT/scripts/alpha-tmux.sh"
     read -r -n 1 -s pressed
     if [[ $pressed =~ q|Q ]]; then
-        printf "\033[2J\033[H"
+#        printf "\033[2J\033[H"
         exit 0
     fi
     comm="$(yq eval ".Buttons[] | select(.key == \"$pressed\") | .comm" "$menu")"
