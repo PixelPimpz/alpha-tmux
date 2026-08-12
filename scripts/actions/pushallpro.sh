@@ -16,9 +16,9 @@ else
   REPO="$( git info | grep -e "(push)" | awk '{print $2}' )"
   read -rp "Push $ITEMC projects to $REPO? [Y|n]" -n 1 key 
   case "$key" in
-    [nN])
+    n|N)
       exit ;;
-    [yY])
+    y|Y)
       while read -r line; do
         echo "LINE: $line"
       done < <(find "$PROJECTS/" -maxdepth 1 -type d)
