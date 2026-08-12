@@ -14,15 +14,15 @@ main() {
   else
     find "$PROJECTS" -mindepth 1 -maxdepth 1 -type d 
     ITEMC="$(find "$PROJECTS/" -mindepth 1 -maxdepth 1 -type d | wc -l)"
-    REPO="$( git info | grep -e "(push)" | awk '{print $2}' )"
-    read -rp "Push $ITEMC projects to $REPO? [Y|n]" -n 1 key 
+    read -rp "Push $ITEMC projects? [Y|n]" -n 1 key 
     key="${key:-Y}"
     case "$key" in
       n|N)
         exit ;;
       y|Y)
         while read -r line; do
-          echo "LINE: $line"
+          cd "$line" || continue
+          push
         done < <(find "$PROJECTS/" -mindepth 1 -maxdepth 1 -type d)
         ;;
       *)
