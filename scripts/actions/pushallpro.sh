@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 fatal() {
-  local E
+  local 
   E="${1:-Unknown Error}"
   echo "Error: $E."
   read -r -p "Press any key to return to Alpha-Tmux." -n 1 key
@@ -21,9 +21,11 @@ main() {
         exit ;;
       y|Y)
         while read -r line; do
-          cd "$line" || continue
-          push
+          ( cd "$line" && push )
         done < <(find "$PROJECTS/" -mindepth 1 -maxdepth 1 -type d)
+        echo "All projects are pushed to GitHub."
+        read -rp "Press any key to return to Alpha-Tmux" -n 1 key
+        exit
         ;;
       *)
         echo "$key no recognized" 
