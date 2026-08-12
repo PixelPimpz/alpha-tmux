@@ -21,7 +21,7 @@ else
     [yY])
       while read -r line; do
         echo "LINE: $line"
-      done < <(find "$PROJECTS/" -type d)
+      done < <(find "$PROJECTS/" -maxdepth 1 -type d)
       ;;
     *)
       echo "$key no recognized" 
