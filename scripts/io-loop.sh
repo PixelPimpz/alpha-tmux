@@ -14,6 +14,7 @@ main () {
   menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}" 
   [[ ! -f  $menu ]] && fatal "$menu not found"
   while true; do 
+    printf "\033[2J\033[H"
     "$PLUGIN_ROOT/scripts/alpha-tmux.sh"
     read -r -n 1 -s pressed
     if [[ $pressed =~ q|Q ]]; then
