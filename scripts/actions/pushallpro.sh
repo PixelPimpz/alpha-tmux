@@ -13,7 +13,7 @@ main() {
     fatal "No \"Projects\" directory specified."
   else
     find "$PROJECTS" -mindepth 1 -maxdepth 1 -type d 
-    ITEMC="$(find "$PROJECTS/" -mindepth -maxdepth 1 -type d | wc -l)"
+    ITEMC="$(find "$PROJECTS/" -mindepth 1 -maxdepth 1 -type d | wc -l)"
     REPO="$( git info | grep -e "(push)" | awk '{print $2}' )"
     read -rp "Push $ITEMC projects to $REPO? [Y|n]" -n 1 key 
     key="${key:-Y}"
@@ -23,7 +23,7 @@ main() {
       y|Y)
         while read -r line; do
           echo "LINE: $line"
-        done < <(find "$PROJECTS/" -mindepth -maxdepth 1 -type d)
+        done < <(find "$PROJECTS/" -mindepth 1 -maxdepth 1 -type d)
         ;;
       *)
         echo "$key no recognized" 
