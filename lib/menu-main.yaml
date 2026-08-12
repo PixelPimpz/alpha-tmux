@@ -19,7 +19,7 @@ Buttons:
   - name: "TPM Update All"
     icon: "update"
     key:  "U"
-    comm: "tbd"
+    comm: "$TMUX_PLUGIN_MANAGER_PATH/tpm/bin/update-plugins"
   - name: "Launch Neovim"
     icon: "neovim"
     key:  "N"
@@ -27,6 +27,7 @@ Buttons:
   - name: "Push to GitHub"
     icon: "github"
     key:  "p"
+
     comm: "$SCRIPTS/push"
   - name: "Push all Projects"
     icon: "git"
