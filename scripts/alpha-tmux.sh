@@ -113,7 +113,7 @@ menu_gen() {
   while read -r line; do
     center "$line"
   done <<< "$boxed_menu"
-  center "Enter menu selection or press [ENTER] for a $SHELL promt"
+  center "Enter menu selection or press [ENTER] for a ${SHELL##*/} promt"
 }
 # ------ END of GENERATORS
 main() {
