@@ -19,7 +19,7 @@ main () {
     read -r -n 1 -s pressed
     if [[ $pressed =~ q|Q ]]; then
 #        printf "\033[2J\033[H"
-        exit 0
+    exec "$SHELL" 
     fi
     comm="$(yq eval ".Buttons[] | select(.key == \"$pressed\") | .comm" "$menu")"
     if [[ -n "$comm" && "$comm" != "null" ]]; then 
