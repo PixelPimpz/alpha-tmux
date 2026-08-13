@@ -2,14 +2,16 @@
 #
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
+source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 IMAGE="$PLUGIN_ROOT/img/tmux_fp-outline.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
 #
 # ----- Helper functions
 center() {
-  local row roww termw pad
+  local row roww termw pad plain
   row="$1"
-  roww="${#row}"
+  plain="${row//$'\033'\[*([0-9;])m/}"
+  roww="${#plain}"
   termw="$(tput cols)"
   pad=$(( ( termw - roww ) / 2 ))
   printf "%*s%s\n" "$pad" "" "$row"
@@ -31,10 +33,10 @@ ac() {
 # ----- Generator functions 
 banner_gen() {
   while read -r line; do
-    center "$line"
+    center "${COLOR_HEADER}${line}${RESET}"
   done <<< "$(ascii-image-converter -b -W 64 "$IMAGE" )"
   while read -r line; do
-    center "$line"
+    center "${COLOR_TAGLINE}${line}${RESET}"
   done <<< "$TAGLINE"
 }
 #
