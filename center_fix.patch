@@ -1,0 +1,26 @@
+diff --git a/scripts/alpha-tmux.sh b/scripts/alpha-tmux.sh
+index 312e7c6..2951837 100755
+--- a/scripts/alpha-tmux.sh
++++ b/scripts/alpha-tmux.sh
+@@ -8,13 +8,16 @@ TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A,
+ #
+ # ----- Helper functions
+ center() {
+-  local row roww termw pad plain
+-  row="$1"
+-  plain="${row//$'\033'\[*([0-9;])m/}"
+-  roww="${#plain}"
++  local row="$1" color="$2" roww termw pad
++  roww="${#row}"
+   termw="$(tput cols)"
+   pad=$(( ( termw - roww ) / 2 ))
+-  printf "%*s%s\n" "$pad" "" "$row"
++
++  if [[ -n "$color" ]]; then
++    printf "%*s%s%s%s\n" "$pad" "" "$color" "$row" "$RESET"
++  else
++    printf "%*s%s\n" "$pad" "" "$row"
++  fi
+ }
+ #
+ is_session() {
