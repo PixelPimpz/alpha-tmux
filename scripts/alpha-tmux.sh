@@ -36,10 +36,10 @@ ac() {
 # ----- Generator functions 
 banner_gen() {
   while read -r line; do
-    center "${COLOR_HEADER}${line}${RESET}"
+    center "$line" "$COLOR_HEADER"
   done <<< "$(ascii-image-converter -b -W 64 "$IMAGE" )"
   while read -r line; do
-    center "${COLOR_TAGLINE}${line}${RESET}"
+    center "$line" "$COLOR_TAGLINE"
   done <<< "$TAGLINE"
 }
 #
