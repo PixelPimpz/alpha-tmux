@@ -9,8 +9,9 @@ tmux set-env -g DOTFILES "$HOME/dotfiles"
 tmux set-env -g ACTIONS "$PLUGIN_ROOT/scripts/actions"
 
 ##--------[ load built-in utils ]---------------------
-source "$PLUGIN_ROOT/utils/errors.sh"
-source "$PLUGIN_ROOT/utils/colorizer.sh"
+source "$PLUGIN_ROOT/scripts/utils/errors.sh"
+source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
+source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/builtin/header_gen.sh"

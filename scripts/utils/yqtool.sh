@@ -17,18 +17,21 @@ get_button() {
 ## call THIS and pass the KEY. It will use thr output of 
 #  get_button(KEY) for the read command and return the  
 #  useable button
+
 make_button() {
-  local name icon key KEY comm button
-  KEY="$1"
+  local KEY="$1"
+  local name icon key comm glyph
   IFS="|" read -r name icon key comm < <(get_button "$KEY")
-  button=("$name" "$icon" "$key" "$comm")
-  echo "${button[@]}"
+  glyph="$(get_icon "$icon")"
+
+  printf "%s  %s%-${max}s%s  %s[%s%s%s]%s" \
+    "$ICONC$glyph$RESET" \
+    "$TEXTC" "$name" "$RESET" \
+    "$BRACKETC" "$KEYC$key" "$BRACKETC" "$RESET"
 }
 
 ##-------------------------------------------------------
 get_color() {
-  local data 
-  THEME="${1:-$PLUGIN_ROOT/themes/gruvbox-alpha-tmux.yaml}"
   "$HEX2ANSI" "$(yq e "$1" "$THEME")"
 }
 
@@ -38,4 +41,16 @@ yqshow() {
   file="$2"
   [[ ! -n "$file" || ! -f "$file" ]]  && fatal "$file not found."
   yq e . "$file"
+}
+
+
+get_icon() {
+  local name="$1"
+  local glyph
+  glyph=$(yq e ".icons[] | select(.name == \"$name\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
+  case "${#glyph}" in
+    "4") echo -e "\u$glyph" ;;
+    "5") echo -e "\U$glyph" ;;
+    *)   echo "?" ;;
+  esac
 }

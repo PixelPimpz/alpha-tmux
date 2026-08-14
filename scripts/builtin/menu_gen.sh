@@ -12,21 +12,6 @@ menu_gen() {
     len="${#name}"
     (( len > max )) && max="$len"
   done < <(yq '.Buttons[].name' "$menu")
-# now construct the buttons themselves
-  while IFS="|" read -r name icon key; do
-    glyph=$(yq ".icons[] | select(.name == \"$icon\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
-
-    case "${#glyph}" in
-      "4")
-        icon="$(echo -e "\u$glyph")" ;;
-      "5")
-        icon="$(echo -e "\U$glyph")" ;;
-      *)
-        icon="?" ;;
-    esac
-    button="$(printf "%s  %-${max}s  [%s] %s" "$icon" "$name" "$key")"
-    Buttons+=("$button")
-  done < <(yq '.Buttons[] | [.name, .icon, .key] | join("|")' "$menu")
   # all the variables involveed in 
   local buttonw buttonc maxb margin rowc roww spacer spacerw
   buttonw="${#button}"
