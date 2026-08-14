@@ -4,11 +4,14 @@
 # visually laid out.
 # ------------------------------------------------
 ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
+
 center() {
-  local row="$1" color="$2" roww termw pad
-  roww="${#row}"
+  local row="$1" color="$2" roww termw pad plain
+  plain=$(echo -e "$row" | sed 's/\x1b\[[0-9;]*m//g')
+  roww="${#plain}"
   termw="$(tput cols)"
   pad=$(( ( termw - roww ) / 2 ))
+  (( pad < 0 )) && pad=0
 
   if [[ -n "$color" ]]; then
     printf "%*s%s%s%s\n" "$pad" "" "$color" "$row" "$RESET"
