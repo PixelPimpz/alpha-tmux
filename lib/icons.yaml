@@ -29,6 +29,8 @@ icons:
     glyph: "f06b0"
   - name: dotfiles
     glyph: "ebd3"
+  - name: return 
+    glyph: "f0311"
   - name: prog_0
     glyph: "ee00"
   - name: prog_1
