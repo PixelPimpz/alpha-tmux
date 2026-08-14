@@ -1,0 +1,8 @@
+Profiles:
+- name:       "Default" 
+  theme:      "gruvbox-alpha-tmux"
+  status:     "active"
+  configs:    "config/settings.yaml"
+  modules:
+    - name:   "gitgud"
+      status: "inactive"

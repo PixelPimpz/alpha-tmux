@@ -8,9 +8,9 @@ IMAGE="$PLUGIN_ROOT/img/tmux_fp-outline.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
 header_gen() {
   while read -r line; do
-    center "$line" "$COLOR_HEADER"
+    center "$line" "$HEADERC"
   done <<< "$(ascii-image-converter -b -W 64 "$IMAGE" )"
   while read -r line; do
-    center "$line" "$COLOR_TAGLINE"
+    center "$line" "$TAGLINEC"
   done <<< "$TAGLINE"
 }
