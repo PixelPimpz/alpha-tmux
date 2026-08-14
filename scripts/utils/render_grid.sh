@@ -48,7 +48,7 @@ render_grid() {
   done
 
   if command -v boxes &>/dev/null; then
-    boxed_menu=$(echo "$menu_text" | boxes -d ansi)
+    boxed_menu=$(echo "$menu_text" | boxes -d ansi | sed "s/│$/${BORDERC}│/")
   else
     boxed_menu="$menu_text"
   fi

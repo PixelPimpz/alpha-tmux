@@ -19,17 +19,21 @@ get_button() {
 #  useable button
 
 make_button() {
-  local KEY="$1"
+  local KEY="$1" max="${2:-0}"
   local name icon key comm glyph
   IFS="|" read -r name icon key comm < <(get_button "$KEY")
   glyph="$(get_icon "$icon")"
 
-  printf "%s  %s%-${max}s%s  %s[%s%s%s]%s" \
-    "$ICONC$glyph$RESET" \
-    "$TEXTC" "$name" "$RESET" \
-    "$BRACKETC" "$KEYC$key" "$BRACKETC" "$RESET"
-}
-
+  printf "%s  %s%-${max}s%s  %s[%s%s]%s" \
+  "$ICONC$glyph$RESET" \
+  "$TEXTC" \
+  "$name" \
+  "$RESET" \
+  "$BRACKETC" \
+  "$KEYC$key" \
+  "$BRACKETC" \
+  "$RESET"
+ }
 ##-------------------------------------------------------
 get_color() {
   "$HEX2ANSI" "$(yq e "$1" "$THEME")"
@@ -47,7 +51,7 @@ yqshow() {
 get_icon() {
   local name="$1"
   local glyph
-  glyph=$(yq e ".icons[] | select(.name == \"$name\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
+                                                                                                                                                                                                                                                                                  glyph=$(yq e ".icons[] | select(.name == \"$name\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
   case "${#glyph}" in
     "4") echo -e "\u$glyph" ;;
     "5") echo -e "\U$glyph" ;;
