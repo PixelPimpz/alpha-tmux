@@ -9,7 +9,7 @@ _ALPHA_FORMATS_SH=1
 ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
 
 center() {
-  local ending="\n"
+  local ending=$'\n'
   if [[ "$1" == "-n" ]]; then
     ending=" "
     shift

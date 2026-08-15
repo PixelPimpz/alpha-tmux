@@ -12,27 +12,17 @@ render_grid() {
   local Buttons=("$@")
   local buttonc="${#Buttons[@]}"
   [[ "$buttonc" -eq 0 ]] && return
+
   local clean_b0
   clean_b0=$(echo -e "${Buttons[0]}" | sed 's/\x1b\[[0-9;]*m//g')
   local buttonw="${#clean_b0}"
-  local margin="4"
-  local roww=$(( $(tput cols) - ( margin * 2 ) ))
-  local maxb=$(( roww / buttonw ))
-  (( maxb > 4 )) && maxb=4
-  (( maxb < 1 )) && maxb=1
+  local maxb="${MENU_COLS:-4}"
+  local spacerw=2
 
-  local spacerw=0
-  if (( maxb > 1 )); then
-    spacerw=$(( ( roww - ( buttonw * maxb )) / ( maxb - 1 )))
-  fi
-
-  local rowc=$(( buttonc / maxb ))
-  if (( ( buttonc % maxb ) > 0 )); then
-    (( rowc += 1 ))
-  fi
-
-  local idx=0 rstring menu_text boxed_menu
+  local rowc=$(( (buttonc + maxb - 1) / maxb ))
+  local idx=0 rstring menu_text boxed_menu empty_btn
   menu_text=""
+
   for (( r = 0; r < rowc; r++ )); do
     rstring=""
     for (( c = 0; c < maxb; c++ )); do
@@ -43,6 +33,13 @@ render_grid() {
         fi
         rstring+="${Buttons[$idx]}"
         (( idx++ ))
+      else
+        printf -v empty_btn "%*s" "$buttonw" ""
+        if (( c > 0 )); then
+          printf -v spacer "%*s" "$spacerw" ""
+          rstring+="$spacer"
+        fi
+        rstring+="$empty_btn"
       fi
     done
 
