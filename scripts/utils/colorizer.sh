@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-#PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
+[[ -n "$_ALPHA_COLORIZER_SH" ]] && return 0
+_ALPHA_COLORIZER_SH=1
+
 THEME="$PLUGIN_ROOT/themes/${1:-gruvbox-alpha-tmux}.yaml"
 HEX2ANSI="$PLUGIN_ROOT/scripts/utils/hex2ansi.sh"
 get_color() {
@@ -13,4 +15,6 @@ BRACKETC="$(get_color '.ui.bracket')"
 KEYC="$(get_color '.ui.menu_key')"
 TEXTC="$(get_color '.ui.menu_text')"
 ICONC="$(get_color '.ui.menu_icon')"
+ACCENTC="$(get_color '.ui.accent')"
+PROMPTC="$(get_color '.ui.prompt // .ui.accent')"
 RESET=$'\033[0m'

@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+[[ -n "$_ALPHA_HEADER_GEN_SH" ]] && return 0
+_ALPHA_HEADER_GEN_SH=1
+
+source "$PLUGIN_ROOT/scripts/utils/formats.sh"
+source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+
 ##------------------------------------------------------
 # HEADER_GEN  generator responsible for taking bitmap
 # banner art and converting it to braille art, drawing 

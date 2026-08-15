@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+[[ -n "$_ALPHA_FORMATS_SH" ]] && return 0
+_ALPHA_FORMATS_SH=1
+
 # FORMATS.sh (and layouts)------------------------
 # helper functions pertainiong to how  things are 
 # visually laid out.
@@ -6,6 +9,12 @@
 ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
 
 center() {
+  local ending="\n"
+  if [[ "$1" == "-n" ]]; then
+    ending=" "
+    shift
+  fi
+
   local row="$1" color="$2" roww termw pad plain
   plain=$(echo -e "$row" | sed 's/\x1b\[[0-9;]*m//g')
   roww="${#plain}"
@@ -14,9 +23,9 @@ center() {
   (( pad < 0 )) && pad=0
 
   if [[ -n "$color" ]]; then
-    printf "%*s%s%s%s\n" "$pad" "" "$color" "$row" "$RESET"
+    printf "%*s%s%s%s%s" "$pad" "" "$color" "$row" "$RESET" "$ending"
   else
-    printf "%*s%s\n" "$pad" "" "$row"
+    printf "%*s%s%s" "$pad" "" "$row" "$ending"
   fi
 }
 #

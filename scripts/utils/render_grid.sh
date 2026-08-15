@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+[[ -n "$_ALPHA_RENDER_GRID_SH" ]] && return 0
+_ALPHA_RENDER_GRID_SH=1
+
+source "$PLUGIN_ROOT/scripts/utils/formats.sh"
+source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+
 # RENDER_GRID: Takes an array of button strings, calculates terminal column layout,
 # frames with boxes, and centers output.
 

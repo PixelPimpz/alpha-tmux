@@ -39,6 +39,7 @@ ui:
   menu_icon: "#83a598"   # Blue for button icons
   bracket: "#7c6f64"     # Muted gray for [ and ] brackets
   accent: "#fe8019"      # Orange for highlights
+  prompt: "#fabd2f"      # Bright yellow for menu prompt
   muted: "#928374"       # Gray for section dividers
   success: "#b8bb26"     # Green for success status
   error: "#fb4934"       # Red for error alerts

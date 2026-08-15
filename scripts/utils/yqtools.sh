@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+[[ -n "$_ALPHA_YQTOOLS_SH" ]] && return 0
+_ALPHA_YQTOOLS_SH=1
+
+source "$PLUGIN_ROOT/scripts/utils/errors.sh"
+source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+
 ##-------------------------------------------------------
 get_active_theme() {
   local config="$PLUGIN_ROOT/config/settings.yaml"
@@ -34,10 +40,6 @@ make_button() {
   "$BRACKETC" \
   "$RESET"
  }
-##-------------------------------------------------------
-get_color() {
-  "$HEX2ANSI" "$(yq e "$1" "$THEME")"
-}
 
 ##-------------------------------------------------------
 yqshow() {
