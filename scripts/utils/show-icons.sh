@@ -3,7 +3,7 @@
 # Helper: List configured Nerd Font icons and names from lib/icons.yaml
 #
 SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
-PLUGIN_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
+PLUGIN_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/../.." && pwd)"
 ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
 
 if [[ ! -f "$ICONS_FILE" ]]; then

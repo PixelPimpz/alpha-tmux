@@ -17,7 +17,7 @@ get_button() {
   local KEY file
   local KEY="$1"
   local file="${2:-$PLUGIN_ROOT/lib/menu-main.yaml}"
-  yq e ".Buttons[] | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
+  yq e "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
 }
 
 ## call THIS and pass the KEY. It will use thr output of 

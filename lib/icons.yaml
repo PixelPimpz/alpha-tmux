@@ -5,10 +5,14 @@ icons:
     glyph: "f525"
   - name: pause
     glyph: "f03e8"
+  - name: floppy 
+    glyph: "f0249"
   - name: kill
     glyph: "f0bc8"
   - name: tick
     glyph: "f52f"
+  - name: edit_session 
+    glyph: "f0900"
   - name: cancel
     glyph: "f102c"
   - name: github
