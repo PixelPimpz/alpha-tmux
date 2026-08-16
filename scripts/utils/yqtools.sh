@@ -15,7 +15,7 @@ get_active_theme() {
 ## we NEVER call trhis.Instead we just call make_button(KEY)
 get_button() {
   local KEY file
-  local KEY="$1"
+  KEY="$1"
   local file="${2:-$PLUGIN_ROOT/lib/menu-main.yaml}"
   yq e "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
 }
