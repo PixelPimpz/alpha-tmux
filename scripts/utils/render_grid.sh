@@ -2,26 +2,25 @@
 [[ -n "$_ALPHA_RENDER_GRID_SH" ]] && return 0
 _ALPHA_RENDER_GRID_SH=1
 
-source "$PLUGIN_ROOT/scripts/utils/formats.sh"
-source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+source "$PLUGIN_ROOT/scripts/utils/boxer.sh"
 
-# RENDER_GRID: Takes an array of button strings, calculates terminal column layout,
-# frames with boxes, and centers output.
-
+## -----------------------------------------------------------------
+# RENDER_GRID: Formats an array of button strings into a multi-column
+# grid layout, and passes the result to boxer for framing and centering.
+## -----------------------------------------------------------------
 render_grid() {
   local Buttons=("$@")
   local buttonc="${#Buttons[@]}"
   [[ "$buttonc" -eq 0 ]] && return
 
   local clean_b0
-  clean_b0=$(echo -e "${Buttons[0]}" | sed 's/\x1b\[[0-9;]*m//g')
+  clean_b0=$(echo -e "${Buttons[0]}" | sed -E 's/\x1b\[[0-9;]*m//g')
   local buttonw="${#clean_b0}"
   local maxb="${MENU_COLS:-4}"
-  local spacerw=2
+  local spacerw=1
 
   local rowc=$(( (buttonc + maxb - 1) / maxb ))
-  local idx=0 rstring menu_text boxed_menu empty_btn
-  menu_text=""
+  local idx=0 rstring menu_text="" empty_btn
 
   for (( r = 0; r < rowc; r++ )); do
     rstring=""
@@ -50,13 +49,5 @@ render_grid() {
     fi
   done
 
-  if command -v boxes &>/dev/null; then
-    boxed_menu=$(echo "$menu_text" | boxes -d ansi | sed "s/│$/${BORDERC}│/")
-  else
-    boxed_menu="$menu_text"
-  fi
-
-  while read -r line; do
-    center "$line" "$BORDERC"
-  done <<< "$boxed_menu"
+  boxer "$BORDERC" "$menu_text"
 }

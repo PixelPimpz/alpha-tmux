@@ -30,14 +30,13 @@ make_button() {
   IFS="|" read -r name icon key comm < <(get_button "$KEY")
   glyph="$(get_icon "$icon")"
 
-  printf "%s  %s%-${max}s%s  %s[%s%s]%s" \
-  "$ICONC$glyph$RESET" \
+  printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
+  "$BUTTON_BGC" \
+  "$ICONC$glyph" \
   "$TEXTC" \
   "$name" \
-  "$RESET" \
   "$BRACKETC" \
-  "$KEYC$key" \
-  "$BRACKETC" \
+  "$KEYC" "$key" "$BRACKETC" \
   "$RESET"
  }
 
