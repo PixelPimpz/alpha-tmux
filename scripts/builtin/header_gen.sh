@@ -10,12 +10,12 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 # banner art and converting it to braille art, drawing 
 # and providing a tag-line
 ##------------------------------------------------------
-IMAGE="$PLUGIN_ROOT/img/tmux_fp-outline.png"
+IMAGE="$PLUGIN_ROOT/img/tmux_2.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
 header_gen() {
   while read -r line; do
     center "$line" "$HEADERC"
-  done <<< "$(ascii-image-converter -b -W 64 "$IMAGE" )"
+  done <<< "$(ascii-image-converter -b -W 74 "$IMAGE" )"
   while read -r line; do
     center "$line" "$TAGLINEC"
   done <<< "$TAGLINE"
