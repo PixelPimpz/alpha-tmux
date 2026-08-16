@@ -21,7 +21,7 @@ main () {
 
     # get the comm(and) associated with the keypress from the current menu-*.yaml
     # check for valitity and if valid, run it
-    comm="$(yq eval ".Buttons[] | select(.key == \"$pressed\") | .comm" "$menu")"
+    comm="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .comm" "$menu")"
     if [[ -n "$comm" && "$comm" != "null" ]]; then 
       ac
       eval "$comm"
