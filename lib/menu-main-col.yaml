@@ -30,7 +30,7 @@ columns:
       - name: "Reload TMUX config"
         icon: "undo"
         key:  "r"
-        comm: "tmux source-file $TMUX_CONFIG"
+        comm: "tmux source-file $TMUX_CONFIG; display -d 3000 \"TMUX $TMUX_CONFIG Reloaded.\""
   - title: "Git Sync"
     buttons:
       - name: "Push to Remote"
