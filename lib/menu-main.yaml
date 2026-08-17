@@ -6,60 +6,78 @@ columns:
         icon: "new_session"
         key:  "s"
         comm: "tmux new-session"
+
       - name: "Save Session"
         icon: "floppy"
         key:  "S"
-        comm: "nvim"
+        comm: "$ACTIONS/session-save.sh"
+
       - name: "New NVIM Session"
         icon: "neovim"
         key:  "N"
-        comm: "$ACTIONS/session-save.sh"
+        comm: "nvim"
+
       - name: "More Session..."
         icon: "submodule"
         key:  "w"
         comm: "$ACTIONS/more_session.sh"
+
   - title: "TPM & Config"
     buttons:
       - name: "TPM Update..."
         icon: "update"
         key:  "u"
         comm: "$ACTIONS/tpm_update_interactive.sh" # placeholder
+
       - name: "TPM Update All"
         icon: "update"
         key:  "U"
         comm: "$TMUX_PLUGIN_MANAGER_PATH/tpm/bin/update-plugins"
+
       - name: "Reload TMUX config"
         icon: "undo"
         key:  "r"
-        comm: 'tmux source-file "${TMUX_CONFIG:-$HOME/.tmux.conf}" ; tmux display "TMUX Config Reloaded"'
+        ocomm: 'tmux source-file "${TMUX_CONFIG:-$HOME/.tmux.conf}" ; tmux display "TMUX Config Reloaded"'
+
+      - name: "Alpha Settings..."
+        icon: "settings"
+        key:  "A"
+        comm: '$ACTIONS/alpha_settings.sh'
+
   - title: "Git Sync"
     buttons:
       - name: "Push to Remote"
         icon: "github"
         key:  "p"
         comm: "$SCRIPTS/push"
+
       - name: "Push all Projects"
         icon: "github"
         key:  "P"
         comm: "$ACTIONS/pushallpro.sh"
+
       - name: "Push Dotfiles"
         icon: "dotfiles"
         key:  "d"
         comm: "cd $DOTFILES && push"
+
       - name: "MOAR GHit Stuff..."
         icon: "git"
-        key:  "d"
+        key:  "g"
         comm: "$ACTIONS/more_git.sh"
+
   - title: "Lifecycle"
     buttons:
       - name: "Detach Session"
         icon: "pause"
         key:  "D"
         comm: "tmux detach-client"
+
       - name: "Kill Session"
         icon: "kill"
         key:  "k"
         comm: "tmux kill-session"
+        
       - name: "Kill Server"
         icon: "kill"
         key:  "K"
