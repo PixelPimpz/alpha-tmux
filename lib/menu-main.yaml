@@ -16,7 +16,7 @@ columns:
         comm: "$ACTIONS/session-save.sh"
       - name: "More Session..."
         icon: "submodule"
-        key:  "S"
+        key:  "w"
         comm: "$ACTIONS/more_session.sh"
   - title: "TPM & Config"
     buttons:
