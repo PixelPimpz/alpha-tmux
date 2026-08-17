@@ -61,7 +61,7 @@ columns:
         key:  "d"
         comm: "cd $DOTFILES && push"
 
-      - name: "MOAR GHit Stuff..."
+      - name: "MOAR Git Stuff..."
         icon: "git"
         key:  "g"
         comm: "$ACTIONS/more_git.sh"
