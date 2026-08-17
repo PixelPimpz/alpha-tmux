@@ -13,6 +13,8 @@ icons:
     glyph: "f52f"
   - name: edit_session 
     glyph: "f0900"
+  - name: help 
+    glyph: "f0625"
   - name: settings 
     glyph: "e690"
   - name: cancel

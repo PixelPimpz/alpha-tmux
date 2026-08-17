@@ -82,3 +82,8 @@ columns:
         icon: "kill"
         key:  "K"
         comm: "tmux kill-server"
+
+      - name: "Alpha TMUX Help..."
+        icon: "help"
+        key:  '?'
+        comm: "$ACTIONS/help.sh"
