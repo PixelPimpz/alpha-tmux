@@ -1,0 +1,43 @@
+# Nord Color Palette for Alpha-Tmux
+# Naming follows: [theme]-alpha-tmux.yaml
+
+theme: "nord"
+
+palette:
+  # Polar Night (Base Backgrounds)
+  nord0:    "#2e3440"
+  nord1:    "#3b4252"
+  nord2:    "#434c5e"
+  nord3:    "#4c566a"
+
+  # Snow Storm (Base Foregrounds)
+  nord4:    "#d8dee9"
+  nord5:    "#e5e9f0"
+  nord6:    "#eceff4"
+
+  # Frost & Aurora (Accents)
+  nord7:    "#8fbcbb"      # Frost Teal
+  nord8:    "#88c0d0"      # Frost Cyan
+  nord9:    "#81a1c1"      # Frost Blue
+  nord10:   "#5e81ac"      # Deep Frost Blue
+  nord11:   "#bf616a"      # Aurora Red
+  nord12:   "#d08770"      # Aurora Orange
+  nord13:   "#ebcb8b"      # Aurora Yellow
+  nord14:   "#a3be8c"      # Aurora Green
+  nord15:   "#b48ead"      # Aurora Purple
+
+ui:
+  # Semantic UI Role Highlights
+  header:    "#88c0d0"      # Frost Cyan for ASCII logo banner
+  tagline:   "#8fbcbb"      # Frost Teal for version & date tagline
+  border:    "#4c566a"      # Nord3 for box frames
+  menu_key:  "#ebcb8b"      # Aurora Yellow for [key] shortcut brackets
+  menu_text: "#eceff4"      # Snow Storm for button labels
+  menu_icon: "#81a1c1"      # Frost Blue for button icons
+  button_bg: "#3b4252"      # Nord1 dark container background
+  bracket:   "#4c566a"      # Nord3 for [ and ] brackets
+  accent:    "#88c0d0"      # Frost Cyan for highlights
+  prompt:    "#ebcb8b"      # Aurora Yellow for menu prompt
+  muted:     "#434c5e"      # Nord2 for section dividers
+  success:   "#a3be8c"      # Green for success status
+  error:     "#bf616a"      # Red for error alerts

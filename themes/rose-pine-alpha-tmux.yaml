@@ -1,0 +1,42 @@
+# Rosé Pine Color Palette for Alpha-Tmux
+# Naming follows: [theme]-alpha-tmux.yaml
+
+theme: "rose-pine"
+
+palette:
+  # Base Backgrounds
+  base:     "#191724"
+  surface:  "#1f1d2e"
+  overlay:  "#26233a"
+  muted_bg: "#312f44"
+  hl_med:   "#403d52"
+  hl_high:  "#524f67"
+
+  # Base Foregrounds & Grays
+  text:     "#e0def4"
+  subtle:   "#908caa"
+  muted:    "#6e6a86"
+
+  # Accent Colors
+  love:     "#eb6f92"      # Red / Pink
+  gold:     "#f6c177"      # Yellow / Gold
+  rose:     "#ebbcba"      # Warm Rose
+  pine:     "#31748f"      # Teal
+  foam:     "#9ccfd8"      # Aqua
+  iris:     "#c4a7e7"      # Lavender Purple
+
+ui:
+  # Semantic UI Role Highlights
+  header:    "#c4a7e7"      # Iris Purple for ASCII logo banner
+  tagline:   "#9ccfd8"      # Foam Aqua for version & date tagline
+  border:    "#524f67"      # Highlight high for box frames
+  menu_key:  "#f6c177"      # Gold for [key] shortcut brackets
+  menu_text: "#e0def4"      # Text for button labels
+  menu_icon: "#ebbcba"      # Rose for button icons
+  button_bg: "#26233a"      # Overlay dark container background
+  bracket:   "#6e6a86"      # Muted for [ and ] brackets
+  accent:    "#eb6f92"      # Love pink for highlights
+  prompt:    "#f6c177"      # Gold for menu prompt
+  muted:     "#403d52"      # Muted slate for section dividers
+  success:   "#9ccfd8"      # Foam for success status
+  error:     "#eb6f92"      # Love for error alerts

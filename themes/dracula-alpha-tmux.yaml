@@ -1,0 +1,41 @@
+# Dracula Color Palette for Alpha-Tmux
+# Naming follows: [theme]-alpha-tmux.yaml
+
+theme: "dracula"
+
+palette:
+  # Base Backgrounds
+  bg:       "#282a36"
+  bg_dark:  "#21222c"
+  bg_soft:  "#343746"
+  current:  "#44475a"
+  comment:  "#6272a4"
+
+  # Base Foregrounds
+  fg:       "#f8f8f2"
+  fg_dim:   "#e2e2dc"
+
+  # Accent Colors
+  cyan:     "#8be9fd"
+  green:    "#50fa7b"
+  orange:   "#ffb86c"
+  pink:     "#ff79c6"
+  purple:   "#bd93f9"
+  red:      "#ff5555"
+  yellow:   "#f1fa8c"
+
+ui:
+  # Semantic UI Role Highlights
+  header:    "#bd93f9"      # Dracula Purple for ASCII logo banner
+  tagline:   "#8be9fd"      # Cyan for version & date tagline
+  border:    "#6272a4"      # Comment Slate for box frames
+  menu_key:  "#f1fa8c"      # Bright Yellow for [key] shortcut brackets
+  menu_text: "#f8f8f2"      # Main foreground for button labels
+  menu_icon: "#bd93f9"      # Purple for button icons
+  button_bg: "#343746"      # Dark container background
+  bracket:   "#6272a4"      # Comment slate for [ and ] brackets
+  accent:    "#ff79c6"      # Pink for highlights
+  prompt:    "#ffb86c"      # Orange for menu prompt
+  muted:     "#44475a"      # Current line gray for section dividers
+  success:   "#50fa7b"      # Green for success status
+  error:     "#ff5555"      # Red for error alerts

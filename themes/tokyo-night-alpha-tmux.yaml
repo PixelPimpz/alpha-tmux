@@ -1,0 +1,47 @@
+# Tokyo Night Color Palette for Alpha-Tmux
+# Naming follows: [theme]-alpha-tmux.yaml
+
+theme: "tokyo-night"
+
+palette:
+  # Base Backgrounds
+  bg:       "#1a1b26"
+  bg_dark:  "#16161e"
+  bg_soft:  "#24283b"
+  bg1:      "#292e42"
+  bg2:      "#3b4261"
+  bg3:      "#414868"
+  bg4:      "#565f89"
+
+  # Base Foregrounds & Grays
+  fg:       "#c0caf5"
+  fg_dim:   "#a9b1d6"
+  gray:     "#7aa2f7"
+  comment:  "#565f89"
+
+  # Accent Colors
+  red:      "#f7768e"
+  orange:   "#ff9e64"
+  yellow:   "#e0af68"
+  green:    "#9ece6a"
+  teal:     "#73daca"
+  cyan:     "#7dcfff"
+  blue:     "#7aa2f7"
+  purple:   "#bb9af7"
+  magenta:  "#bb9af7"
+
+ui:
+  # Semantic UI Role Highlights
+  header:    "#7aa2f7"      # Tokyo Blue for ASCII logo banner
+  tagline:   "#7dcfff"      # Cyan for version & date tagline
+  border:    "#3b4261"      # Slate for box frames
+  menu_key:  "#e0af68"      # Bright Yellow for [key] shortcut brackets
+  menu_text: "#c0caf5"      # Main foreground for button labels
+  menu_icon: "#7aa2f7"      # Blue for button icons
+  button_bg: "#24283b"      # Dark elevated container background
+  bracket:   "#565f89"      # Comment gray for [ and ] brackets
+  accent:    "#ff9e64"      # Orange for highlights
+  prompt:    "#e0af68"      # Yellow for menu prompt
+  muted:     "#414868"      # Gray for section dividers
+  success:   "#9ece6a"      # Green for success status
+  error:     "#f7768e"      # Red for error alerts

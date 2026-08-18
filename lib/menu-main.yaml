@@ -37,7 +37,7 @@ columns:
       - name: "Reload TMUX config"
         icon: "undo"
         key:  "r"
-        ocomm: 'tmux source-file "${TMUX_CONFIG:-$HOME/.tmux.conf}" ; tmux display "TMUX Config Reloaded"'
+        comm: 'tmux source-file "${TMUX_CONFIG:-$HOME/.tmux.conf}" ; tmux display "TMUX Config Reloaded"'
 
       - name: "Alpha Settings..."
         icon: "settings"
@@ -85,5 +85,5 @@ columns:
 
       - name: "Alpha TMUX Help..."
         icon: "help"
-        key:  '?'
+        key:  "H"
         comm: "$ACTIONS/help.sh"
