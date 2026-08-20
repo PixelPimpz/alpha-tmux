@@ -52,7 +52,7 @@ yqshow() {
 get_icon() {
   local name="$1"
   local glyph
-                                                                                                                                                                                                                                                                                  glyph=$(yq e ".icons[] | select(.name == \"$name\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
+  glyph=$(yq e ".icons[] | select(.name == \"$name\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
   case "${#glyph}" in
     "4") echo -e "\u$glyph" ;;
     "5") echo -e "\U$glyph" ;;
