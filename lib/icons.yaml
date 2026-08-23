@@ -9,6 +9,12 @@ icons:
     glyph: "f0249"
   - name: kill
     glyph: "f0bc8"
+  - name: color
+    glyph: "e22b"
+  - name: infile
+    glyph: "f1039"
+  - name: pencil 
+    glyph: "f448"
   - name: tick
     glyph: "f52f"
   - name: edit_session 

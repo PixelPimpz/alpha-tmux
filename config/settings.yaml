@@ -1,3 +1,4 @@
+
 Profiles:
   - name: "Default"
     theme: "gruvbox-alpha-tmux"
@@ -6,3 +7,5 @@ Profiles:
     modules:
       - name: "gitgud"
         status: "inactive"
+      - name: "alpha_settings"
+        status: "active"

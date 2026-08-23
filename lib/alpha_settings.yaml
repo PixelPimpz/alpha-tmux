@@ -1,0 +1,26 @@
+#settings menu
+# choose theme
+#
+title: "Alpha Settings"
+columns:
+  title: "Theme"
+  buttons:
+    - name: "Select Color Theme"
+      icon: "color"
+      key: 1
+      comm:
+
+    - name: "Install Theme"
+      icon: "infile"
+      key: 2
+      comm:
+
+    - name: "Edit Color Theme"
+      icon: "pencil"
+      key: 3
+      comm:
+
+    - name: "Save Color Theme"
+      icon: "floppy"
+      key: 3
+      comm:

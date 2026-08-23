@@ -1,0 +1,7 @@
+ 1. stack_push <stack> <item> — adds an element to the array
+ 2. stack_pop <stack> <out_var> — pops the last element into out_var (using (( ${#__stk_ref[@]} == 0 )) check)
+ 3. stack_peek <stack> <out_var> — reads the top element into out_var
+ 4. stack_size <stack> <out_var> — stores the count into out_var
+ 5. stack_is_empty <stack> — returns 0 if empty, 1 if not
+ 6. stack_clear <stack> — resets the array to empty
+ 7. stack_join <stack> <out_var> [delim] — joins elements from bottom to top for breadcrumbs
