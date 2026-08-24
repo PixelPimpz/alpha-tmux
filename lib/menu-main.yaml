@@ -42,7 +42,7 @@ columns:
       - name: "Alpha Settings..."
         icon: "settings"
         key:  "A"
-        comm: '$ACTIONS/alpha_settings.sh'
+        comm: '$PLUGIN_ROOT/lib/alpha_settings.yaml'
 
   - title: "Git Sync"
     buttons:

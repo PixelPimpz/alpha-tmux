@@ -13,6 +13,7 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 menu_gen() {
   local max=0
   local menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}"
+  local title="$2"
 
   # 1. Calculate max label width across buttons
   while read -r name; do
@@ -21,8 +22,9 @@ menu_gen() {
   done < <(yq e '(.Buttons[].name // .columns[].buttons[].name)' "$menu")
 
   # 2. Get button width & placeholder for empty slots
-  local sample_btn clean_sample buttonw empty_btn
-  sample_btn="$(make_button "s" "$max")"
+  local sample_btn clean_sample buttonw empty_btn sample_key
+  sample_key="$(yq e '(.Buttons[0].key // .columns[0].buttons[0].key)' "$menu")"
+  sample_btn="$(make_button "$sample_key" "$max" "$menu")"
   clean_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
   buttonw="${#clean_sample}"
   printf -v empty_btn "%*s" "$buttonw" ""
@@ -48,7 +50,7 @@ menu_gen() {
       (( c > 0 )) && rstring+=" "
 
       if [[ -n "$key" && "$key" != "null" ]]; then
-        rstring+="$(make_button "$key" "$max")"
+        rstring+="$(make_button "$key" "$max" "$menu")"
       else
         rstring+="$empty_btn"
       fi
@@ -62,6 +64,6 @@ menu_gen() {
   done
 
   # 5. Draw box & print selection prompt
-  boxer "$BORDERC" "$menu_text"
+  boxer "$BORDERC" "$menu_text" "$title"
   center -n "Enter menu selection or press [ENTER 󰌑 ] for a ${SHELL##*/} prompt: " "$PROMPTC"
 }

@@ -30,7 +30,6 @@ Stack_peek() {
   else
     __out_var="${__stack[-1]}"
   fi
-  echo "$__out_var"
   return 0
 }
 

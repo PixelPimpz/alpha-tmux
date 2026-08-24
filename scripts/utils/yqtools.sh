@@ -25,9 +25,9 @@ get_button() {
 #  useable button
 
 make_button() {
-  local KEY="$1" max="${2:-0}"
+  local KEY="$1" max="${2:-0}" file="${3:-$PLUGIN_ROOT/lib/menu-main.yaml}"
   local name icon key comm glyph
-  IFS="|" read -r name icon key comm < <(get_button "$KEY")
+  IFS="|" read -r name icon key comm < <(get_button "$KEY" "$file")
   glyph="$(get_icon "$icon")"
 
   printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
@@ -58,4 +58,8 @@ get_icon() {
     "5") echo -e "\U$glyph" ;;
     *)   echo "?" ;;
   esac
+}
+
+is_yaml() {
+  [[ "$1" == *.yaml || "$1" == *.yml ]]
 }

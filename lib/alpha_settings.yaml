@@ -3,8 +3,8 @@
 #
 title: "Alpha Settings"
 columns:
-  title: "Theme"
-  buttons:
+  - title: "Theme"
+    buttons:
     - name: "Select Color Theme"
       icon: "color"
       key: 1
@@ -22,5 +22,5 @@ columns:
 
     - name: "Save Color Theme"
       icon: "floppy"
-      key: 3
+      key: 4
       comm:

@@ -35,13 +35,31 @@ boxer() {
     (( len > max_len )) && max_len="$len"
   done
 
+  local title="$3"
+  if [[ -n "$title" ]]; then
+    local plain_title title_len
+    plain_title=$(echo -e "$title" | sed -E 's/\x1b\[[0-9;]*m//g')
+    title_len="${#plain_title}"
+    (( title_len + 4 > max_len )) && max_len=$(( title_len + 4 ))
+  fi
+
   # 3. Build horizontal top and bottom border bars
   local hline
   printf -v hline "%*s" "$((max_len + 2))" ""
   hline="${hline// /─}"
 
   # 4. Print top border
-  center "┌${hline}┐" "$color"
+  if [[ -n "$title" ]]; then
+    local left_w=2
+    local right_w=$(( max_len + 2 - title_len - 4 ))
+    (( right_w < 0 )) && right_w=0
+    local left_bar right_bar
+    printf -v left_bar "%*s" "$left_w" ""
+    printf -v right_bar "%*s" "$right_w" ""
+    center "${color}┌${left_bar// /─} ${title} ${color}${right_bar// /─}┐"
+  else
+    center "┌${hline}┐" "$color"
+  fi
 
   # 5. Print rows with side borders and right-padding
   for line in "${lines[@]}"; do

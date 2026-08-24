@@ -2,7 +2,8 @@
 [[ -n "$_ALPHA_COLORIZER_SH" ]] && return 0
 _ALPHA_COLORIZER_SH=1
 
-THEME="$PLUGIN_ROOT/themes/${1:-gruvbox-alpha-tmux}.yaml"
+_active_theme="$(get_active_theme 2>/dev/null)"
+THEME="$PLUGIN_ROOT/themes/${_active_theme:-gruvbox-alpha-tmux}.yaml"
 HEX2ANSI="$PLUGIN_ROOT/scripts/utils/hex2ansi.sh"
 get_color() {
   "$HEX2ANSI" "$(yq e "$1" "$THEME")"
