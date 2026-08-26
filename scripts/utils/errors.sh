@@ -8,3 +8,10 @@ fatal() {
   echo "FATAL: $E." 
   exit 1
 }
+
+error() {
+  local E
+  E="${1:-Unknown Error.}"
+  printf "ERROR: %s\n" "$E"
+  return 1
+}

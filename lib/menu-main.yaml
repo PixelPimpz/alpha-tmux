@@ -49,7 +49,8 @@ columns:
       - name: "Push to Remote"
         icon: "github"
         key:  "p"
-        comm: "$SCRIPTS/push"
+        popup: "sm"
+        comm: "$PLUGIN_ROOT/scripts/utils/push.sh"
 
       - name: "Push all Projects"
         icon: "github"

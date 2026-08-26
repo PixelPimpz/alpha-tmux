@@ -40,11 +40,17 @@ main () {
         ;;
       *)
         comm="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .comm" "$current_menu")"
+        popup_size="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .popup" "$current_menu")"
+        btn_name="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .name" "$current_menu")"
         eval "target=\"$comm\""
         if [[ -n "$target" && "$target" != "null" ]]; then
           if is_yaml "$target"; then
             Stack_push NAV_STACK "$target"
-            else ac; eval "$comm" 
+          elif [[ -n "$popup_size" && "$popup_size" != "null" ]]; then
+            boxed "$target" "$btn_name" "$popup_size"
+          else
+            ac
+            eval "$comm"
           fi
         else
           tmux status "Key $pressed not recognized."

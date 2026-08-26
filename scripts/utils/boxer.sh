@@ -40,7 +40,23 @@ boxer() {
     local plain_title title_len
     plain_title=$(echo -e "$title" | sed -E 's/\x1b\[[0-9;]*m//g')
     title_len="${#plain_title}"
-    (( title_len + 4 > max_len )) && max_len=$(( title_len + 4 ))
+
+    # Micro-justification: If button width and title length have opposite parity,
+    # absorb the 1-character difference around the separator glyph for optical balance!
+    if (( (max_len % 2) != (title_len % 2) )); then
+      local glyph_sep
+      printf -v glyph_sep "\ue349"
+      if [[ "$title" == *"$glyph_sep"* ]]; then
+        title="${title/$glyph_sep/ $glyph_sep}"
+      else
+        title="${title/ /  }"
+      fi
+      plain_title=$(echo -e "$title" | sed -E 's/\x1b\[[0-9;]*m//g')
+      title_len="${#plain_title}"
+    fi
+
+    (( title_len + 6 > max_len )) && max_len=$(( title_len + 6 ))
+    (( (max_len - title_len) % 2 != 0 )) && (( max_len++ ))
   fi
 
   # 3. Build horizontal top and bottom border bars
@@ -48,11 +64,11 @@ boxer() {
   printf -v hline "%*s" "$((max_len + 2))" ""
   hline="${hline// /─}"
 
-  # 4. Print top border
+  # 4. Print top border (Centered title with matching left & right dashes)
   if [[ -n "$title" ]]; then
-    local left_w=2
-    local right_w=$(( max_len + 2 - title_len - 4 ))
-    (( right_w < 0 )) && right_w=0
+    local total_dashes=$(( max_len + 2 - title_len - 2 ))
+    local left_w=$(( total_dashes / 2 ))
+    local right_w=$(( total_dashes - left_w ))
     local left_bar right_bar
     printf -v left_bar "%*s" "$left_w" ""
     printf -v right_bar "%*s" "$right_w" ""
@@ -61,13 +77,16 @@ boxer() {
     center "┌${hline}┐" "$color"
   fi
 
-  # 5. Print rows with side borders and right-padding
+  # 5. Print rows with side borders and centered content padding
   for line in "${lines[@]}"; do
     plain=$(echo -e "$line" | sed -E 's/\x1b\[[0-9;]*m//g')
-    local pad_spaces=$(( max_len - ${#plain} ))
-    local pad=""
-    (( pad_spaces > 0 )) && printf -v pad "%*s" "$pad_spaces" ""
-    center "${color}│${RESET} ${line}${pad} ${color}│"
+    local diff=$(( max_len - ${#plain} ))
+    local pad_l=$(( diff / 2 ))
+    local pad_r=$(( diff - pad_l ))
+    local pl="" pr=""
+    (( pad_l > 0 )) && printf -v pl "%*s" "$pad_l" ""
+    (( pad_r > 0 )) && printf -v pr "%*s" "$pad_r" ""
+    center "${color}│${RESET} ${pl}${line}${pr} ${color}│"
   done
 
   # 6. Print bottom border
