@@ -56,7 +56,7 @@ boxed() {
   cmd="$1"
   title="${2:-alpha-TMUX }"
   size="$3"
-  local sbox=("60" "12")
+  local sbox=("60" "14")
   local mbox=("70" "18")
   local lbox=("85%" "75%")
   case "$size" in 
@@ -67,14 +67,9 @@ boxed() {
     *) 
       w="${sbox[0]}"; h="${sbox[1]}" ;;
   esac
-  local theme_file="${THEME:-$PLUGIN_ROOT/themes/$(get_active_theme).yaml}"
-  local border_hex bg_hex
-  border_hex="$(yq e '.ui.border' "$theme_file" 2>/dev/null)"
-  bg_hex="$(yq e '.palette.bg' "$theme_file" 2>/dev/null)"
-
-  # 2. Launch popup with dynamic border (-S) and background (-s)
+  # Launch popup with dynamic border (-S) and background (-s) from colorizer
   tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded \
-    -S "fg=${border_hex:-default}" \
-    -s "bg=${bg_hex:-default}" \
+    -S "fg=${BORDER_HEX:-default}" \
+    -s "bg=${BG_HEX:-default}" \
     -T "#[align=centre]#[fg=brightwhite,bold] $title " "$cmd"
 }

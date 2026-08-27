@@ -12,6 +12,11 @@ get_bg_color() {
   "$HEX2ANSI" -bg "$(yq e "$1" "$THEME")"
 }
 
+# Raw HEX codes for TMUX commands / popups
+BORDER_HEX="$(yq e '.ui.border' "$THEME" 2>/dev/null)"
+BG_HEX="$(yq e '.palette.bg // .ui.button_bg' "$THEME" 2>/dev/null)"
+HEADER_HEX="$(yq e '.ui.header' "$THEME" 2>/dev/null)"
+
 HEADERC="$(get_color '.ui.header')"
 TAGLINEC="$(get_color '.ui.tagline')"
 BORDERC="$(get_color '.ui.border')"
