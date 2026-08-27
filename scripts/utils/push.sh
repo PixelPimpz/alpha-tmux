@@ -41,7 +41,7 @@ fi
 # push if there are changes
 if [[ -n "$changes" ]]; then
   printf "\n"
-  read -rp "Commit messages: [ Enter ] for routine message + timestamp " usr_msg
+  read -rp "Commit messages: [ Enter ] for auto msg" usr_msg
   commit_msg="${usr_msg:-Routine push: $(date  "+%Y-%m-%d %H:%M:%S")}"
   git add .
   git commit -m "$commit_msg" 
