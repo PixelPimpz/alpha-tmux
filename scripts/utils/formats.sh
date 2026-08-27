@@ -40,7 +40,7 @@ prompt() {
 
 pause() {
   local msg="${1:-Press any key to return to main menu... }"
-  read -rp "  $msg" -n 1 _
+  read -rp "  ${MUTEDC}${msg}${RESET}" -n 1 _
   echo ""
 }
 #
@@ -85,6 +85,6 @@ boxed() {
   # Launch popup with dynamic border (-S) and background (-s) from colorizer
   tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded \
     -S "fg=${BORDER_HEX:-default}" \
-    -s "bg=${BG_HEX:-default}" \
+    -s "bg=${BG_HEX:-default},fg=${TEXT_HEX:-#ebdbb2}" \
     -T "#[align=centre]#[fg=brightwhite,bold] $title " "$cmd"
 }

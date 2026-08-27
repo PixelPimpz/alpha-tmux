@@ -16,6 +16,7 @@ get_bg_color() {
 BORDER_HEX="$(yq e '.ui.border' "$THEME" 2>/dev/null)"
 BG_HEX="$(yq e '.palette.bg // .ui.button_bg' "$THEME" 2>/dev/null)"
 HEADER_HEX="$(yq e '.ui.header' "$THEME" 2>/dev/null)"
+TEXT_HEX="$(yq e '.ui.menu_text // .palette.fg' "$THEME" 2>/dev/null)"
 
 HEADERC="$(get_color '.ui.header')"
 TAGLINEC="$(get_color '.ui.tagline')"

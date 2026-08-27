@@ -20,7 +20,7 @@ changes="$(git status --short)"
 
 # 2. UI Dialog Contents
 echo ""
-say "${HEADERC}Repo:${RESET} ${TEXTC}$repo${RESET} (${KEYC}$branch${RESET})\n"
+say "${HEADERC}Repo:${RESET} ${TEXTC}$repo${RESET} ${BRACKETC}(${KEYC}$branch${BRACKETC})${RESET}\n"
 
 if [[ -n "$changes" ]]; then
   say "${HEADERC}Changes:${RESET}"
@@ -33,7 +33,7 @@ else
 fi
 
 # 3. Confirm Push
-prompt "${PROMPTC}Push to ${repo}? [Y/n] ${RESET}" confirm
+prompt "${PROMPTC}Push to ${TEXTC}${repo}${PROMPTC}? ${BRACKETC}[${KEYC}Y${BRACKETC}|${KEYC}n${BRACKETC}] ${RESET}" confirm
 confirm="${confirm:-Y}"
 if [[ "$confirm" =~ ^[nN]$ ]]; then
   echo ""
