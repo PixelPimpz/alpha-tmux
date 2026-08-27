@@ -17,7 +17,7 @@ fi
 
 repo="$( basename "$PWD" )"
 branch="$( git branch --show-current 2>/dev/null || echo HEAD )"
-changes="$( git status --short )"
+changes="${M}$( git status --short )"
 
 ## UI Dialog contents
 printf "\n"
