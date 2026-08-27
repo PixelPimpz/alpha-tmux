@@ -3,14 +3,15 @@
 _ALPHA_PUSH_SH=1
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
+M="  "
 
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
-
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  error "$PWD not a git-managed directory."
-  read -rp "Press any key to return to aTmux Main Menu. " -n1
+  printf "\n$M" 
+  error "${PWD} not a git-managed directory."
+  read -rp "${M}Press any key to return to aTmux Main Menu. " -n1
   exit 1
 fi
 
@@ -20,17 +21,17 @@ changes="$( git status --short )"
 
 ## UI Dialog contents
 printf "\n"
-printf "%bRepo:%b %s (%b%s%b)\n\n" "$TAGLINEC" "$RESET" "$repo" "$KEYC" "$branch" "$RESET"
+printf "%s%bRepo:%b %s (%b%s%b)\n\n" "$M" "$TAGLINEC" "$RESET" "$repo" "$KEYC" "$branch" "$RESET"
 if [[ -n "$changes" ]];then
   printf "%bChanges:%b\n%s\n\n" "$TAGLINEC" "$RESET" "$changes"
 else
-  printf "%bClean Working tree. There is nothing to do.%b\n\n"  "$TAGLINEC" "$RESET"
+rintf "%bClean Working tree. There is nothing to do.%b\n\n"  "$TAGLINEC" "$RESET"
   read -rp "Press any key to return to main menu... " -n1 
   exit 0
 fi
 
 # confirm push
-read -rp "Push to ${repo}? [Y|n] " -n1 confirm
+read -rp "${M}Push to ${repo}? [Y|n] " -n1 confirm
 confirm="${confirm:-Y}"
 if [[ "$confirm" =~ ^[nN]$ ]]; then
   printf "\n%bCancelled.%b\n" "$TAGLINEC" "$RESET"
@@ -55,4 +56,4 @@ else
 fi
 
 read -rp "Press any key to return to main menu. " -n1 
-exit 0
+exit -14
