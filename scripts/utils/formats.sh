@@ -62,10 +62,20 @@ boxed() {
   case "$size" in 
     lbox|lg|large)
       w="${lbox[0]}"; h="${lbox[1]}" ;;
-    mbox|md|meduim)
+    mbox|md|medium)
       w="${mbox[0]}"; h="${mbox[1]}" ;;
     *) 
       w="${sbox[0]}"; h="${sbox[1]}" ;;
   esac
-  tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded -T " $title " "$cmd"
+  #tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded -T " $title " "$cmd"
+  local theme_file="${THEME:-$PLUGIN_ROOT/themes/$(get_active_theme).yaml}"
+  local border_hex bg_hex
+  border_hex="$(yq e '.ui.border' "$theme_file" 2>/dev/null)"
+  bg_hex="$(yq e '.palette.bg' "$theme_file" 2>/dev/null)"
+
+  # 2. Launch popup with dynamic border (-S) and background (-s)
+  tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded \
+    -S "fg=${border_hex:-default}" \
+    -s "bg=${bg_hex:-default}" \
+    -T " $title " "$cmd"
 }
