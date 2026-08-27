@@ -19,6 +19,7 @@ branch="$( git branch --show-current 2>/dev/null || echo HEAD )"
 changes="$( git status --short )"
 
 ## UI Dialog contents
+peinrf "\n"
 printf "%bRepo:%b %s (%b%s%b)\n\n" "$TAGLINEC" "$RESET" "$repo" "$KEYC" "$branch" "$RESET"
 if [[ -n "$changes" ]];then
   printf "%bChanges:%b\n%s\n\n" "$TAGLINEC" "$RESET" "$changes"
