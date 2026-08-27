@@ -48,17 +48,21 @@ if [[ -n "$changes" ]]; then
   prompt "${PROMPTC}Message: ${RESET}" usr_msg
   commit_msg="${usr_msg:-Routine push: $(date "+%Y-%m-%d %H:%M:%S")}"
   git add .
-  git commit -m "$commit_msg"
+  git commit -m "$commit_msg" >/dev/null 2>&1
 fi
 
 # 5. Push and Feedback
 echo ""
 say "${PROMPTC}Pushing to origin/${branch}...${RESET}"
-if git push origin "$branch"; then
+local push_output
+if push_output="$(git push origin "$branch" 2>&1)"; then
   echo ""
   say "${SUCCESSC}✔ Push to remote successful!${RESET}\n"
 else
-  error "Push to remote failed"
+  echo ""
+  say "${ACCENTC}✖ Push failed:${RESET}"
+  echo "$push_output" | sed "s/^/    ${MUTEDC}/; s/$/${RESET}/"
+  echo ""
 fi
 
 pause
