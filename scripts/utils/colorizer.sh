@@ -27,4 +27,6 @@ ICONC="$(get_color '.ui.menu_icon')"
 BUTTON_BGC="$(get_bg_color '.ui.button_bg // .palette.bg1')"
 ACCENTC="$(get_color '.ui.accent')"
 PROMPTC="$(get_color '.ui.prompt // .ui.accent')"
+SUCCESSC="$(get_color '.ui.success // .palette.green')"
+MUTEDC="$(get_color '.ui.muted // .palette.gray')"
 RESET=$'\033[0m'
