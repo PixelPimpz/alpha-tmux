@@ -9,7 +9,7 @@ source "$PLUGIN_ROOT/scripts/utils/errors.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  printf "\n$M" 
+  printf "\n%s" "${M}" 
   error "${PWD} not a git-managed directory."
   read -rp "${M}Press any key to return to aTmux Main Menu. " -n1
   exit 1
@@ -23,7 +23,7 @@ changes="$( git status --short )"
 printf "\n"
 printf "%s%bRepo:%b %s (%b%s%b)\n\n" "$M" "$TAGLINEC" "$RESET" "$repo" "$KEYC" "$branch" "$RESET"
 if [[ -n "$changes" ]];then
-  printf "%bChanges:%b\n%s\n\n" "$TAGLINEC" "$RESET" "$changes"
+  printf "%s%bChanges:%b\n%s\n\n" "${M}" "$TAGLINEC" "$RESET" "$changes"
 else
 rintf "%bClean Working tree. There is nothing to do.%b\n\n"  "$TAGLINEC" "$RESET"
   read -rp "Press any key to return to main menu... " -n1 
