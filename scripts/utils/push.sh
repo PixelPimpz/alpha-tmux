@@ -25,7 +25,7 @@ printf "%s%bRepo:%b %s (%b%s%b)\n\n" "$M" "$TAGLINEC" "$RESET" "$repo" "$KEYC" "
 if [[ -n "$changes" ]];then
   printf "%s%bChanges:%b\n%s\n\n" "${M}" "$TAGLINEC" "$RESET" "$changes"
 else
-rintf "%bClean Working tree. There is nothing to do.%b\n\n"  "$TAGLINEC" "$RESET"
+printf "%s%bClean Working tree. There is nothing to do.%b\n\n" "${M}" "$TAGLINEC" "$RESET"
   read -rp "Press any key to return to main menu... " -n1 
   exit 0
 fi
