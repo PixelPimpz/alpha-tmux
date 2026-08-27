@@ -24,6 +24,8 @@ if [[ -n "$changes" ]];then
   printf "%bChanges:%b\n%s\n\n" "$TAGLINEC" "$RESET" "$changes"
 else
   printf "%bClean Working tree. There is nothing to do.%b\n\n"  "$TAGLINEC" "$RESET"
+  read -rp "Press any key to return to main menu... " -n1 
+  exit 0
 fi
 
 # confirm push
