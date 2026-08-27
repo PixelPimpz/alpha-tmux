@@ -67,7 +67,6 @@ boxed() {
     *) 
       w="${sbox[0]}"; h="${sbox[1]}" ;;
   esac
-  #tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded -T " $title " "$cmd"
   local theme_file="${THEME:-$PLUGIN_ROOT/themes/$(get_active_theme).yaml}"
   local border_hex bg_hex
   border_hex="$(yq e '.ui.border' "$theme_file" 2>/dev/null)"
@@ -77,5 +76,5 @@ boxed() {
   tmux display-popup -E -d "$PWD" -w "$w" -h "$h" -b rounded \
     -S "fg=${border_hex:-default}" \
     -s "bg=${bg_hex:-default}" \
-    -T " $title " "$cmd"
+    -T "#[align=centre]#[fg=brightwhite,bold] $title " "$cmd"
 }
