@@ -28,6 +28,21 @@ center() {
     printf "%*s%s%s" "$pad" "" "$row" "$ending"
   fi
 }
+# UI Dialog & Popup Helpers -----------------------
+say() {
+  printf "  %b\n" "$*"
+}
+
+prompt() {
+  local msg="$1" var="$2"
+  read -rp "  $msg" "$var"
+}
+
+pause() {
+  local msg="${1:-Press any key to return to main menu... }"
+  read -rp "  $msg" -n 1 _
+  echo ""
+}
 #
 ac() {
   ## "AllClear" clear the terminal, clear scrollback and
