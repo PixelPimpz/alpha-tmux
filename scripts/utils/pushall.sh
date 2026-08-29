@@ -8,7 +8,7 @@ source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
 main() {
   local projects
   local yml="$PLUGIN_ROOT/config/settings.yaml"
-  projects="$( yq ".Profiles.projects" < "$yml")"
+  projects="$( yq 'yq e Profiles[] | select(.name == "Default") | .projects' "$yml" )"
   echo "$projects"
 }
 
