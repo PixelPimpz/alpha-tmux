@@ -19,6 +19,8 @@ main () {
   menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}" 
   [[ ! -f  $menu ]] && fatal "$menu not found"
   Stack_push NAV_STACK "$menu"
+  trap 'cursor on' EXIT INT TERM
+  cursor off
   #
   while true; do 
     Stack_peek NAV_STACK current_menu
@@ -33,8 +35,10 @@ main () {
     read -r -n 1 -s pressed
     case "$pressed" in
       q|Q|"")
+        cursor on
+        ac 
         exec "$SHELL" ;;
-      b|B)
+      b|B|$'\e')
         Stack_size NAV_STACK depth 
         (( depth > 1 )) && Stack_pop NAV_STACK discarded
         ;;
@@ -49,8 +53,10 @@ main () {
           elif [[ -n "$popup_size" && "$popup_size" != "null" ]]; then
             boxed "$target" "$btn_name" "$popup_size"
           else
+            cursor on 
             ac
             eval "$comm"
+            cursor off
           fi
         else
           tmux status "Key $pressed not recognized."

@@ -23,6 +23,10 @@ icons:
     glyph: "f0625"
   - name: settings 
     glyph: "e690"
+  - name: pass
+    glyph: "f42e"
+  - name: fail
+    glyph: "f467"
   - name: cancel
     glyph: "f102c"
   - name: github
@@ -37,7 +41,7 @@ icons:
     glyph: "f4ed"
   - name: undo
     glyph: "f0e2"
-  - name: history
+  - 7name: history
     glyph: "f02da"
   - name: update
     glyph: "f06b0"

@@ -4,6 +4,7 @@ Profiles:
     theme: "gruvbox-alpha-tmux"
     status: "active"
     configs: "config/settings.yaml"
+    projects: "/home/lucifer/Projects/"
     modules:
       - name: "gitgud"
         status: "inactive"

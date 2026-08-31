@@ -35,7 +35,13 @@ say() {
 
 prompt() {
   local msg="$1" var="$2"
-  read -rp "  $msg" "$var"
+  read -rp "$msg" "${var?}" 
+}
+
+keys() {
+  local K="$1"
+  local OLD="${2:-$RESET}"
+  printf "%s[%s%s%s]%s" "${BRACKETC}" "${KEYC}" "$K" "${BRACKETC}" "${OLD}"
 }
 
 pause() {
@@ -49,6 +55,13 @@ ac() {
   # put the cursor bacj at 0,0
   printf "\033[2J\033[H"
 }
+cursor() {
+  case "${1:-on}" in 
+    off|hide) printf "\033[?25l" ;;
+    on|show|*) printf "\033[?25h" ;;
+  esac
+}
+
 #
 show-icons() {
   if [[ ! -f "$ICONS_FILE" ]]; then

@@ -40,7 +40,7 @@ ui:
   button_bg: "#3c3836"   # Dark elevated container background (bg1)
   bracket: "#7c6f64"     # Muted gray for [ and ] brackets
   accent: "#fe8019"      # Orange for highlights
-  prompt: "#fabd2f"      # Bright yellow for menu prompt
+  prompt: "#fe8019"      # Orange for menu prompt
   muted: "#928374"       # Gray for section dividers
   success: "#b8bb26"     # Green for success status
   error: "#fb4934"       # Red for error alerts
