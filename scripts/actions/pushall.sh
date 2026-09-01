@@ -34,7 +34,7 @@ main() {
     else
       icon="$skip"
     fi
-    repo="${f/$HOME/~}"
+    repo="${f//$HOME/~}"
     printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "$icon" "${TEXTC}" "$repo" "${RESET}"
   done
 
