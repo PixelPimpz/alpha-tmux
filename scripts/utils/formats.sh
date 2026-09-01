@@ -28,6 +28,22 @@ center() {
     printf "%*s%s%s" "$pad" "" "$row" "$ending"
   fi
 }
+
+# Date + Time helpers
+timestamp() {
+  local stamp type
+  type="${1:-dt}"
+  case "$type" in
+    d|D)
+      stamp="+%d-%m-%Y";;
+    t|T)
+      stamp="+%H:%M:%S";;
+    *)
+      stamp="+%d-%m-%Y %H:%M:%S";;
+  esac
+  printf "%s\n" "$(date "$stamp")"
+}
+
 # UI Dialog & Popup Helpers -----------------------
 say() {
   printf "  %b\n" "$*"

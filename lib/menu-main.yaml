@@ -55,7 +55,7 @@ columns:
       - name: "Push all Projects"
         icon: "github"
         key:  "P"
-        comm: "$ACTIONS/pushallpro.sh"
+        comm: "$ACTIONS/pushall.sh"
 
       - name: "Push Dotfiles"
         icon: "dotfiles"

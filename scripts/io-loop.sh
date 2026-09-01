@@ -3,6 +3,7 @@
 # Msin Execution Loop / Event Loop
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
+ACTIONS="$PLUGIN_ROOT/scripts/actions"
 
 # Load utilities
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"

@@ -19,6 +19,7 @@ HEADER_HEX="$(yq e '.ui.header' "$THEME" 2>/dev/null)"
 TEXT_HEX="$(yq e '.ui.menu_text // .palette.fg' "$THEME" 2>/dev/null)"
 
 HEADERC="$(get_color '.ui.header')"
+MENUKEYC="$(get_color '.ui.menu_key')"
 TAGLINEC="$(get_color '.ui.tagline')"
 BORDERC="$(get_color '.ui.border')"
 BRACKETC="$(get_color '.ui.bracket')"

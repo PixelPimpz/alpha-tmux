@@ -17,6 +17,8 @@ icons:
     glyph: "f448"
   - name: tick
     glyph: "f52f"
+  - name: prog_up
+    glyph: "f0998"
   - name: edit_session 
     glyph: "f0900"
   - name: help 
