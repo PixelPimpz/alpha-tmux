@@ -34,7 +34,8 @@ main() {
     else
       icon="$skip"
     fi
-    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "$icon" "${TEXTC}" "${f/"$HOME"/~}" "${RESET}"
+    f="${f/$HOME/~}"
+    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "$icon" "${TEXTC}" "${f}" "${RESET}"
   done
 
   # The doctor wants you to PUUUUUUSH!
