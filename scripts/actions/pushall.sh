@@ -18,24 +18,23 @@ get_projects() {
 
 main() {
   trap 'cursor on' INT EXIT TERM
-  local projects skip go dirty=()
+  local projects repo skip go dirty=()
   go="$(get_icon "prog_up")"
   skip="$(get_icon "fail")"
   projects="$( get_projects )"
   
   [[ ! -d "$projects" ]] && error "Projects dir not found."
   
-  for f in "${projects%/}"/*; do
-    [[ -d "$f" ]] || continue
-    is_git "$f" &>/dev/null || continue
-    if is_dirty "$f" >/dev/null; then
-      dirty+=("$f")
+  for repo in "${projects%/}"/*; do
+    [[ -d "$repo" ]] || continue
+    is_git "$repo" &>/dev/null || continue
+    if is_dirty "$repo" >/dev/null; then
+      dirty+=("$repo")
       icon="$go"
     else
       icon="$skip"
     fi
-    repo="${f//$HOME/~}"
-    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "$icon" "${TEXTC}" "$repo" "${RESET}"
+    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "${icon}" "${TEXTC}" "${repo/$HOME/~}" "${RESET}"
   done
 
   # The doctor wants you to PUUUUUUSH!
