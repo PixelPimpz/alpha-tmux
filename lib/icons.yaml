@@ -1,4 +1,10 @@
 icons:
+  - name: moon
+    glyph: "f186"
+  - name: sun 
+    glyph: "f185"
+  - name: active 
+    glyph: "f04ce"
   - name: git
     glyph: "f02a2"
   - name: table

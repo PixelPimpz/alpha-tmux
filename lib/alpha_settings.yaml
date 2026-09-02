@@ -8,7 +8,7 @@ columns:
     - name: "Select Color Theme"
       icon: "color"
       key: 1
-      comm:
+      comm: "$ACTIONS/theme-select.sh"
 
     - name: "Install Theme"
       icon: "infile"
