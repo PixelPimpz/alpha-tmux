@@ -16,45 +16,65 @@ get_projects() {
   printf "%s\n" "$projects"
 }
 
-main() {
-  trap 'cursor on' INT EXIT TERM
-  local projects repo skip go dirty=()
-  go="$(get_icon "prog_up")"
-  skip="$(get_icon "fail")"
-  projects="$( get_projects )"
-  
-  [[ ! -d "$projects" ]] && error "Projects dir not found."
-  
+render_list() {
   printf "\n"
   for repo in "${projects%/}"/*; do
     [[ -d "$repo" ]] || continue
     is_git "$repo" &>/dev/null || continue
+
     if is_dirty "$repo" >/dev/null; then
-      dirty+=("$repo")
-      icon="$go"
+      printf "  %s%-2s%s %s%s%s\n" "${ACCENTC}" "$go" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
     else
-      icon="$skip"
+      printf "  %s%-2s%s %s%s%s\n" "${SUCCESSC}" "$pass" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
     fi
-    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "${icon}" "${TEXTC}" "${repo/$HOME/\~}" "${RESET}"
   done
   printf "\n"
-  # The doctor wants you to PUUUUUUSH!
-  local key msg
+}
+
+main() {
+  trap 'cursor on' INT EXIT TERM
+  local key msg dir dirty=()
+  local go pass projects
+
+  go="$(get_icon "prog_up")"
+  pass="$(get_icon "pass")"
+  projects="$( get_projects )"
+
+  [[ ! -d "$projects" ]] && error "Projects dir not found."
+
+  # 1. Scan for dirty repos
+  for repo in "${projects%/}"/*; do
+    [[ -d "$repo" ]] || continue
+    is_git "$repo" &>/dev/null || continue
+    is_dirty "$repo" >/dev/null && dirty+=("$repo")
+  done
+
+  # 2. Render initial list
+  render_list
+
   if (( "${#dirty[@]}" == 0 )); then
-    say "${SUCCESSC}No repo with pending changes. Nothing to do.${RESET}"
+    say "${SUCCESSC}✔ All projects are up to date! Nothing to push.${RESET}\n"
     pause
     return 0
   fi
-  read -rp "Commit message (optional) " msg
-  cursor "off"
-  read -rp "Push all dirty repos? [Y|n]" -n1 key 
+
+  # 3. Prompts
+  prompt "  ${PROMPTC}Commit message (optional): ${RESET}" msg
   echo ""
-  [[ "$key" =~ ^[nN]$ ]] && exit 1
-  local dir
+  cursor "off"
+  read -rp "  ${PROMPTC}Push ${#dirty[@]} dirty project(s)? $(keys "Y" "$PROMPTC")/$(keys "n" "$PROMPTC"): ${RESET}" -n1 key 
+  echo ""
+  [[ "$key" =~ ^[nN]$ ]] && exit 0
+
+  # 4. Live update push loop!
   for dir in "${dirty[@]}"; do
     push_repo "$dir" "$msg"
+    ac
+    render_list
   done
-  pause "Done. Press any key to return to main menu"
+
+  say "${SUCCESSC}✔ All projects pushed!${RESET}\n"
+  pause "Done. Press any key to return to main menu... "
   cursor "on"
   return 0
 }

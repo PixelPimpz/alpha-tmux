@@ -101,7 +101,7 @@ boxed() {
   title="${2:-alpha-TMUX }"
   size="$3"
   local sbox=("60" "14")
-  local mbox=("70" "18")
+  local mbox=("65" "18")
   local lbox=("85%" "75%")
   case "$size" in 
     lbox|lg|large)
