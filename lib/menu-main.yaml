@@ -32,6 +32,7 @@ columns:
       - name: "TPM Update All"
         icon: "update"
         key:  "U"
+        popup: "md"
         comm: "$ACTIONS/tpm-update.sh"
 
       - name: "Reload TMUX config"

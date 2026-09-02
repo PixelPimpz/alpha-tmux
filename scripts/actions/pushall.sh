@@ -78,13 +78,37 @@ main() {
   [[ "$key" =~ ^[nN]$ ]] && exit 0
 
   # 4. Live update push loop!
+  local tplugs=()
   for dir in "${dirty[@]}"; do
     push_repo "$dir" "$msg"
     ac
     render_list "$marginw"
+
+    local plugd
+    plugd="$(basename "$dir")"
+    if [[ -d "$HOME/.config/tmux/plugins/$plugd" || -d "$HOME/.tmux/plugins/$plugd" ]]; then
+      tplugs+=("$plugd")
+    fi
   done
 
-  say "${SUCCESSC}✔ All projects pushed!${RESET}\n"
+  # 5. Smart TPM Update & Reload
+  if (( ${#tplugs[@]} > 0 )); then
+    say "  ${PROMPTC}Updating TPM plugin(s): ${TEXTC}${tplugs[*]}${RESET}..."
+
+    local tpm_bin
+    for loc in "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" "$HOME/.tmux/plugins/tpm/bin/update_plugins"; do
+      [[ -x "$loc" ]] && { tpm_bin="$loc"; break; }
+    done
+
+    if [[ -n "$tpm_bin" ]]; then
+      "$tpm_bin" "${tplugs[@]}" >/dev/null 2>&1
+    fi
+
+    say "  ${SUCCESSC}✔ Reloaded tmux configuration!${RESET}\n"
+    tmux source-file "${TMUX_CONFIG:-$HOME/.config/tmux/tmux.conf}" 2>/dev/null
+  fi
+
+  say "  ${SUCCESSC}✔ All projects pushed!${RESET}\n"
   pause -b "Done. Press any key to return to main menu... "
   cursor "on"
   return 0
