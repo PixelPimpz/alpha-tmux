@@ -25,6 +25,7 @@ main() {
   
   [[ ! -d "$projects" ]] && error "Projects dir not found."
   
+  printf "\n"
   for repo in "${projects%/}"/*; do
     [[ -d "$repo" ]] || continue
     is_git "$repo" &>/dev/null || continue
@@ -34,9 +35,9 @@ main() {
     else
       icon="$skip"
     fi
-    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "${icon}" "${TEXTC}" "${repo/$HOME/~}" "${RESET}"
+    printf "\t%s%-3s%s %s%s\n" "${MENUKEYC}" "${icon}" "${TEXTC}" "${repo/$HOME/\~}" "${RESET}"
   done
-
+  printf "\n"
   # The doctor wants you to PUUUUUUSH!
   local key msg
   if (( "${#dirty[@]}" == 0 )); then
