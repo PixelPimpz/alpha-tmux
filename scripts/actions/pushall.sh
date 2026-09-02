@@ -23,9 +23,9 @@ render_list() {
     is_git "$repo" &>/dev/null || continue
 
     if is_dirty "$repo" >/dev/null; then
-      printf "  %s%-2s%s %s%s%s\n" "${ACCENTC}" "$go" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
+      printf "  %s%-6s%s %s%s%s\n" "${ACCENTC}" "$go" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
     else
-      printf "  %s%-2s%s %s%s%s\n" "${SUCCESSC}" "$pass" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
+      printf "  %s%-6s%s %s%s%s\n" "${SUCCESSC}" "$pass" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
     fi
   done
   printf "\n"
