@@ -65,7 +65,7 @@ main() {
 
   if (( "${#dirty[@]}" == 0 )); then
     say "${SUCCESSC}✔ All projects are up to date! Nothing to push.${RESET}\n"
-    pause
+    pause -b
     return 0
   fi
 
@@ -85,7 +85,7 @@ main() {
   done
 
   say "${SUCCESSC}✔ All projects pushed!${RESET}\n"
-  pause "Done. Press any key to return to main menu... "
+  pause -b "Done. Press any key to return to main menu... "
   cursor "on"
   return 0
 }

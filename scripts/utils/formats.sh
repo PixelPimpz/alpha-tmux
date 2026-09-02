@@ -69,6 +69,18 @@ keys() {
 
 pause() {
   local msg="${1:-Press any key to return to main menu... }"
+  if [[ "$1" == "-b" || "$1" == "--bottom" ]]; then
+    shift
+    msg="${1:-Press any key to return to main menu... }"
+    local rows
+    rows="$(tput lines)"
+    printf "\033[%d;1H" $(( rows - 1 ))
+    center -n "$msg" "$MUTEDC"
+    read -r -s -n 1 _
+    echo ""
+    return 0
+  fi
+
   read -rp "  ${MUTEDC}${msg}${RESET}" -n 1 _
   echo ""
 }
