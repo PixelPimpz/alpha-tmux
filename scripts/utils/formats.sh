@@ -7,6 +7,13 @@ _ALPHA_FORMATS_SH=1
 # visually laid out.
 # ------------------------------------------------
 ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
+get_margin() {
+  local winw linemax="$1" margin 
+  winw="$(tput cols)" &>/dev/null
+  margin=$(( ( winw - linemax ) / 2  ))
+  (( margin < 2 )) && margin=2
+  printf "%d\n" $margin
+}
 
 center() {
   local ending=$'\n'

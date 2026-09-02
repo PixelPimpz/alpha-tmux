@@ -18,14 +18,16 @@ get_projects() {
 
 render_list() {
   printf "\n"
+  local MARGIN repo
+  printf -v MARGIN "%*s" "${1:-8}" "" 
   for repo in "${projects%/}"/*; do
     [[ -d "$repo" ]] || continue
     is_git "$repo" &>/dev/null || continue
 
     if is_dirty "$repo" >/dev/null; then
-      printf "  %s%-6s%s %s%s%s\n" "${ACCENTC}" "$go" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
+      printf "%s%s%s   %s %s%s%s\n" "${MARGIN}" "${ACCENTC}" "$go" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
     else
-      printf "  %s%-6s%s %s%s%s\n" "${SUCCESSC}" "$pass" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
+      printf "%s%s%s   %s %s%s%s\n" "${MARGIN}" "${SUCCESSC}" "$pass" "$RESET" "$TEXTC" "${repo/$HOME/\~}" "$RESET"
     fi
   done
   printf "\n"
@@ -43,14 +45,23 @@ main() {
   [[ ! -d "$projects" ]] && error "Projects dir not found."
 
   # 1. Scan for dirty repos
+  local linew line longest=0
   for repo in "${projects%/}"/*; do
     [[ -d "$repo" ]] || continue
     is_git "$repo" &>/dev/null || continue
     is_dirty "$repo" >/dev/null && dirty+=("$repo")
-  done
 
+    # get the width of the longest line in the list
+    line="${repo/$HOME/\~}"
+    linew="${#line}"
+    (( "$linew" > "$longest" )) && longest="$linew"
+  done
+  
+  
   # 2. Render initial list
-  render_list
+  local marginw
+  marginw=$(get_margin $(( longest + 6 )) )
+  render_list "$marginw"
 
   if (( "${#dirty[@]}" == 0 )); then
     say "${SUCCESSC}✔ All projects are up to date! Nothing to push.${RESET}\n"
@@ -70,7 +81,7 @@ main() {
   for dir in "${dirty[@]}"; do
     push_repo "$dir" "$msg"
     ac
-    render_list
+    render_list "$marginw"
   done
 
   say "${SUCCESSC}✔ All projects pushed!${RESET}\n"
