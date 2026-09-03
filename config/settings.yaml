@@ -5,8 +5,4 @@ Profiles:
     status: "active"
     configs: "config/settings.yaml"
     projects: "/home/lucifer/Projects/"
-    modules:
-      - name: "gitgud"
-        status: "inactive"
-      - name: "alpha_settings"
-        status: "active"
+    defaultd: "alpha-tmux"
