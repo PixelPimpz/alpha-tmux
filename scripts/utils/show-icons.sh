@@ -4,10 +4,10 @@
 #
 SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 PLUGIN_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/../.." && pwd)"
-ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
+ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
 
-if [[ ! -f "$ICONS_FILE" ]]; then
-  echo "Error: Could not find icons.yaml at $ICONS_FILE" >&2
+if [[ ! -f "$ICONS" ]]; then
+  echo "Error: Could not find icons.yaml at $ICONS" >&2
   exit 1
 fi
 
@@ -18,4 +18,4 @@ while IFS="|" read -r name glyph; do
     *)   icon="?" ;;
   esac
   printf "%-15s %s\n" "$name:" "$icon"
-done < <(yq '.icons[] | [.name, .glyph] | join("|")' "$ICONS_FILE")
+done < <(yq '.icons[] | [.name, .glyph] | join("|")' "$ICONS")

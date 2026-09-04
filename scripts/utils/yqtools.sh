@@ -3,63 +3,44 @@
 _ALPHA_YQTOOLS_SH=1
 
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"
-source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 
-##-------------------------------------------------------
-get_active_theme() {
-  local config="$PLUGIN_ROOT/config/settings.yaml"
-  yq e '.Profiles[] | select(.status == "active") | .theme' "$config"  
+## -----------------------------------------------------------------
+# Pure, domain-agnostic YAML helpers using yq
+## -----------------------------------------------------------------
+
+# Read a key path or evaluate an expression
+# Usage: yq_get ".ui.header" "$THEME_FILE"
+yq_get() {
+  local expr="$1" file="$2"
+  [[ -f "$file" ]] || return 1
+  yq eval "$expr" "$file"
 }
 
-##-------------------------------------------------------
-## we NEVER call trhis.Instead we just call make_button(KEY)
-get_button() {
-  local KEY file
-  KEY="$1"
-  local file="${2:-$PLUGIN_ROOT/lib/menu-main.yaml}"
-  yq e "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
+# Write a value to a YAML file in-place
+# Usage: yq_set ".Profiles[0].theme" "nord" "$CONFIG_FILE"
+yq_set() {
+  local expr="$1" val="$2" file="$3"
+  [[ -f "$file" ]] || return 1
+  yq eval -i "${expr} = \"${val}\"" "$file"
 }
 
-## call THIS and pass the KEY. It will use thr output of 
-#  get_button(KEY) for the read command and return the  
-#  useable button
-
-make_button() {
-  local KEY="$1" max="${2:-0}" file="${3:-$PLUGIN_ROOT/lib/menu-main.yaml}"
-  local name icon key comm glyph
-  IFS="|" read -r name icon key comm < <(get_button "$KEY" "$file")
-  glyph="$(get_icon "$icon")"
-
-  printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
-  "$BUTTON_BGC" \
-  "$ICONC$glyph" \
-  "$TEXTC" \
-  "$name" \
-  "$BRACKETC" \
-  "$KEYC" "$key" "$BRACKETC" \
-  "$RESET"
- }
-
-##-------------------------------------------------------
 yqshow() {
-  local file
-  file="$2"
-  [[ ! -n "$file" || ! -f "$file" ]]  && fatal "$file not found."
+  local file="${1:-$2}"
+  [[ ! -n "$file" || ! -f "$file" ]] && fatal "$file not found."
   yq e . "$file"
-}
-
-
-get_icon() {
-  local name="$1"
-  local glyph
-  glyph=$(yq e ".icons[] | select(.name == \"$name\") | .glyph" "$PLUGIN_ROOT/lib/icons.yaml")
-  case "${#glyph}" in
-    "4") echo -e "\u$glyph" ;;
-    "5") echo -e "\U$glyph" ;;
-    *)   echo "?" ;;
-  esac
 }
 
 is_yaml() {
   [[ "$1" == *.yaml || "$1" == *.yml ]]
+}
+
+# Backwards compatibility delegates
+get_active_theme() {
+  source "$PLUGIN_ROOT/scripts/utils/settings.sh"
+  get_active "theme"
+}
+
+get_icon() {
+  source "$PLUGIN_ROOT/scripts/utils/icons.sh"
+  get_icon "$@"
 }

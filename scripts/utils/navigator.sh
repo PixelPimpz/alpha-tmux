@@ -4,25 +4,27 @@ _ALPHA_NAVIGATOR_SH=1
 
 # key capture to distinguish between plain [ESC] and \e[something
 cap_key() {
-  local key rest out
-  key="$1"
-  read -rsn1 key 2>/dev/null
-  out="$key"
-  if [[ "$key" == $'\x1b' ]]; then
-    IFS= read -rsn2 -t 0.05 rest
-    case "$rest" in
-      "[A"|"OA") out="UP";;
-      "[B"|"OB") out="DOWN";;
-      "[C"|"OC") out="RIGHT";;
-      "[D"|"OD") out="LEFT";;
-              *) out="ESC";;
-    esac
-  elif [[ -z "$key" || "$key" == $'\n' || "$key" == $'\r' ]]; then
-    out="ENTER"
-  elif [[ "$key" == " " ]]; then
-    out="SPACE"
+  local _k _rest _out
+  if ! IFS= read -rsn1 _k 2>/dev/null; then
+    printf -v "${1:-RESULT}" "ESC"
+    return 1
   fi
-  printf -v "${1:-RESULT}" "%s" "$out"
+  _out="$_k"
+  if [[ "$_k" == $'\x1b' ]]; then
+    IFS= read -rsn2 -t 0.05 _rest
+    case "$_rest" in
+      "[A"|"OA") _out="UP";;
+      "[B"|"OB") _out="DOWN";;
+      "[C"|"OC") _out="RIGHT";;
+      "[D"|"OD") _out="LEFT";;
+              *) _out="ESC";;
+    esac
+  elif [[ -z "$_k" || "$_k" == $'\n' || "$_k" == $'\r' ]]; then
+    _out="ENTER"
+  elif [[ "$_k" == " " ]]; then
+    _out="SPACE"
+  fi
+  printf -v "${1:-RESULT}" "%s" "$_out"
 }
 
 # determines the next menu item to select|highlight

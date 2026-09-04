@@ -1,18 +1,42 @@
 #!/usr/bin/env bash
-[[ -n "$_ALPHA_MENU_GEN_SH" ]] && return 0
-_ALPHA_MENU_GEN_SH=1
+[[ -n "$_ALPHA_MENUS_SH" ]] && return 0
+_ALPHA_MENUS_SH=1
 
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
+source "$PLUGIN_ROOT/scripts/utils/icons.sh"
 source "$PLUGIN_ROOT/scripts/utils/boxer.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 
+get_button() {
+  local KEY file
+  KEY="$1"
+  local file="${2:-$PLUGIN_ROOT/config/menus/main.yaml}"
+  yq e "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
+}
+
+make_button() {
+  local KEY="$1" max="${2:-0}" file="${3:-$PLUGIN_ROOT/config/menus/main.yaml}"
+  local name icon key comm glyph
+  IFS="|" read -r name icon key comm < <(get_button "$KEY" "$file")
+  glyph="$(get_icon "$icon")"
+
+  printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
+  "$BUTTON_BGC" \
+  "$ICONC$glyph" \
+  "$TEXTC" \
+  "$name" \
+  "$BRACKETC" \
+  "$KEYC" "$key" "$BRACKETC" \
+  "$RESET"
+}
+
 ## -----------------------------------------------------------------
-# MENU_GEN responsible for generating the main/base alpha-tmux menu
+# MENUS responsible for generating the main/base alpha-tmux menu
 ## -----------------------------------------------------------------
-menu_gen() {
+menus() {
   local max=0
-  local menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}"
+  local menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}"
   local title="$2"
 
   # 1. Calculate max label width across buttons
@@ -71,3 +95,5 @@ menu_gen() {
     center -n "Enter menu selection or press $(keys "ENTER 󰌑")${PROMPTC} for a ${SHELL##*/} prompt." "$PROMPTC"
   fi
 }
+
+menu_gen() { menus "$@"; }

@@ -2,22 +2,22 @@
 # shellcheck disable=SC2034
 # Msin Execution Loop / Event Loop
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
-PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
-ACTIONS="$PLUGIN_ROOT/scripts/actions"
+export PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
+export ACTIONS="$PLUGIN_ROOT/scripts/actions"
 
 # Load utilities
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"
-source "$PLUGIN_ROOT/scripts/builtin/breadcrumbs.sh"
+source "$PLUGIN_ROOT/scripts/ui/breadcrumbs.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/Stack.sh"
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
-source "$PLUGIN_ROOT/scripts/builtin/header_gen.sh"
-source "$PLUGIN_ROOT/scripts/builtin/menu_gen.sh"
+source "$PLUGIN_ROOT/scripts/ui/headers.sh"
+source "$PLUGIN_ROOT/scripts/ui/menus.sh"
 
 main () {
   local menu pressed comm current_menu depth
   local NAV_STACK=()
-  menu="${1:-$PLUGIN_ROOT/lib/menu-main.yaml}" 
+  menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}" 
   [[ ! -f  $menu ]] && fatal "$menu not found"
   Stack_push NAV_STACK "$menu"
   trap 'cursor on' EXIT INT TERM
@@ -53,6 +53,8 @@ main () {
             Stack_push NAV_STACK "$target"
           elif [[ -n "$popup_size" && "$popup_size" != "null" ]]; then
             boxed "$target" "$btn_name" "$popup_size"
+            unset _ALPHA_COLORIZER_SH
+            source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
           else
             cursor on 
             ac

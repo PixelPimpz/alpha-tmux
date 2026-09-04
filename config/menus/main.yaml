@@ -43,7 +43,7 @@ columns:
       - name: "Alpha Settings..."
         icon: "settings"
         key:  "A"
-        comm: '$PLUGIN_ROOT/lib/alpha_settings.yaml'
+        comm: '$PLUGIN_ROOT/config/menus/settings.yaml'
 
   - title: "Git Sync"
     buttons:
@@ -51,7 +51,7 @@ columns:
         icon: "github"
         key:  "p"
         popup: "sm"
-        comm: "$PLUGIN_ROOT/scripts/utils/push.sh"
+        comm: "$ACTIONS/push.sh"
 
       - name: "Push all Projects"
         icon: "github"

@@ -4,17 +4,12 @@ PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 CONF="$PLUGIN_ROOT/config/settings.yaml"
 
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
+source "$PLUGIN_ROOT/scripts/utils/settings.sh"
+source "$PLUGIN_ROOT/scripts/utils/icons.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"
 source "$PLUGIN_ROOT/scripts/utils/gitools.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
-
-get_projects() {
-  local projects
-  projects="$( yq  eval '.Profiles[] | select(.status == "active") | .projects' "$CONF" )"
-  [[ ! "$projects" ]] && return 1
-  printf "%s\n" "$projects"
-}
 
 render_list() {
   printf "\n"

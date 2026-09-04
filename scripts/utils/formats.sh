@@ -6,7 +6,7 @@ _ALPHA_FORMATS_SH=1
 # helper functions pertainiong to how  things are 
 # visually laid out.
 # ------------------------------------------------
-ICONS_FILE="$PLUGIN_ROOT/lib/icons.yaml"
+ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
 get_margin() {
   local winw linemax="$1" margin 
   winw="$(tput cols)" &>/dev/null
@@ -99,8 +99,8 @@ cursor() {
 
 #
 show-icons() {
-  if [[ ! -f "$ICONS_FILE" ]]; then
-    echo "Error: Could not find icons.yaml at $ICONS_FILE" >&2
+  if [[ ! -f "$ICONS" ]]; then
+    echo "Error: Could not find icons.yaml at $ICONS" >&2
     exit 1
   fi
 
@@ -111,7 +111,7 @@ show-icons() {
       *)   icon="?" ;;
     esac
     printf "%-15s %s\n" "$name:" "$icon"
-  done < <(yq '.icons[] | [.name, .glyph] | join("|")' "$ICONS_FILE")
+  done < <(yq '.icons[] | [.name, .glyph] | join("|")' "$ICONS")
 }
 
 boxed() {

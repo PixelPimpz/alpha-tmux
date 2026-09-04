@@ -1,7 +1,7 @@
 
 Profiles:
   - name: "Default"
-    theme: "gruvbox-alpha-tmux"
+    theme: "catppuccin-mocha-alpha-tmux"
     status: "active"
     configs: "config/settings.yaml"
     projects: "/home/lucifer/Projects/"

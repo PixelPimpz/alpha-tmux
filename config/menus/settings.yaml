@@ -7,21 +7,21 @@ columns:
     buttons:
     - name: "Select Color Theme"
       icon: "color"
-      key: 1
+      key:  "1"
       popup: "md"
       comm: "$ACTIONS/select-theme.sh"
 
     - name: "Install Theme"
       icon: "infile"
-      key: 2
+      key:  "2"
       comm:
 
     - name: "Edit Color Theme"
       icon: "pencil"
-      key: 3
+      key:  "3"
       comm:
 
     - name: "Save Color Theme"
       icon: "floppy"
-      key: 4
+      key:  "4"
       comm:
