@@ -3,14 +3,18 @@
 _ALPHA_COLORIZER_SH=1
 
 source "$PLUGIN_ROOT/scripts/utils/settings.sh"
+source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
+
 _active_theme="$(get_active_theme 2>/dev/null)"
 THEME="$PLUGIN_ROOT/themes/${_active_theme:-gruvbox-alpha-tmux}.yaml"
 HEX2ANSI="$PLUGIN_ROOT/scripts/utils/hex2ansi.sh"
+
+# use domain agnostic yq_get 
 get_color() {
-  "$HEX2ANSI" "$(yq e "$1" "$THEME")"
+  "$HEX2ANSI" "$(yq_get "$1" "$THEME")"
 }
 get_bg_color() {
-  "$HEX2ANSI" -bg "$(yq e "$1" "$THEME")"
+  "$HEX2ANSI" -bg "$(yq_get "$1" "$THEME")"
 }
 
 # Raw HEX codes for TMUX commands / popups
