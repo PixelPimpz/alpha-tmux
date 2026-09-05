@@ -1,0 +1,47 @@
+# theme: gruvbox-alpha-tmux
+Highlights:
+      - name: BORDER_HEX
+        hex:  "#7c6f64"
+        ansi: "\e[38;2;124;111;100m"
+      - name: BG_HEX
+        hex:  "#3c3836"
+        ansi: "\e[48;2;60;56;54m"
+      - name: HEADER_HEX
+        hex:  "#d79921"
+        ansi: "\e[38;2;215;153;33m"
+      - name: TEXT_HEX
+        hex:  "#ebdbb2"
+        ansi: "\e[38;2;235;219;178m"
+      - name: HEADERC
+        hex:  "#d79921"
+        ansi: "\e[38;2;215;153;33m"
+      - name: MENUKEYC
+        hex:  "#fabd2f"
+        ansi: "\e[38;2;250;189;47m"
+      - name: TAGLINEC
+        hex:  "#8ec07c"
+        ansi: "\e[38;2;142;192;124m"
+      - name: BORDERC
+        hex:  "#7c6f64"
+        ansi: "\e[38;2;124;111;100m"
+      - name: BRACKETC
+        hex:  "#7c6f64"
+        ansi: "\e[38;2;124;111;100m"
+      - name: KEYC
+        hex:  "#fabd2f"
+        ansi: "\e[38;2;250;189;47m"
+      - name: TEXTC
+        hex:  "#ebdbb2"
+        ansi: "\e[38;2;235;219;178m"
+      - name: ICONC
+        hex:  "#83a598"
+        ansi: "\e[38;2;131;165;152m"
+      - name: BUTTON_BGC
+        hex:  "#3c3836"
+        ansi: "\e[48;2;60;56;54m"
+      - name: ACCENTC
+        hex:  "#fe8019"
+        ansi: "\e[38;2;254;128;25m"
+      - name: PROMPTC
+        hex:  "#fe8019"
+        ansi: "\e[38;2;254;128;25m"
