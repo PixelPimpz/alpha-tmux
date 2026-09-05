@@ -1,9 +1,9 @@
 icons:
   - name: moon
     glyph: "f186"
-  - name: sun 
+  - name: sun
     glyph: "f185"
-  - name: active 
+  - name: active
     glyph: "f04ce"
   - name: git
     glyph: "f02a2"
@@ -11,7 +11,7 @@ icons:
     glyph: "f525"
   - name: pause
     glyph: "f03e8"
-  - name: floppy 
+  - name: floppy
     glyph: "f0249"
   - name: kill
     glyph: "f0bc8"
@@ -19,17 +19,17 @@ icons:
     glyph: "e22b"
   - name: infile
     glyph: "f1039"
-  - name: pencil 
+  - name: pencil
     glyph: "f448"
   - name: tick
     glyph: "f52f"
   - name: prog_up
     glyph: "f0998"
-  - name: edit_session 
+  - name: edit_session
     glyph: "f0900"
-  - name: help 
+  - name: help
     glyph: "f0625"
-  - name: settings 
+  - name: settings
     glyph: "e690"
   - name: pass
     glyph: "f42e"
@@ -49,15 +49,15 @@ icons:
     glyph: "f4ed"
   - name: undo
     glyph: "f0e2"
-  - 7name: history
+  - name: history
     glyph: "f02da"
   - name: update
     glyph: "f06b0"
   - name: dotfiles
     glyph: "ebd3"
-  - name: submodule 
+  - name: submodule
     glyph: "f414"
-  - name: return 
+  - name: return
     glyph: "f0311"
   - name: prog_0
     glyph: "ee00"
@@ -71,3 +71,5 @@ icons:
     glyph: "ee04"
   - name: prog_5
     glyph: "ee05"
+  - name: folder
+    glyph: f07b

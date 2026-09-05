@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
-if [[ -z "$PLUGIN_ROOT" ]]; then
-  if [[ -n "$ZSH_VERSION" ]]; then
-    SCRIPT_PATH="$( readlink -f "${(%):-%x}" )"
-  else
-    SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
-  fi
-  PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
-fi
+SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 UTILS="$PLUGIN_ROOT/scripts/utils"
 
 source "$UTILS/yqtools.sh"
-source "$UTILS/settings.sh"
+source "$UTILS/profiler.sh"
 source "$UTILS/icons.sh"
 source "$UTILS/formats.sh"
 source "$UTILS/errors.sh"
@@ -33,7 +27,7 @@ make_swatch() {
   local f="$1"
   local c1 c2 c3 c4 c5 c6
   read -r c1 c2 c3 c4 c5 c6 < <(yq eval "[.ui.header, .ui.tagline, .ui.accent, .ui.menu_key, .ui.menu_icon, .ui.button_bg] | join(\" \")" "$f" 2>/dev/null)
-  printf "%s %s %s %s %s %s %s\033[0m" \
+  printf "%s %s %s %s %s %s \033[0m" \
     "$(hex_bg "$c1")" \
     "$(hex_bg "$c2")" \
     "$(hex_bg "$c3")" \

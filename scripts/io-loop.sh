@@ -29,9 +29,13 @@ main () {
     header_gen
     Stack_size NAV_STACK depth
     local trail=""
-    (( depth > 1 )) && breadcrumbs NAV_STACK trail
+    if (( depth > 1 )); then
+      breadcrumbs NAV_STACK trail
+    else
+       trail="${ICONC}$(get_icon "folder")  ${TEXTC}~${PWD#"$HOME"}${RESET}"
+    fi
     center " "
-    menu_gen "$current_menu" "$trail"
+    menus "$current_menu" "$trail" "$depth"
     #
     read -r -n 1 -s pressed
     case "$pressed" in

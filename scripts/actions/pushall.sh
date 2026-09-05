@@ -4,7 +4,7 @@ PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 CONF="$PLUGIN_ROOT/config/settings.yaml"
 
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
-source "$PLUGIN_ROOT/scripts/utils/settings.sh"
+source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
 source "$PLUGIN_ROOT/scripts/utils/icons.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"

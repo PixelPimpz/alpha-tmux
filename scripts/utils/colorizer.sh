@@ -2,7 +2,7 @@
 [[ -n "$_ALPHA_COLORIZER_SH" ]] && return 0
 _ALPHA_COLORIZER_SH=1
 
-source "$PLUGIN_ROOT/scripts/utils/settings.sh"
+source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
 
 _active_theme="$(get_active_theme 2>/dev/null)"

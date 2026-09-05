@@ -38,6 +38,7 @@ menus() {
   local max=0
   local menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}"
   local title="$2"
+  local depth="${3:-1}"
 
   # 1. Calculate max label width across buttons
   while read -r name; do
@@ -89,11 +90,9 @@ menus() {
 
   # 5. Draw box & print selection prompt
   boxer "$BORDERC" "$menu_text" "$title"
-  if [[ -n "$title" ]]; then
+  if (( depth > 1 )); then
     center -n "Enter menu selection or press $(keys "b")${PROMPTC} or $(keys "ESC")${PROMPTC} to return to main menu." "$PROMPTC"
   else
     center -n "Enter menu selection or press $(keys "ENTER 󰌑")${PROMPTC} for a ${SHELL##*/} prompt." "$PROMPTC"
   fi
 }
-
-menu_gen() { menus "$@"; }

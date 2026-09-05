@@ -19,7 +19,7 @@ source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
 get_icon() {
   local name="$1" glyph
   [[ -f "$ICONS" ]] || return 1
-  glyph="$(yq_get ".icons[] | select(.name == \"$name\") | .glyph" "$ICONS")"
+  glyph="$(yq_find ".icons" "name" "$name" "glyph" "$ICONS")"
   case "${#glyph}" in
     4) printf "\u$glyph" ;;
     5) printf "\U$glyph" ;;
