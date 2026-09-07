@@ -114,7 +114,7 @@ show-icons() {
   done < <(yq '.icons[] | [.name, .glyph] | join("|")' "$ICONS")
 }
 
-boxed() {
+popped() {
   local cmd title size w h  
   cmd="$1"
   title="${2:-alpha-TMUX }"

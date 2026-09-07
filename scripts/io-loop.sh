@@ -56,7 +56,7 @@ main () {
           if is_yaml "$target"; then
             Stack_push NAV_STACK "$target"
           elif [[ -n "$popup_size" && "$popup_size" != "null" ]]; then
-            boxed "$target" "$btn_name" "$popup_size"
+            popped "$target" "$btn_name" "$popup_size"
             unset _ALPHA_COLORIZER_SH
             source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
           else

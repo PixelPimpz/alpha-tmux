@@ -1,4 +1,8 @@
 icons:
+  - name: cursor
+    glyph: "eb70"
+  - name: warning
+    glyph: "f071"
   - name: moon
     glyph: "f186"
   - name: sun
@@ -11,6 +15,8 @@ icons:
     glyph: "f525"
   - name: pause
     glyph: "f03e8"
+  - name: toggle
+    glyph: "ea99"
   - name: floppy
     glyph: "f0249"
   - name: kill

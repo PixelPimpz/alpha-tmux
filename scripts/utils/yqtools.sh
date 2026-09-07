@@ -75,14 +75,3 @@ yqshow() {
 is_yaml() {
   [[ "$1" == *.yaml || "$1" == *.yml ]]
 }
-
-# Backwards compatibility delegates
-get_active_theme() {
-  source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
-  get_active "theme"
-}
-
-get_icon() {
-  source "$PLUGIN_ROOT/scripts/utils/icons.sh"
-  get_icon "$@"
-}
