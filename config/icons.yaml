@@ -79,3 +79,7 @@ icons:
     glyph: "ee05"
   - name: folder
     glyph: f07b
+  - name: check
+    glyph: f42e
+  - name: jump
+    glyph: f06c2

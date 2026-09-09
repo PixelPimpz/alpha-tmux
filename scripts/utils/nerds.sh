@@ -121,7 +121,7 @@ nf() {
 ## Helper to add or update a glyph in config/icons.yaml
 # Usage: add_glyph_yaml <name> <hex>
 #    or: add_glyph_yaml <name_or_hex>  (auto-resolved via nf)
-add_glyph_yaml() {
+add-glyph() {
   local ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
   local name="$1" hex="$2"
 
@@ -159,13 +159,13 @@ add_glyph_yaml() {
   [[ -z "$name" || -z "$hex" ]] && { echo "Failed to resolve glyph for '$1'" >&2; return 1; }
 
   # Upsert: remove existing if present, then add
-  rem_glyph_yaml "$name" 2>/dev/null
+  rem-glyph "$name" 2>/dev/null
   yq_add ".icons" "$ICONS" name="$name" glyph="$hex"
 }
 
 ## Helper to remove a glyph from config/icons.yaml by name
 # Usage: rem_glyph_yaml <name>
-rem_glyph_yaml() {
+rem-glyph() {
   local ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
   local name="$1"
   [[ -z "$name" ]] && return 1

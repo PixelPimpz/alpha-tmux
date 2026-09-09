@@ -16,11 +16,12 @@ columns:
         icon: "neovim"
         key:  "N"
         comm: "nvim"
-
-      - name: "More Session..."
-        icon: "submodule"
-        key:  "w"
-        comm: "$ACTIONS/more_session.sh"
+      
+      - name: "Jump To Project..."
+        icon: "jump"
+        key:  "j"
+        popup: "md"
+        comm: "$ACTIONS/to_project.sh" 
 
   - title: "TPM & Config"
     buttons:
@@ -87,7 +88,7 @@ columns:
         key:  "K"
         comm: "tmux kill-server"
 
-      - name: "Alpha TMUX Help..."
-        icon: "help"
-        key:  "H"
-        comm: "$ACTIONS/help.sh"
+      - name: "More Session..."
+        icon: "submodule"
+        key:  "w"
+        comm: "$ACTIONS/more_session.sh"

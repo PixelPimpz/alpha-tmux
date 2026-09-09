@@ -30,6 +30,24 @@ jump() {
   local dir p_name
   dir="$1"
   p_name="${dir##*/}"
+
+  if [[ "$MODE" == "window" ]]; then
+    # Window Mode: Switch if it exists, or create new in target directory
+    if tmux list-windows -F '#{window_name}' | grep -qx "$p_name"; then
+      tmux select-window -t "=$p_name"
+    else
+      tmux new-window -c "$dir" -n "$p_name"
+    fi
+  else
+    # Session Mode: Create detached if it doesn't exist, set PATH, and switch
+    if ! tmux has-session -t "=$p_name" 2>/dev/null; then
+      tmux new-session -d -s "$p_name" -c "$dir"
+    fi
+    [[ -d "$dir/bin" ]] && tmux setenv -t "=$p_name" PATH "$dir/bin:$PATH"
+    tmux switch-client -t "=$p_name"
+  fi
+
+  exit 0
 }
 
 toggle() {
@@ -44,31 +62,88 @@ toggle() {
 }
 
 draw_menu() {
-  local icon dirty git folder p_name cursor num=0
+  local selected="${1:-0}"
 
-  # load icons needed into cache. Keepin' it fast!
-  cursor="$(get_icon "cursor")"
-  git="$(get_icon "git")"
-  folder="$(get_icon "folder")"
-  check="$(get_icon "pass")"
-  
-  # in case no git-tracked sub dirs found in
-  # $PROJECTS
+  # in case no git-tracked sub dirs found in $PROJECTS
   if (( "${#PROJECTS[@]}" == 0 )); then
     boxer "$BORDERC" "No project directories in $PROJECTS_D." "${ACCENTC}$(get_icon "warning")${RESET}"
     pause
     exit 0
   fi
-  
-  # generate title
-  local check title
-  title="Jump To Project [ ${check} ${MODE} ]"
 
-  # menu-loop TODO add colors
+  ac
+  printf "\n"
+
+  # load icons needed into cache. Keepin' it fast!
+  local selector git folder check
+  selector="$(get_icon "cursor")"
+  git="$(get_icon "git")"
+  folder="$(get_icon "folder")"
+  check="$(get_icon "pass")"
+
+  # build & center mode badges
+  local badge_win badge_sess
+  if [[ "$MODE" == "window" ]]; then
+    badge_win="${BRACKETC}[ ${ACCENTC}${check} ${TEXTC}Window ${BRACKETC}]${RESET}"
+    badge_sess="${MUTEDC}[   Session ]${RESET}"
+  else
+    badge_win="${MUTEDC}[   Window ]${RESET}"
+    badge_sess="${BRACKETC}[ ${ACCENTC}${check} ${TEXTC}Session ${BRACKETC}]${RESET}"
+  fi
+
+  center "$badge_win    $badge_sess"
+  printf "\n"
+
+  # calculate margin and pad lines
+  local margin pad
+  margin="$(get_margin 24)"
+  printf -v pad "%*s" "$margin" ""
+
+  local num=0 icon dirty cursor
   for p_name in "${PROJECTS[@]}"; do
     (( num++ ))
+    (( num - 1 != selected )) && cursor="  " || cursor="$selector "
     is_git   "$p_name" &>/dev/null && icon="$git" || icon="$folder"
     is_dirty "$p_name" &>/dev/null && dirty="*"   || dirty=""
-    printf "%s %s %s %s\n" "$cursor" "$icon" "${p_name##*/}" "$dirty"
-  done | boxer "$BORDERC" "" "$title"
+    printf "%s%s%s %s %s %s\n" "$pad" "$cursor" "[$num]" "$icon" "${p_name##*/}" "$dirty"
+  done
+
+  printf "\n"
+  center "${MUTEDC}$(keys "TAB") to toggle mode: ${TEXTC}Window ${ACCENTC}$(get_icon "toggle")${TEXTC} Session${RESET}"
 }
+
+main() {
+  trap 'cursor on' EXIT INT TERM
+  cursor off
+
+  load_projects
+  local selected=0
+  local count="${#PROJECTS[@]}"
+  local key
+
+  while true; do
+    draw_menu "$selected"
+    cap_key key || break
+
+    case "$key" in
+      UP|k|K|DOWN|j|J|[1-9])
+        selected="$(nav_nxt "$selected" "$key" "$count")"
+        ;;
+      $'\t'|TAB)
+        toggle
+        ;;
+      ENTER)
+        jump "${PROJECTS[$selected]}"
+        break
+        ;;
+      ESC|q|Q)
+        break
+        ;;
+    esac
+  done
+
+  cursor on
+  ac
+}
+
+main
