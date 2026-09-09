@@ -13,9 +13,10 @@ source "$UTILS/boxer.sh"
 
 PROJECTS=()
 PROJECTS_D=""
+MODE="window"
 
 load_projects() {
-  local projects_d p_name dir
+  local p_name dir
   PROJECTS_D="$(get_projects)"
   for dir in "${PROJECTS_D%/}"/*; do
     [[ ! -d "$dir" ]] && continue
@@ -38,23 +39,36 @@ toggle() {
     window) mode="session" ;;
     session) mode="window" ;;
   esac
+  MODE="$mode"
   set_active "mode" "$mode"
 }
 
 draw_menu() {
   local icon dirty git folder p_name cursor num=0
+
+  # load icons needed into cache. Keepin' it fast!
   cursor="$(get_icon "cursor")"
   git="$(get_icon "git")"
   folder="$(get_icon "folder")"
+  check="$(get_icon "pass")"
+  
+  # in case no git-tracked sub dirs found in
+  # $PROJECTS
   if (( "${#PROJECTS[@]}" == 0 )); then
     boxer "$BORDERC" "No project directories in $PROJECTS_D." "${ACCENTC}$(get_icon "warning")${RESET}"
     pause
     exit 0
   fi
+  
+  # generate title
+  local check title
+  title="Jump To Project [ ${check} ${MODE} ]"
+
+  # menu-loop TODO add colors
   for p_name in "${PROJECTS[@]}"; do
     (( num++ ))
     is_git   "$p_name" &>/dev/null && icon="$git" || icon="$folder"
     is_dirty "$p_name" &>/dev/null && dirty="*"   || dirty=""
     printf "%s %s %s %s\n" "$cursor" "$icon" "${p_name##*/}" "$dirty"
-  done
+  done | boxer "$BORDERC" "" "$title"
 }
