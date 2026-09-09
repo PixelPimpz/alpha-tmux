@@ -7,15 +7,14 @@ source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
 
 _active_theme="$(get_active_theme 2>/dev/null)"
 THEME="$PLUGIN_ROOT/themes/${_active_theme:-gruvbox-alpha-tmux}.yaml"
-HIGHLIGHT="$PLUGIN_ROOT/config/highlights.yaml"
-HEX2ANSI="$PLUGIN_ROOT/scripts/utils/hex2ansi.sh"
+HIGHLIGHT="${XDG_CACHE_HOME:-$HOME/.cache}/alpha-tmux/highlights.yaml"
 
 # use domain agnostic yq_get 
 get_color() {
-  "$HEX2ANSI" "$(yq_get "$1" "$THEME")"
+  hex2ansi "$(yq_get "$1" "$THEME")"
 }
 get_bg_color() {
-  "$HEX2ANSI" -bg "$(yq_get "$1" "$THEME")"
+  hex2ansi -bg "$(yq_get "$1" "$THEME")"
 }
 
 get_hlgroup() {
@@ -57,6 +56,7 @@ loader() {
 highlighter() {
   # will always overwrite if the file
   # exists otherwise will make a new one
+  mkdir -p "${HIGHLIGHT%/*}"
   printf "# theme: %s\nHighlights:\n" "$_active_theme" > "$HIGHLIGHT"
 
   local group color hex ansi 

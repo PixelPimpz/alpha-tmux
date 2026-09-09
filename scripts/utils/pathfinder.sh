@@ -53,7 +53,13 @@ EOF
 # ^ keep this here to avoid EOF errors in all editors
     ;;
     -y|--yaml|*)
-      file="$PLUGIN_ROOT/config/settings.yaml" ;;
+      local user_conf="${XDG_CONFIG_HOME:-$HOME/.config}/alpha-tmux/settings.yaml"
+      if [[ ! -f "$user_conf" ]]; then
+        mkdir -p "${user_conf%/*}"
+        cp "$PLUGIN_ROOT/config/settings.yaml" "$user_conf"
+      fi
+      file="$user_conf"
+    ;;
   esac
   printf "%s\n" "$file"
 }

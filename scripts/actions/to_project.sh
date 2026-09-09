@@ -32,12 +32,8 @@ jump() {
   p_name="${dir##*/}"
 
   if [[ "$MODE" == "window" ]]; then
-    # Window Mode: Switch if it exists, or create new in target directory
-    if tmux list-windows -F '#{window_name}' | grep -qx "$p_name"; then
-      tmux select-window -t "=$p_name"
-    else
-      tmux new-window -c "$dir" -n "$p_name"
-    fi
+    tmux rename-window -t "$TMUX_PANE" "$p_name"
+    tmux respawn-pane -k -c "$dir" -t "$TMUX_PANE" "${SHELL:-/bin/bash}"
   else
     # Session Mode: Create detached if it doesn't exist, set PATH, and switch
     if ! tmux has-session -t "=$p_name" 2>/dev/null; then
