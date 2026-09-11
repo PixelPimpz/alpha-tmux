@@ -122,6 +122,37 @@ nf() {
 # Usage: add_glyph_yaml <name> <hex>
 #    or: add_glyph_yaml <name_or_hex>  (auto-resolved via nf)
 add-glyph() {
+  if [[ "$1" =~ ^(-h|--help)$ || $# -eq 0 ]]; then
+    cat << 'EOF'
+NAME
+    add-glyph - Add or update a Nerd Font icon in config/icons.yaml
+
+SYNOPSIS
+    add-glyph [OPTIONS] <name> <hex>
+    add-glyph [OPTIONS] <name_or_hex>
+
+DESCRIPTION
+    Resolves Nerd Font glyphs and inserts or updates them in the active
+    icons.yaml configuration. If only one argument is provided, the other
+    is automatically looked up via the 'nf' utility.
+
+OPTIONS
+    -h, --help
+        Display this help message and exit.
+
+EXAMPLES
+    add-glyph rocket f135
+        Add icon 'rocket' with explicit hex code 'f135'.
+
+    add-glyph rocket
+        Look up 'rocket' in Nerd Fonts and add it with its resolved hex.
+
+    add-glyph f135
+        Look up hex 'f135' in Nerd Fonts and add it with its official name.
+EOF
+    [[ "$1" =~ ^(-h|--help)$ ]] && return 0 || return 1
+  fi
+
   local ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
   local name="$1" hex="$2"
 
@@ -166,6 +197,28 @@ add-glyph() {
 ## Helper to remove a glyph from config/icons.yaml by name
 # Usage: rem_glyph_yaml <name>
 rem-glyph() {
+  if [[ "$1" =~ ^(-h|--help)$ || $# -eq 0 ]]; then
+    cat << 'EOF'
+NAME
+    rem-glyph - Remove a Nerd Font icon from config/icons.yaml
+
+SYNOPSIS
+    rem-glyph [OPTIONS] <name>
+
+DESCRIPTION
+    Removes the specified icon entry from icons.yaml by name.
+
+OPTIONS
+    -h, --help
+        Display this help message and exit.
+
+EXAMPLES
+    rem-glyph rocket
+        Remove icon 'rocket' from config/icons.yaml.
+EOF
+    [[ "$1" =~ ^(-h|--help)$ ]] && return 0 || return 1
+  fi
+
   local ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
   local name="$1"
   [[ -z "$name" ]] && return 1
