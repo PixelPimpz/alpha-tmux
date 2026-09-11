@@ -33,11 +33,11 @@ jump() {
 
   if [[ "$MODE" == "window" ]]; then
     tmux rename-window -t "$TMUX_PANE" "$p_name"
-    tmux respawn-pane -k -c "$dir" -t "$TMUX_PANE" "${SHELL:-/bin/bash}"
+    tmux respawn-pane -k -c "$dir" -t "$TMUX_PANE" "${PLUGIN_ROOT}/run"
   else
     # Session Mode: Create detached if it doesn't exist, set PATH, and switch
     if ! tmux has-session -t "=$p_name" 2>/dev/null; then
-      tmux new-session -d -s "$p_name" -c "$dir"
+      tmux new-session -d -s "$p_name" -c "${PLUGIN_ROOT}/run"
     fi
     [[ -d "$dir/bin" ]] && tmux setenv -t "=$p_name" PATH "$dir/bin:$PATH"
     tmux switch-client -t "=$p_name"
