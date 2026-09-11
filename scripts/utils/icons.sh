@@ -3,13 +3,10 @@
 _ALPHA_ICONS_SH=1
 
 if [[ -z "$PLUGIN_ROOT" ]]; then
-  if [[ -n "$ZSH_VERSION" ]]; then
-    SCRIPT_PATH="$( readlink -f "${(%):-%x}" )"
-  else
-    SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
-  fi
+  SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
   PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 fi
+
 ICONS="${ICONS:-$PLUGIN_ROOT/config/icons.yaml}"
 
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
