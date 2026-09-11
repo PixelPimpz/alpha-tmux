@@ -89,6 +89,10 @@ ENTRY
 	BUTTON_BGC     .palette.bg1
 	ACCENTC        .ui.accent
 	PROMPTC        .ui.accent
+  SUCCESSC       .ui.success
+  FAILC          .ui.error
+  MUTEDC         .ui.muted
+  GOLDC          .palette.gold // .palette.yellow // .ui.menu_key
 EOF
 }
 
