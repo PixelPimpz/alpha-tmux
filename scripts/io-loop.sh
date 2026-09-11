@@ -5,7 +5,8 @@ SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
 ACTIONS="$PLUGIN_ROOT/scripts/actions"
 UTILS="$PLUGIN_ROOT/scripts/utils"
-export PLUGIN_ROOT ACTIONS UTILS
+[[ -d "$PLUGIN_ROOT/bin" ]] && PATH="$PLUGIN_ROOT/bin:$PATH"
+export PLUGIN_ROOT ACTIONS UTILS PATH
 
 # Load utilities
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"
