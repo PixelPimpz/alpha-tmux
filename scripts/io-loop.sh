@@ -2,8 +2,10 @@
 # shellcheck disable=SC2034
 # Msin Execution Loop / Event Loop
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
-export PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
-export ACTIONS="$PLUGIN_ROOT/scripts/actions"
+PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
+ACTIONS="$PLUGIN_ROOT/scripts/actions"
+UTILS="$PLUGIN_ROOT/scripts/utils"
+export PLUGIN_ROOT ACTIONS UTILS
 
 # Load utilities
 source "$PLUGIN_ROOT/scripts/utils/errors.sh"
