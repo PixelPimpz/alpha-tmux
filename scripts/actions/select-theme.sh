@@ -46,7 +46,7 @@ is_light() {
 
 load_themes() {
   local active_theme ico_moon ico_sun ico_star
-  active_theme="$(get_active "theme")"
+  active_theme="$(get_option "theme")"
   ico_moon="$(get_icon "moon")"
   ico_sun="$(get_icon "sun")"
   ico_star="$(get_icon "active")"
@@ -182,7 +182,7 @@ apply_theme() {
   local theme_id raw_name
   IFS="|" read -r theme_id raw_name _ <<< "$item"
 
-  set_active "theme" "$theme_id"
+  set_option "theme" "$theme_id"
 
   ac
   printf "\n"

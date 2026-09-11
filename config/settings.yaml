@@ -1,9 +1,10 @@
 
 Profiles:
   - name: "Default"
-    theme: "tokyo-night-alpha-tmux"
     status: "active"
+    theme: "tokyo-night-alpha-tmux"
     mode: "window"
     configs: "config/settings.yaml"
     projects: "/home/lucifer/Projects/"
     defaultd: "alpha-tmux"
+    startup: ""

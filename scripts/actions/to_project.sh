@@ -48,13 +48,13 @@ jump() {
 
 toggle() {
   local mode
-  mode="$( get_active "mode" )"
+  mode="$( get_option "mode" )"
   case "$mode" in
     window) mode="session" ;;
     session) mode="window" ;;
   esac
   MODE="$mode"
-  set_active "mode" "$mode"
+  set_option "mode" "$mode"
 }
 
 draw_menu() {
