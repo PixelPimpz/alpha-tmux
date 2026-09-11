@@ -45,7 +45,7 @@ columns:
       - name: "Alpha Settings..."
         icon: "settings"
         key:  "A"
-        comm: '$PLUGIN_ROOT/config/menus/settings.yaml'
+        comm: '$PLUGIN_ROOT/config/menus/preferences.yaml'
 
   - title: "Git Sync"
     buttons:

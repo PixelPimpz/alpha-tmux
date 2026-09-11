@@ -7,6 +7,7 @@ source "$PLUGIN_ROOT/scripts/utils/icons.sh"
 source "$PLUGIN_ROOT/scripts/utils/boxer.sh"
 source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
 
 get_button() {
   local KEY file
@@ -15,10 +16,12 @@ get_button() {
   yq e "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
 }
 
+# shellcheck disable=SC2153
 make_button() {
   local KEY="$1" max="${2:-0}" file="${3:-$PLUGIN_ROOT/config/menus/main.yaml}"
-  local name icon key comm glyph
-  IFS="|" read -r name icon key comm < <(get_button "$KEY" "$file")
+  local name icon key glyph
+  IFS="|" read -r name icon key _ < <(get_button "$KEY" "$file")
+  eval "name=\"$name\""
   glyph="$(get_icon "$icon")"
 
   printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
@@ -42,6 +45,7 @@ menus() {
 
   # 1. Calculate max label width across buttons
   while read -r name; do
+    eval "name=\"$name\""
     local len="${#name}"
     (( len > max )) && max="$len"
   done < <(yq e '(.Buttons[].name // .columns[].buttons[].name)' "$menu")

@@ -14,11 +14,15 @@ CONF="${CONF:-$(get_config -y)}"
 ## Read any property from the currently active profile
 # Usage: get_option "theme" -> "gruvbox-alpha-tmux"
 get_option() {
-  local prop="$1"
+  local prop="$1" fallback="$2" val
   [[ -f "$CONF" ]] || return 1
-  yq_find ".Profiles" "status" "active" "$prop" "$CONF"
+  val="$(yq_find ".Profiles" "status" "active" "$prop" "$CONF")"
+  if [[ -z "$val" || "$val" == "null" ]]; then
+    printf "%s\n" "$fallback"
+  else
+    printf "%s\n" "$val"
+  fi
 }
-
 ## Write a property to the currently active profile in-place
 # Usage: set_option "theme" "nord-alpha-tmux"
 set_option() {
@@ -38,3 +42,7 @@ step_option() {
 # Domain convenience helpers
 get_projects()     { get_option "projects"; }
 get_active_theme() { get_option "theme"; }
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  "$@"
+fi

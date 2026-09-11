@@ -25,3 +25,10 @@ columns:
       icon: "floppy"
       key:  "4"
       comm:
+
+  - title: "Behavior"
+    buttons:
+      - name: 'On Startup: $(get_option startup "[4 Options...]")'
+        icon: "settings"
+        key:  "5"
+        comm: '$UTILS/profiler.sh step_option startup none last default menu'
