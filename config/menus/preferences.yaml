@@ -32,3 +32,9 @@ columns:
         icon: "settings"
         key:  "5"
         comm: '$UTILS/profiler.sh step_option startup none last default menu'
+
+      - name: "Default Proj: $(get_option defaultd)"
+        icon:
+        key:
+        if:
+        comm:

@@ -102,7 +102,16 @@ nf() {
     if [[ "$mode" == "all" ]]; then
       out="$(printf "%s\n" "$out" | column -t -s $'\t')"
     fi
-  fi
+
+    ## columnate if avail_lines > term_lines
+    local term_lines="${LINES:-$(tput lines 2>/dev/null || echo 24)}"
+    local term_cols="${COLUMNS:-$(tput cols   2>/dev/null || echo 80)}"
+    local avail_lines
+    avail_lines="$( printf "%s\n" "$out" | wc -l)"
+    if [[ -t 1 ]] && (( avail_lines > term_lines )); then
+      out="$(printf "%s\n" "$out" | column -c "$term_cols")"
+    fi
+  fi  
 
   # 6. Clipboard integration
   if [[ "$clip" -eq 1 ]]; then
