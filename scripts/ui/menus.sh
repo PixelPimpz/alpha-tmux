@@ -9,29 +9,50 @@ source "$PLUGIN_ROOT/scripts/utils/formats.sh"
 source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
 
-get_button() {
-  local KEY file
-  KEY="$1"
-  local file="${2:-$PLUGIN_ROOT/config/menus/main.yaml}"
-  yq e "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$KEY\") | [.name, .icon, .key, .comm] | join(\"|\")" "$file"
+load_button() {
+  local KEY="$1" file="${2:-$PLUGIN_ROOT/config/menus/main.yaml}"
+  declare -gA BTN=()
+  [[ -f "$file" ]] || return 1
+
+  local k v
+  while IFS="=" read -r k v; do
+    [[ -n "$k" ]] && BTN["$k"]="$v"
+  done < <(KEY="$KEY" yq e '.columns[].buttons[] | select(.key == env(KEY)) | to_entries | .[] | .key + "=" + .value' "$file")
+
+  if (( ${#BTN[@]} > 0 )); then
+    BTN[if]="${BTN[if]:-true}"
+    return 0
+  fi
+  return 1
 }
 
 # shellcheck disable=SC2153
 make_button() {
   local KEY="$1" max="${2:-0}" file="${3:-$PLUGIN_ROOT/config/menus/main.yaml}"
-  local name icon key glyph
-  IFS="|" read -r name icon key _ < <(get_button "$KEY" "$file")
+  load_button "$KEY" "$file" || return 1
+
+  local name="${BTN[name]}"
   eval "name=\"$name\""
-  glyph="$(get_icon "$icon")"
+  local glyph
+  glyph="$(get_icon "${BTN[icon]}")"
+
+  local c_icon="$ICONC" c_text="$TEXTC" c_brack="$BRACKETC" c_key="$KEYC" badge="${BTN[key]}"
+  if ! eval "${BTN[if]}"; then
+    c_icon="$MUTEDC"
+    c_text="$MUTEDC"
+    c_brack="$MUTEDC"
+    c_key="$MUTEDC"
+    badge="-"
+  fi
 
   printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
-  "$BUTTON_BGC" \
-  "$ICONC$glyph" \
-  "$TEXTC" \
-  "$name" \
-  "$BRACKETC" \
-  "$KEYC" "$key" "$BRACKETC" \
-  "$RESET"
+    "$BUTTON_BGC" \
+    "$c_icon$glyph" \
+    "$c_text" \
+    "$name" \
+    "$c_brack" \
+    "$c_key" "$badge" "$c_brack" \
+    "$RESET"
 }
 
 ## -----------------------------------------------------------------

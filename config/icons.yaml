@@ -83,3 +83,5 @@ icons:
     glyph: f42e
   - name: jump
     glyph: f06c2
+  - name: folder-plus
+    glyph: f0257

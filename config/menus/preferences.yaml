@@ -34,7 +34,8 @@ columns:
         comm: '$UTILS/profiler.sh step_option startup none last default menu'
 
       - name: "Default Proj: $(get_option defaultd)"
-        icon:
-        key:
-        if:
-        comm:
+        icon: "folder-plus"
+        key:  "6"
+        if: '[[ "$(get_option startup)" == "default" ]]'
+        popup: "md"
+        comm: "$ACTIONS/to-project.sh --default"

@@ -51,25 +51,29 @@ main () {
         (( depth > 1 )) && Stack_pop NAV_STACK discarded
         ;;
       *)
-        comm="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .comm" "$current_menu")"
-        popup_size="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .popup" "$current_menu")"
-        btn_name="$(yq eval "(.Buttons[] // .columns[].buttons[]) | select(.key == \"$pressed\") | .name" "$current_menu")"
-        eval "target=\"$comm\""
+        if ! load_button "$pressed" "$current_menu"; then
+          tmux status "Key $pressed not recognized."
+          continue
+        fi
+
+        if ! eval "${BTN[if]}"; then
+          continue
+        fi
+
+        eval "target=\"${BTN[comm]}\""
         if [[ -n "$target" && "$target" != "null" ]]; then
           if is_yaml "$target"; then
             Stack_push NAV_STACK "$target"
-          elif [[ -n "$popup_size" && "$popup_size" != "null" ]]; then
-            popped "$target" "$btn_name" "$popup_size"
+          elif [[ -n "${BTN[popup]}" && "${BTN[popup]}" != "null" ]]; then
+            popped "$target" "${BTN[name]}" "${BTN[popup]}"
             unset _ALPHA_COLORIZER_SH
             source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
           else
             cursor on 
             ac
-            eval "$comm"
+            eval "${BTN[comm]}"
             cursor off
           fi
-        else
-          tmux status "Key $pressed not recognized."
         fi
         ;;
     esac
