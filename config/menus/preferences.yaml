@@ -38,4 +38,4 @@ columns:
         key:  "6"
         if: '[[ "$(get_option startup)" == "default" ]]'
         popup: "md"
-        comm: "$ACTIONS/to-project.sh --default"
+        comm: "$ACTIONS/to_project.sh --default"

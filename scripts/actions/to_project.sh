@@ -11,9 +11,16 @@ source "$UTILS/colorizer.sh"
 source "$UTILS/navigator.sh"
 source "$UTILS/boxer.sh"
 
+MODE="$( get_option "mode" "window" )"
 PROJECTS=()
 PROJECTS_D=""
-MODE="window"
+USE="jump"
+
+if (( "$#" == 0 )); then
+  USE="jump"
+elif [[ "$1" =~ --default ]]; then
+  USE="default"
+fi
 
 load_projects() {
   local p_name dir
@@ -59,6 +66,7 @@ toggle() {
 
 draw_menu() {
   local selected="${1:-0}"
+  
 
   # in case no git-tracked sub dirs found in $PROJECTS
   if (( "${#PROJECTS[@]}" == 0 )); then
@@ -76,18 +84,23 @@ draw_menu() {
   git="$(get_icon "git")"
   folder="$(get_icon "folder")"
   check="$(get_icon "pass")"
-
+  
   # build & center mode badges
-  local badge_win badge_sess
-  if [[ "$MODE" == "window" ]]; then
-    badge_win="${BRACKETC}[ ${ACCENTC}${check} ${TEXTC}Window ${BRACKETC}]${RESET}"
-    badge_sess="${MUTEDC}[   Session ]${RESET}"
+  local header 
+  if [[ "$USE" == "default" ]]; then
+    header="${HEADERC}Select Default Project.${RESET}"
   else
-    badge_win="${MUTEDC}[   Window ]${RESET}"
-    badge_sess="${BRACKETC}[ ${ACCENTC}${check} ${TEXTC}Session ${BRACKETC}]${RESET}"
+    local badge_win badge_sess 
+    if [[ "$MODE" == "window" ]]; then
+      badge_win="${BRACKETC}[ ${ACCENTC}${check} ${TEXTC}Window ${BRACKETC}]${RESET}"
+      badge_sess="${MUTEDC}[   Session ]${RESET}"
+    else
+      badge_win="${MUTEDC}[   Window ]${RESET}"
+      badge_sess="${BRACKETC}[ ${ACCENTC}${check} ${TEXTC}Session ${BRACKETC}]${RESET}"
+    fi
+    header="$badge_win    $badge_sess"
   fi
-
-  center "$badge_win    $badge_sess"
+  center "$header"
   printf "\n"
 
   # calculate margin and pad lines
@@ -95,17 +108,24 @@ draw_menu() {
   margin="$(get_margin 24)"
   printf -v pad "%*s" "$margin" ""
 
-  local num=0 icon dirty cursor
+  local num=0 icon dirty cursor def_proj star
+  def_proj="$(get_option defaultd)"
   for p_name in "${PROJECTS[@]}"; do
+    star="" 
     (( num++ ))
     (( num - 1 != selected )) && cursor="  " || cursor="$selector "
     is_git   "$p_name" &>/dev/null && icon="$git" || icon="$folder"
     is_dirty "$p_name" &>/dev/null && dirty="*"   || dirty=""
-    printf "%s%s%s %s %s %s\n" "$pad" "$cursor" "[$num]" "$icon" "${p_name##*/}" "$dirty"
+    [[ "${p_name##*/}" == "$def_proj" ]] && star="${GOLDC}$(get_icon "active")${RESET}"
+    printf "%s%s%s %s %s %s %s\n" "$pad" "$cursor" "[$num]" "$icon" "${p_name##*/}" "$dirty" "$star"
   done
 
   printf "\n"
-  center "${MUTEDC}$(keys "TAB") to toggle mode: ${TEXTC}Window ${ACCENTC}$(get_icon "toggle")${TEXTC} Session${RESET}"
+  if [[ "$USE" == "default" ]]; then
+    center "${MUTEDC}$(keys "ENTER") to set default • $(keys "ESC") to cancel${RESET}"
+  else
+    center "${MUTEDC}$(keys "TAB") to toggle mode: ${TEXTC}Window ${ACCENTC}$(get_icon "toggle")${TEXTC} Session${RESET}"
+  fi
 }
 
 main() {
@@ -126,11 +146,15 @@ main() {
         selected="$(nav_nxt "$selected" "$key" "$count")"
         ;;
       $'\t'|TAB)
-        toggle
+         [[ "$USE" != "default" ]] && toggle 
         ;;
       ENTER)
-        jump "${PROJECTS[$selected]}"
-        break
+        if [[ "$USE" == "default" ]]; then
+          set_option "defaultd" "${PROJECTS[$selected]##*/}"
+          break
+        else 
+          jump "${PROJECTS[$selected]}"
+        fi
         ;;
       ESC|q|Q)
         break
@@ -142,4 +166,4 @@ main() {
   ac
 }
 
-main
+main "$@"
