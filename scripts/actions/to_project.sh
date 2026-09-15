@@ -37,6 +37,7 @@ jump() {
   local dir p_name
   dir="$1"
   p_name="${dir##*/}"
+  set_state "last_project" "$p_name"
 
   if [[ "$MODE" == "window" ]]; then
     tmux rename-window -t "$TMUX_PANE" "$p_name"
@@ -153,7 +154,7 @@ main() {
           set_option "defaultd" "${PROJECTS[$selected]##*/}"
           break
         else 
-          jump "${PROJECTS[$selected]}"
+         jump "${PROJECTS[$selected]}"
         fi
         ;;
       ESC|q|Q)
