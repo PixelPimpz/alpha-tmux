@@ -8,5 +8,5 @@ done
 tmux set-env -g TMUX_CONFIG "${TMUX_CONF:-$HOME/.tmux.conf}"
 tmux set-env -g DOTFILES "$HOME/dotfiles"
 #tmux set-env -g ACTIONS "$CURRENT_DIR/scripts/actions"
- tmux set-hook -g session-created "run-shell '$CURRENT_DIR/scripts/hooks/session-created.sh #{session_name}:#{window_index}.#{pane_index}'"
-tmux bind-key c new-window -n "Alpha-Tmux" "$CURRENT_DIR/scripts/io-loop.sh"
+tmux set-hook -g session-created "run-shell '$CURRENT_DIR/scripts/hooks/session-created.sh #{session_name}:#{window_index}.#{pane_index}'"
+tmux bind-key c new-window -c "#{pane-current-path}" -n "Alpha-Tmux" "$CURRENT_DIR/scripts/io-loop.sh"
