@@ -19,9 +19,10 @@ main() {
   session_name="$(tmux display -p '#{session_name}')"
   if [[ "$session_name" =~ ^[0-9]+$ ]]; then
     prompt "Blueprint name: " bp_name
+
     [[ -z "$bp_name" ]] && exit
     tmux rename-session -t "$session_name" "$bp_name"
-    session_name="$bp_name"
+    session_name="${bp_name:-$session-name}"
   fi
   local bp_file="$BLUEPRINTS_D/${session_name}.yaml"
   local root_d
@@ -38,7 +39,7 @@ EOF
     panes:
 EOF
     # 3. Iterate through each pane inside this window
-    while IFS="|" read -r pane_idx pane_path pane_cmd; do
+    while IFS="|" read -r _ pane_path pane_cmd; do
       # If the pane is just running an interactive shell, leave command blank
       [[ "$pane_cmd" =~ ^(bash|zsh|fish|sh)$ ]] && pane_cmd=""
       cat <<EOF >> "$bp_file"
