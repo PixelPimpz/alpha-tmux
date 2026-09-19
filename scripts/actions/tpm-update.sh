@@ -19,14 +19,14 @@ update_plugin() {
  res=$?
 
   if (( res != 0 )); then
-    printf "%s%-30s %s %s\n" "$pad" "[$name]" "$ICO_FAIL" "${FAILC}Update failed.${RESET}"
-  elif [[ "$out" == *"Already up to date"* || "$out" == *"Already up-to-date."* ]]; then
-    printf "%s%-30s %s %s\n" "$pad" "[$name]" "$ICO_ACTIVE" "${MUTEDC}Already Up To Date${RESET}"
+    printf "%s%-20s %s %s\n" "$pad" "[$name]" "$ICO_FAIL" "${FAILC}Update failed.${RESET}"
+  elif [[ "${out,,}" == *"up to date"* || "${out,,}" == *"up-to-date"* ]]; then
+    printf "%s%-20s %s %s\n" "$pad" "[$name]" "$ICO_ACTIVE" "${MUTEDC}Up To Date${RESET}"
   else
     local chg
     chg="$(grep -oE '[0-9]+ files? changed' <<< "$out" || true)"
    [[ -z "$chg" ]] && chg="updated"
-   printf "%s%-30s %s %s\n" "$pad" "[$name]" "$ICO_PASS" "${SUCCESSC}Update Success! ($chg)${RESET}"
+   printf "%s%-20s %s %s\n" "$pad" "[$name]" "$ICO_PASS" "${SUCCESSC}Updated ($chg)${RESET}"
    git -C "$dir" submodule update --init --recursive &>/dev/null
  fi
 }
