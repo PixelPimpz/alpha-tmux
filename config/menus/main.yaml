@@ -45,7 +45,7 @@ columns:
       - name: "Alpha Settings..."
         icon: "settings"
         key:  "A"
-        comm: '$PLUGIN_ROOT/config/menus/preferences.yaml'
+        comm: '$MENUS/preferences.yaml'
 
   - title: "Git Sync"
     buttons:
@@ -88,7 +88,7 @@ columns:
         key:  "K"
         comm: "tmux kill-server"
 
-      - name: "More Session..."
+      - name: "Session Control"
         icon: "submodule"
         key:  "w"
-        comm: "$ACTIONS/more_session.sh"
+        comm: "$MENUS/session.yaml"

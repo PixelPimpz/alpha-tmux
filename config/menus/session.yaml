@@ -1,0 +1,51 @@
+title: "Sessions"
+columns:
+  - title: "Management"
+    buttons:
+      - name: "Save as Blueprint"
+        icon: "floppy"
+        key:  "s"
+        comm: "$ACTIONS/save_session.sh"
+
+      - name: "Load from Blueprint"
+        icon: "infile"
+        key:  "l"
+        comm: "$ACTIONS/load_session.sh"
+
+      - name: "Edit Blueprint"
+        icon: "pencil"
+        key:  "e"
+        comm: "$ACTIONS/edit_blueprint.sh"
+
+      - name: "Delete Blueprint"
+        icon: "cancel"
+        key:  "d"
+        comm: "$ACTIONS/delete_blueprint.sh"
+
+  - title: "Control"
+    buttons:
+      - name: "New Session"
+        icon: "new_session"
+        key:  "n"
+        comm: "$ACTIONS/new_session.sh"
+
+      - name: "Rename Session"
+        icon: "rename"
+        key:  "r"
+        comm: "$ACTIONS/rename_session.sh"
+
+      - name: "Detach from Session"
+        icon: "pause"
+        key:  "D"
+        comm: "tmux detach-client"
+
+      - name: "Kill Session"
+        icon: "kill"
+        key:  "k"
+        comm: "tmux kill-session"
+
+      - name: "Kill Server"
+        icon: "kill"
+        key:  "K"
+        comm: "tmux kill-server"
+

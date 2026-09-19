@@ -27,6 +27,8 @@ icons:
     glyph: "f1039"
   - name: pencil
     glyph: "f448"
+  - name: rename
+    glyph: "f45a"
   - name: tick
     glyph: "f52f"
   - name: prog_up
