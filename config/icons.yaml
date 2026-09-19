@@ -63,8 +63,6 @@ icons:
     glyph: "f06b0"
   - name: dotfiles
     glyph: "ebd3"
-  - name: submodule
-    glyph: "f414"
   - name: return
     glyph: "f0311"
   - name: prog_0
@@ -89,3 +87,5 @@ icons:
     glyph: "f0257"
   - name: gear
     glyph: "f0493"
+  - name: submodule
+    glyph: eaec
