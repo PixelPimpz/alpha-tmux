@@ -80,10 +80,12 @@ icons:
   - name: prog_5
     glyph: "ee05"
   - name: folder
-    glyph: f07b
+    glyph: "f07b"
   - name: check
-    glyph: f42e
+    glyph: "f42e"
   - name: jump
-    glyph: f06c2
+    glyph: "f06c2"
   - name: folder-plus
-    glyph: f0257
+    glyph: "f0257"
+  - name: gear
+    glyph: f0493
