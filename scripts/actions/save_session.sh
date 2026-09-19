@@ -23,6 +23,32 @@ main() {
     tmux rename-session -t "$session_name" "$bp_name"
     session_name="$bp_name"
   fi
+  local bp_file="$BLUEPRINTS_D/${session_name}.yaml"
+  local root_d
+  root_d="$( tmux display -p -t "$session_name" '#{pane_current_path}' )"
+  cat <<EOF > "$bp_file"
+name: "$session_name"
+root: "$root_d"
+windows:
+EOF
+  while IFS="|" read -r win_idx win_name win_layout; do
+    cat <<EOF >> "$bp_file"
+  - name: "$win_name"
+    layout: "$win_layout"
+    panes:
+EOF
+    # 3. Iterate through each pane inside this window
+    while IFS="|" read -r pane_idx pane_path pane_cmd; do
+      # If the pane is just running an interactive shell, leave command blank
+      [[ "$pane_cmd" =~ ^(bash|zsh|fish|sh)$ ]] && pane_cmd=""
+      cat <<EOF >> "$bp_file"
+      - path: "$pane_path"
+        command: "$pane_cmd"
+EOF
+    done < <(tmux list-panes -t "${session_name}:${win_idx}" -F '#{pane_index}|#{pane_current_path}|#{pane_current_command}')
+  done < <(tmux list-windows -t "$session_name" -F '#{window_index}|#{window_name}|#{window_layout}')
+
+  tmux display-message "Session '${session_name}' saved as blueprint."
 }
 
 main "$@"
