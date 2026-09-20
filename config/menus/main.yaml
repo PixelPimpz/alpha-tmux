@@ -91,4 +91,5 @@ columns:
       - name: "Session Control"
         icon: "submodule"
         key:  "w"
+        popup: "md"
         comm: "$MENUS/session.yaml"
