@@ -5,6 +5,7 @@ columns:
       - name: "Save as Blueprint"
         icon: "floppy"
         key:  "s"
+        popup: "md"
         comm: "$ACTIONS/save_session.sh"
 
       - name: "Load from Blueprint"

@@ -7,4 +7,5 @@ Profiles:
     configs: "config/settings.yaml"
     projects: "/home/lucifer/Projects/"
     defaultd: "alpha-tmux"
+    ai_default: "agy"
     startup: ""
