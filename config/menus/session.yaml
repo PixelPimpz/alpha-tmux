@@ -33,6 +33,7 @@ columns:
       - name: "Rename Session"
         icon: "rename"
         key:  "r"
+        popup: "md"
         comm: "$ACTIONS/rename_session.sh"
 
       - name: "Detach from Session"

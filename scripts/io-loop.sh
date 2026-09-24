@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 # Msin Execution Loop / Event Loop
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/.." && pwd )"
 ACTIONS="$PLUGIN_ROOT/scripts/actions"
 UTILS="$PLUGIN_ROOT/scripts/utils"
+UI="$PLUGIN_ROOT/scripts/ui"
 MENUS="$PLUGIN_ROOT/config/menus"
+
 [[ -d "$PLUGIN_ROOT/bin" ]] && PATH="$PLUGIN_ROOT/bin:$PATH"
 export PLUGIN_ROOT ACTIONS UTILS MENUS PATH
 
 # Load utilities
-source "$PLUGIN_ROOT/scripts/utils/errors.sh"
-source "$PLUGIN_ROOT/scripts/ui/breadcrumbs.sh"
-source "$PLUGIN_ROOT/scripts/utils/formats.sh"
-source "$PLUGIN_ROOT/scripts/utils/Stack.sh"
-source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
-source "$PLUGIN_ROOT/scripts/ui/headers.sh"
-source "$PLUGIN_ROOT/scripts/ui/menus.sh"
+source "$UTILS/pop.sh"
+source "$UTILS/errors.sh"
+source "$UTILS/formats.sh"
+source "$UTILS/Stack.sh"
+source "$UTILS/yqtools.sh"
+source "$UI/breadcrumbs.sh"
+source "$UI/headers.sh"
+source "$UI/menus.sh"
 
 main () {
   local menu pressed comm current_menu depth

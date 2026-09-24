@@ -9,6 +9,7 @@ UTILS="$PLUGIN_ROOT/scripts/utils"
 ACTIONS="$PLUGIN_ROOT/scripts/actions"
 
 source "$UTILS/profiler.sh"
+source "$UTILS/pop.sh"
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
 
