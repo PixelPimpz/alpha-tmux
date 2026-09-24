@@ -2,9 +2,9 @@
 [[ -n "$_ALPHA_POP_SH" ]] && return 0
 _ALPHA_POP_SH=1
 
-SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[1]:-$0}" )"
-PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
-UTILS="$PLUGIN_ROOT/scripts/utils"
+SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+PLUGIN_ROOT="${PLUGIN_ROOT:-$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )}"
+UTILS="${UTILS:-$PLUGIN_ROOT/scripts/utils}"
 
 source "$UTILS/colorizer.sh"
 
