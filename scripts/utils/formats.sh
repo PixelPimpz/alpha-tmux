@@ -15,6 +15,10 @@ get_margin() {
   printf "%d\n" $margin
 }
 
+stripper() {
+  echo -e "$*" | sed 's/\x1b\[[0-9;]*m//g'
+}
+
 center() {
   local ending=$'\n'
   if [[ "$1" == "-n" ]]; then
@@ -23,7 +27,7 @@ center() {
   fi
 
   local row="$1" color="$2" roww termw pad plain
-  plain=$(echo -e "$row" | sed 's/\x1b\[[0-9;]*m//g')
+  plain="$(stripper "$row")"
   roww="${#plain}"
   termw="$(tput cols)"
   pad=$(( ( termw - roww ) / 2 ))

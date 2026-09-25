@@ -43,7 +43,7 @@ main() {
     tmux respawn-pane -k -c "$target_dir" -t "$TARGET" "$PLUGIN_ROOT/run"
   else
     tmux respawn-pane -k -t "$TARGET" "$PLUGIN_ROOT/run"
-    popped "$ACTIONS/to_project.sh" "Jump To Project..." "md"
+    popped "$ACTIONS/to_project.sh" "Jump To Project..." "m"
   fi
 }
 main "$@"

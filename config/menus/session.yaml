@@ -5,7 +5,7 @@ columns:
       - name: "Save as Blueprint"
         icon: "floppy"
         key:  "s"
-        popup: "md"
+        popup: "m"
         comm: "$ACTIONS/save_session.sh"
 
       - name: "Load from Blueprint"
@@ -33,7 +33,7 @@ columns:
       - name: "Rename Session"
         icon: "rename"
         key:  "r"
-        popup: "md"
+        popup: "m"
         comm: "$ACTIONS/rename_session.sh"
 
       - name: "Detach from Session"

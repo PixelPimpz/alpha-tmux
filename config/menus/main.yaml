@@ -20,7 +20,7 @@ columns:
       - name: "Jump To Project..."
         icon: "jump"
         key:  "j"
-        popup: "md"
+        popup: "m"
         comm: "$ACTIONS/to_project.sh" 
 
   - title: "TPM & Config"
@@ -33,13 +33,13 @@ columns:
       - name: "TPM Update All"
         icon: "update"
         key:  "U"
-        popup: "md"
+        popup: "m"
         comm: "$ACTIONS/tpm-update.sh"
 
       - name: "Reload TMUX config"
         icon: "undo"
         key:  "r"
-        popup: "sm"
+        popup: "s"
         comm: '$ACTIONS/reload-tmux.sh'
 
       - name: "Alpha Settings..."
@@ -52,13 +52,13 @@ columns:
       - name: "Push to Remote"
         icon: "github"
         key:  "p"
-        popup: "sm"
+        popup: "s"
         comm: "$ACTIONS/push.sh"
 
       - name: "Push all Projects"
         icon: "github"
         key:  "P"
-        popup: "md"
+        popup: "m"
         comm: "$ACTIONS/pushall.sh"
 
       - name: "Push Dotfiles"
@@ -91,5 +91,5 @@ columns:
       - name: "Session Control"
         icon: "submodule"
         key:  "w"
-        popup: "md"
+        popup: "m"
         comm: "$MENUS/session.yaml"
