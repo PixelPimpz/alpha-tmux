@@ -48,13 +48,44 @@ popped() {
   fi
 }
 
+pu_input() {
+  local msg init title labels=()
+  msg="${1:-Input:}"
+  init="${2:-}"
+  title="${3:-Input}"
+  labels=("${@:4}")
+  (( "${#labels[@]}" == 0 )) && labels=("Save" "Cancel")
+
+  local  
+  msg_l="$(stripper "${msg}")"
+  msg_l="${#msg_l}" 
+  val_l="${init}"
+  val_l="${#val_l}"
+  max_l="$(( msg_l > val_l ? msg_l : val_l))"
+  
+  local w h
+  w="$(( max_l + 12 ))"
+  (( w < 48 )) && w=48
+  (( w > 64 )) && w=64
+  h=9
+
+  popped "" "$title" "d" "$w" "$h" "$UTILS/pop.sh" pu_input_view "$msg" "$init" "${labels[@]}"
+  
+  local rc=$?
+  if (( rc == 0 )); then
+    tmux show-buffer -b alpha_input 2>/dev/null
+    tmux delete-buffer -b alpha_input 2>/dev/null
+    return 0
+  fi
+  return 1
+}
+
 pu_confirm() {
   local msg="${1:-Are you sure?}"
   local title="${2:-Confirm}"
   local def_idx="${3:-0}"
   local labels=("${@:4}")
   (( ${#labels[@]} == 0 )) && labels=("Yes" "No")
-
   local plain len w h
   plain="$(stripper "$msg")"
   len="${#plain}"
