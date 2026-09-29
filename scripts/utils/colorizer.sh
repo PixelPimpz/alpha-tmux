@@ -75,9 +75,9 @@ highlighter() {
 ENTRY
   done <<- EOF
 	BORDER_HEX     .ui.border
-	BG_HEX         .ui.button_bg
+	BG_HEX         .palette.base // .palette.bg // .palette.nord0 // .ui.button_bg
 	HEADER_HEX     .ui.header
-	TEXT_HEX       .palette.fg
+	TEXT_HEX       .ui.menu_text // .palette.fg // .palette.text
 	HEADERC        .ui.header
 	MENUKEYC       .ui.menu_key
 	TAGLINEC       .ui.tagline
@@ -86,7 +86,7 @@ ENTRY
 	KEYC           .ui.menu_key
 	TEXTC          .ui.menu_text
 	ICONC          .ui.menu_icon
-	BUTTON_BGC     .palette.bg1
+	BUTTON_BGC     .ui.button_bg // .palette.bg1
 	ACCENTC        .ui.accent
 	PROMPTC        .ui.accent
   SUCCESSC       .ui.success

@@ -37,6 +37,6 @@ ui:
   bracket:   "#6e6a86"      # Muted for [ and ] brackets
   accent:    "#eb6f92"      # Love pink for highlights
   prompt:    "#f6c177"      # Gold for menu prompt
-  muted:     "#403d52"      # Muted slate for section dividers
+  muted:     "#6e6a86"      # Muted gray for secondary text and muted buttons
   success:   "#9ccfd8"      # Foam for success status
   error:     "#eb6f92"      # Love for error alerts

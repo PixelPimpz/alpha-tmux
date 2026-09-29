@@ -47,6 +47,6 @@ ui:
   bracket:   "#6c7086"      # Overlay0 muted gray for [ and ] brackets
   accent:    "#fab387"      # Peach for highlights
   prompt:    "#fab387"      # Peach for menu prompt
-  muted:     "#45475a"      # Surface1 for section dividers
+  muted:     "#6c7086"      # Overlay0 for secondary text and muted buttons
   success:   "#a6e3a1"      # Green for success status
   error:     "#f38ba8"      # Red for error alerts

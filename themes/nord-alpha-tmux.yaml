@@ -38,6 +38,6 @@ ui:
   bracket:   "#4c566a"      # Nord3 for [ and ] brackets
   accent:    "#88c0d0"      # Frost Cyan for highlights
   prompt:    "#ebcb8b"      # Aurora Yellow for menu prompt
-  muted:     "#434c5e"      # Nord2 for section dividers
+  muted:     "#616e88"      # Nord comment gray for secondary text and muted buttons
   success:   "#a3be8c"      # Green for success status
   error:     "#bf616a"      # Red for error alerts

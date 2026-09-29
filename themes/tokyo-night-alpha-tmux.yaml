@@ -42,6 +42,6 @@ ui:
   bracket:   "#565f89"      # Comment gray for [ and ] brackets
   accent:    "#ff9e64"      # Orange for highlights
   prompt:    "#e0af68"      # Yellow for menu prompt
-  muted:     "#414868"      # Gray for section dividers
+  muted:     "#565f89"      # Comment gray for secondary text and muted buttons
   success:   "#9ece6a"      # Green for success status
   error:     "#f7768e"      # Red for error alerts

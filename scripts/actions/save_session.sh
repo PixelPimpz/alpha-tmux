@@ -8,6 +8,7 @@ source "$UTILS/errors.sh"
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
 source "$UTILS/profiler.sh"
+source "$UTILS/pop.sh"
 
 ## Blueprints store in: 
 BLUEPRINTS_D="$(get_option "blueprints" "${XDG_CONFIG_HOME:-$HOME/.config}/alpha-tmux/blueprints")"
@@ -15,20 +16,25 @@ BLUEPRINTS_D="${BLUEPRINTS_D/#\~/$HOME}"
 
 main() {
   local session_name
-  mkdir -p "$BLUEPRINTS_D"
   session_name="$(tmux display -p '#{session_name}')"
-  if [[ "$session_name" =~ ^[0-9]+$ ]]; then
-    prompt "Blueprint name: " bp_name
+  mkdir -p "$BLUEPRINTS_D"
+  bp_name="$(pu_input "Blueprint name:" "$session_name" "Save Blueprint")" || return 0
+  [[ -z "$bp_name" ]] && return 0
 
-    [[ -z "$bp_name" ]] && exit
-    tmux rename-session -t "$session_name" "$bp_name"
-    session_name="${bp_name:-$session-name}"
+  local bp_file="$BLUEPRINTS_D/${bp_name}.yaml"
+  if [[ -f "$bp_file" ]]; then
+    pu_confirm "Blueprint '$bp_name' exists. Overwrite?" "Overwrite" "Cancel" || return 0
   fi
-  local bp_file="$BLUEPRINTS_D/${session_name}.yaml"
+
+  if [[ "$session_name" =~ ^[0-9]+$ ]]; then
+    tmux rename-session -t "$session_name" "$bp_name"
+    session_name="$bp_name"
+  fi
+
   local root_d
   root_d="$( tmux display -p -t "$session_name" '#{pane_current_path}' )"
   cat <<EOF > "$bp_file"
-name: "$session_name"
+name: "$bp_name"
 root: "$root_d"
 windows:
 EOF

@@ -36,6 +36,6 @@ ui:
   bracket:   "#6272a4"      # Comment slate for [ and ] brackets
   accent:    "#ff79c6"      # Pink for highlights
   prompt:    "#ffb86c"      # Orange for menu prompt
-  muted:     "#44475a"      # Current line gray for section dividers
+  muted:     "#6272a4"      # Comment slate for secondary text and muted buttons
   success:   "#50fa7b"      # Green for success status
   error:     "#ff5555"      # Red for error alerts

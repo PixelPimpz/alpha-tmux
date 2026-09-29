@@ -56,7 +56,7 @@ pu_input() {
   labels=("${@:4}")
   (( "${#labels[@]}" == 0 )) && labels=("Save" "Cancel")
 
-  local  
+  local msg_l val_l max_l
   msg_l="$(stripper "${msg}")"
   msg_l="${#msg_l}" 
   val_l="${init}"
@@ -78,6 +78,129 @@ pu_input() {
     return 0
   fi
   return 1
+}
+
+pu_input_view() {
+  local msg init labels=()
+  msg="${1:-Input}"
+  init="${2:-}"
+  labels=("${@:3}")
+  (( "${#labels[@]}" == 0 )) && labels=("Save" "Cancel")
+
+  local p_width p_height field_w pad inp_row btn_row
+  p_width="$(tput cols)"
+  p_height="$(tput lines)"
+  field_w="$(( p_width - 8 ))"
+  pad="$(( ( p_width - field_w ) / 2 ))"
+  inp_row=4
+  btn_row="$(( p_height -1 ))"
+
+  local mode buffer cursor_idx btn_idx
+  mode="input"
+  buffer="$init"
+  cursor_idx="${#buffer}"
+  btn_idx=0
+
+  draw_field() {
+    printf "\033[${inp_row};${pad}H${BUTTON_BGC}${TEXTC}%-*s${RESET}" "$field_w" "$buffer"
+    if [[ "$mode" == "input" ]]; then
+      printf "\033[${inp_row};$(( $pad + ${cursor_idx} ))H"
+      cursor on
+    else
+      cursor off
+    fi
+  }
+
+  draw_buttons() {
+    local idx label plain b_pad buttons=""
+    for (( idx=0; idx<"${#labels[@]}"; idx++ )) do
+      label="${labels[$idx]}"
+      if [[ "$mode" == "buttons"  && "$idx" == "$btn_idx" ]]; then
+        button="${ACCENTC}[ $label ]${RESET}"
+      else
+        button="${MUTEDC}[ $label ]${RESET}"
+      fi
+      buttons+=" $button"
+    done
+    plain=$(stripper "$buttons")
+    b_pad="$(( ( p_width - "${#plain}" ) / 2 ))"
+    (( b_pad<0 )) && b_pad=0
+    printf "\033[%d;1H\033[K%*s%s" "$btn_row" "$b_pad" "" "$buttons"
+  }
+
+  ac
+  center "$msg"
+  draw_field
+  draw_buttons
+
+  while true; do
+    local key
+    cap_key key
+    if [[ "$key" == "ESC" ]]; then
+      cursor on
+      return 1
+    fi
+    case "$mode" in
+      input)
+        case "$key" in
+          ENTER)
+            tmux set-buffer -b alpha_input "$buffer"
+            cursor on
+            return 0 ;;
+          TAB | DOWN)
+            mode="buttons"
+            draw_field
+            draw_buttons ;;
+          LEFT)
+            (( cursor_idx > 0 )) && (( cursor_idx-- ))
+            draw_field ;;
+          RIGHT)
+            (( cursor_idx < "${#buffer}" )) && (( cursor_idx++ ))
+            draw_field ;; 
+          $'\x7f' | $'\b')
+            if (( cursor_idx > 0 )); then
+              buffer="${buffer:0:cursor_idx-1}${buffer:cursor_idx}"
+              (( cursor_idx-- ))
+              draw_field
+            fi ;;
+          SPACE)
+            if (( ${#buffer} < field_w - 2 )); then
+              buffer="${buffer:0:cursor_idx} ${buffer:cursor_idx}"
+              (( cursor_idx++ ))
+              draw_field
+            fi ;;
+          *)
+            if (( ${#key} == 1 && ${#buffer} < field_w - 2 )); then
+              buffer="${buffer:0:cursor_idx}${key}${buffer:cursor_idx}"
+              (( cursor_idx++ ))
+              draw_field
+            fi ;;
+        esac ;;
+      buttons)
+      case "$key" in
+        UP)
+          mode="input"
+          draw_buttons
+          draw_field ;;
+        TAB | RIGHT)
+          btn_idx=$(( (btn_idx + 1) % ${#labels[@]} ))
+          draw_buttons ;;
+        LEFT)
+          btn_idx=$(( (btn_idx - 1 + ${#labels[@]}) % ${#labels[@]} ))
+          draw_buttons ;;
+        ENTER)
+          if (( "$btn_idx" == 0 )); then
+            tmux set-buffer -b alpha_input "$buffer"
+            cursor on
+            return 0
+          else 
+            cursor on
+            return 1
+            fi ;;
+        esac
+      ;;
+    esac
+  done
 }
 
 pu_confirm() {
