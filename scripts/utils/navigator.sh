@@ -9,21 +9,27 @@ cap_key() {
     printf -v "${1:-RESULT}" "ESC"
     return 1
   fi
-  _out="$_k"
-  if [[ "$_k" == $'\x1b' ]]; then
-    IFS= read -rsn2 -t 0.05 _rest
-    case "$_rest" in
-      "[A"|"OA") _out="UP";;
-      "[B"|"OB") _out="DOWN";;
-      "[C"|"OC") _out="RIGHT";;
-      "[D"|"OD") _out="LEFT";;
-              *) _out="ESC";;
-    esac
-  elif [[ -z "$_k" || "$_k" == $'\n' || "$_k" == $'\r' ]]; then
-    _out="ENTER"
-  elif [[ "$_k" == " " ]]; then
-    _out="SPACE"
-  fi
+
+  case "$_k" in
+    $'\x1b')
+      IFS= read -rsn2 -t 0.05 _rest
+      case "$_rest" in
+        "[A"|"OA") _out="UP" ;;
+        "[B"|"OB") _out="DOWN" ;;
+        "[C"|"OC") _out="RIGHT" ;;
+        "[D"|"OD") _out="LEFT" ;;
+        *)         _out="ESC" ;;
+      esac ;;
+    ""|$'\n'|$'\r')
+      _out="ENTER" ;;
+    " ")
+      _out="SPACE" ;;
+    $'\t')
+      _out="TAB" ;;
+    *)
+      _out="$_k" ;;
+  esac
+
   printf -v "${1:-RESULT}" "%s" "$_out"
 }
 

@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
+UTILS="$PLUGIN_ROOT/scripts/utils"
 
-source "$PLUGIN_ROOT/scripts/utils/formats.sh" # ac (all_clear)
-source "$PLUGIN_ROOT/scripts/utils/pathfinder.sh" # get_config --tmux 
+source "$UTILS/formats.sh" # ac (all_clear)
+source "$UTILS/pathfinder.sh" # get_config --tmux 
+source "$UTILS/pop.sh" # popups 
 
-printf "\n\n"
-center "Reloading tmux.conf. Please wait."
 tmux source-file "$(get_config -t)"
-center "Done."
-pause -b 'Press any key to return to main menu.'
+pu_toast 'Tmux config reloaded.' 'Reload' 1.5

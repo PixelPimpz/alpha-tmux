@@ -39,7 +39,6 @@ columns:
       - name: "Reload TMUX config"
         icon: "undo"
         key:  "r"
-        popup: "s"
         comm: '$ACTIONS/reload-tmux.sh'
 
       - name: "Alpha Settings..."
