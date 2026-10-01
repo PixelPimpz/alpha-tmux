@@ -73,7 +73,6 @@ main () {
             source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
           else
             cursor on 
-            ac
             eval "${BTN[comm]}"
             cursor off
           fi
