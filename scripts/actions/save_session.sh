@@ -55,7 +55,7 @@ EOF
     done < <(tmux list-panes -t "${session_name}:${win_idx}" -F '#{pane_index}|#{pane_current_path}|#{pane_current_command}')
   done < <(tmux list-windows -t "$session_name" -F '#{window_index}|#{window_name}|#{window_layout}')
 
-  tmux display-message "Session '${session_name}' saved as blueprint."
+  pu_toast "${session_name} saved as Blueprint to ${bp_file/#$HOME/\~}" "Save Session" 2.5 
 }
 
 main "$@"

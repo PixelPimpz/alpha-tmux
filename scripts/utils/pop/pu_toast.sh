@@ -20,7 +20,7 @@ pu_toast() {
   duration="${3:-$DEFDUR}"
 
   local min max plain msg_w pop_w pop_h
-  min=32; max=60
+  min=32; max=80
   plain="$( stripper "$msg" )"
   msg_w="${#plain}"
   pop_w="$(( msg_w + 8 ))"

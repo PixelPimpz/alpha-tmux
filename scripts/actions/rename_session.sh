@@ -19,7 +19,7 @@ main() {
     if [[ -n "$session_new" && "$session_new" != "$session_cur" ]]; then
       # 4: Apply rename and show status toast
       tmux rename-session -t "$session_cur" "$session_new"
-      tmux display-message "Session renamed to '$session_new'"
+      pu_toast "Session renamed to ${session_new}" "Rename Session" 1.5
     fi
   fi
 }
