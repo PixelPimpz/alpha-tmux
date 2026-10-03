@@ -14,21 +14,37 @@ DEFMSG="Notice"
 DEFDUR=1.5
 
 pu_toast() {
-  local msg title duration
-  title="${2:-$DEFMSG}"
-  msg="${1:-$title}"
-  duration="${3:-$DEFDUR}"
+  local OPTIND opt title="$DEFMSG" duration="$DEFDUR" sub=""
+  while getopts ":t:d:s:" opt; do
+    case "$opt" in
+      t) title="$OPTARG" ;;
+      d) duration="$OPTARG" ;;
+      s) sub="$OPTARG" ;;
+      *) ;;
+    esac
+  done
+  shift $(( OPTIND - 1 ))
 
-  local min max plain msg_w pop_w pop_h
+  local msg="${1:-$title}"
+  [[ -n "$2" && "$title" == "$DEFMSG" ]] && title="$2"
+  [[ -n "$3" && "$duration" == "$DEFDUR" ]] && duration="$3"
+
+  local min max plain_msg plain_sub msg_w sub_w max_w pop_w pop_h
   min=32; max=80
-  plain="$( stripper "$msg" )"
-  msg_w="${#plain}"
+  plain_msg="$( stripper "$msg" )"
+  msg_w="${#plain_msg}"
+  plain_sub="$( stripper "$sub" )"
+  sub_w="${#plain_msg}"
   pop_w="$(( msg_w + 8 ))"
+
+  max_w=$(( msg_w > sub_w ? msg_w : sub_w ))
+  pop_w="$(( max_w + 8 ))"
   (( pop_w < min )) && pop_w="$min"
   (( pop_w > max )) && pop_w="$max"
+  
   pop_h=5
-
-  popped "" "$title" "d" "$pop_w" "$pop_h" "$UTILS/pop/pu_toast.sh" pu_toast_view "$msg" "$duration"
+  [[ -n "$sub" ]] && pop_h=6
+  popped "" "$title" "d" "$pop_w" "$pop_h" "$UTILS/pop/pu_toast.sh" pu_toast_view "$msg" "$duration" "$sub"
   return $?
 }
 
