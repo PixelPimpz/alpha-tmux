@@ -58,16 +58,28 @@ pu_input_view() {
   inp_row=4
   btn_row="$(( p_height -1 ))"
 
-  local mode buffer cursor_idx btn_idx
+  local mode buffer cursor_idx btn_idx overwrite
   mode="input"
   buffer="$init"
-  cursor_idx="${#buffer}"
+  cursor_idx=0
   btn_idx=0
+  overwrite=0
+  [[ -n "$buffer" ]] && overwrite=1
 
   draw_field() {
-    printf "\033[${inp_row};${pad}H${BUTTON_BGC}${TEXTC} %-*s${RESET}" "$(( field_w - 1 ))" "$buffer"
+    local fill_len
+
+    if (( overwrite )); then
+      fill_len="$(( field_w - 1 - "${#buffer}" ))"
+      (( fill_len < 0 )) && fill_len=0
+      printf "\033[${inp_row};${pad}H${BUTTON_BGC}${TEXTC} \033[7m%s\033[27m%*s${RESET}" "$buffer" "$fill_len" ""
+    else
+      printf "\033[${inp_row};${pad}H${BUTTON_BGC}${TEXTC} %-*s${RESET}" "$(( field_w - 1 ))" "$buffer"
+    fi
+    
     if [[ "$mode" == "input" ]]; then
       printf "\033[%d;%dH" "${inp_row}" "$(( pad + cursor_idx + 1 ))"
+      printf "\033[1 q"  # Blinking block cursor
       cursor on
     else
       cursor off
@@ -100,6 +112,7 @@ pu_input_view() {
     local key
     cap_key key
     if [[ "$key" == "ESC" ]]; then
+      printf "\033[0 q"
       cursor on
       return 1
     fi
@@ -108,34 +121,55 @@ pu_input_view() {
         case "$key" in
           ENTER)
             tmux set-buffer -b alpha_input "$buffer"
+            printf "\033[0 q"
             cursor on
             return 0 ;;
           TAB | DOWN)
+            overwrite=0
             mode="buttons"
             draw_field
             draw_buttons ;;
           LEFT)
+            overwrite=0
             (( cursor_idx > 0 )) && (( cursor_idx-- ))
             draw_field ;;
           RIGHT)
+            overwrite=0
             (( cursor_idx < "${#buffer}" )) && (( cursor_idx++ ))
             draw_field ;; 
           $'\x7f' | $'\b')
-            if (( cursor_idx > 0 )); then
+            if (( overwrite )); then
+              buffer=""
+              cursor_idx=0
+              overwrite=0
+              draw_field
+            elif (( cursor_idx > 0 )); then
               buffer="${buffer:0:cursor_idx-1}${buffer:cursor_idx}"
               (( cursor_idx-- ))
+              overwrite=0
               draw_field
             fi ;;
           SPACE)
-            if (( ${#buffer} < field_w - 2 )); then
+            if (( overwrite )); then
+              buffer=" "
+              cursor_idx=1
+              overwrite=0
+              draw_field
+            elif (( ${#buffer} < field_w - 2 )); then
               buffer="${buffer:0:cursor_idx} ${buffer:cursor_idx}"
               (( cursor_idx++ ))
               draw_field
             fi ;;
           *)
-            if (( ${#key} == 1 && ${#buffer} < field_w - 2 )); then
+            if (( overwrite )); then
+              buffer="$key"
+              cursor_idx=1
+              overwrite=0
+              draw_field
+            elif (( ${#key} == 1 && ${#buffer} < field_w - 2 )); then
               buffer="${buffer:0:cursor_idx}${key}${buffer:cursor_idx}"
               (( cursor_idx++ ))
+              overwrite=0
               draw_field
             fi ;;
         esac ;;
@@ -164,9 +198,11 @@ pu_input_view() {
         ENTER)
           if (( "$btn_idx" == 0 )); then
             tmux set-buffer -b alpha_input "$buffer"
+            printf "\033[0 q"
             cursor on
             return 0
           else 
+            printf "\033[0 q"
             cursor on
             return 1
           fi ;;
