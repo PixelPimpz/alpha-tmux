@@ -75,21 +75,21 @@ highlighter() {
         ansi: "$ansi"
 ENTRY
   done <<- EOF
-	BORDER_HEX     .ui.border
-	BG_HEX         .palette.base // .palette.bg // .palette.nord0 // .ui.button_bg
-	HEADER_HEX     .ui.header
-	TEXT_HEX       .ui.menu_text // .palette.fg // .palette.text
-	HEADERC        .ui.header
-	MENUKEYC       .ui.menu_key
-	TAGLINEC       .ui.tagline
-	BORDERC        .ui.border
-	BRACKETC       .ui.bracket
-	KEYC           .ui.menu_key
-	TEXTC          .ui.menu_text
-	ICONC          .ui.menu_icon
-	BUTTON_BGC     .ui.button_bg // .palette.bg1
-	ACCENTC        .ui.accent
-	PROMPTC        .ui.accent
+  BORDER_HEX     .ui.border
+  BG_HEX         .palette.base // .palette.bg // .palette.nord0 // .ui.button_bg
+  HEADER_HEX     .ui.header
+  TEXT_HEX       .ui.menu_text // .palette.fg // .palette.text
+  HEADERC        .ui.header
+  MENUKEYC       .ui.menu_key
+  TAGLINEC       .ui.tagline
+  BORDERC        .ui.border
+  BRACKETC       .ui.bracket
+  KEYC           .ui.menu_key
+  TEXTC          .ui.menu_text
+  ICONC          .ui.menu_icon
+  BUTTON_BGC     .ui.button_bg // .palette.bg1
+  ACCENTC        .ui.accent
+  PROMPTC        .ui.accent
   SUCCESSC       .ui.success
   FAILC          .ui.error
   MUTEDC         .ui.muted

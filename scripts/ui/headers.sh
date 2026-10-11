@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2153
 [[ -n "$_ALPHA_HEADER_GEN_SH" ]] && return 0
 _ALPHA_HEADER_GEN_SH=1
 
@@ -12,11 +13,12 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 ##------------------------------------------------------
 IMAGE="$PLUGIN_ROOT/img/tmux_2.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
+S_INFO="$( printf "Active Session: %s\n" "$( tmux display -p '#{session_name}' )" )"
+
 header_gen() {
   while read -r line; do
     center "$line" "$HEADERC"
-  done <<< "$(ascii-image-converter -b -W 74 "$IMAGE" )"
-  while read -r line; do
-    center "$line" "$TAGLINEC"
-  done <<< "$TAGLINE"
+  done <<< "$(ascii-image-converter -b -W 74 "$IMAGE" )" 
+  center "$TAGLINE" "$TAGLINEC"
+  center "$S_INFO" "$ACCENTC"
 }
