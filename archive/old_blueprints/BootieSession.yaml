@@ -1,0 +1,8 @@
+name: "BootieSession"
+root: "/home/lucifer/Projects/alpha-tmux"
+windows:
+  - name: "alpha-tmux"
+    layout: "ae7d,146x40,0,0,0"
+    panes:
+      - path: "/home/lucifer/Projects/alpha-tmux"
+        command: ""

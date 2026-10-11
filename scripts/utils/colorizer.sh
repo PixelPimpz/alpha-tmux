@@ -30,6 +30,7 @@ hex2ansi() {
 
   local hexcolor Rd Gd Bd 
   hexcolor="${1:-#FFFFFF}"
+
   [[ ! "$hexcolor" =~ ^#[a-fA-F0-9]{6} ]] && fatal "Invalid HEX input."
   Rd="$((16#${hexcolor:1:2}))" #starting at index 1 to avoid the '#' in $hexcolor
   Gd="$((16#${hexcolor:3:2}))" 

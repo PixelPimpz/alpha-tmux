@@ -31,17 +31,19 @@ main() {
     session_name="$bp_name"
   fi
 
-  local root_d
+  local root_d created
   root_d="$( tmux display -p -t "$session_name" '#{pane_current_path}' )"
+  created="$( tmux display -p -t "$session_name" '#{t:session_created}' )"
   cat <<EOF > "$bp_file"
 name: "$bp_name"
+created: "$created"
 root: "$root_d"
 windows:
 EOF
   while IFS="|" read -r win_idx win_name win_layout; do
     cat <<EOF >> "$bp_file"
   - name: "$win_name"
-    layout: "$win_layout"
+    layout: '$win_layout'
     panes:
 EOF
     # 3. Iterate through each pane inside this window
@@ -55,7 +57,7 @@ EOF
     done < <(tmux list-panes -t "${session_name}:${win_idx}" -F '#{pane_index}|#{pane_current_path}|#{pane_current_command}')
   done < <(tmux list-windows -t "$session_name" -F '#{window_index}|#{window_name}|#{window_layout}')
 
-  pu_toast "${session_name} saved as Blueprint to ${bp_file/#$HOME/\~}" "Save Session" 2.5 
+  pu_toast -t "Save Session" -d 3.5 -s "${bp_file/#$HOME/\~}" "Blueprint '${session_name}' saved"
 }
 
 main "$@"

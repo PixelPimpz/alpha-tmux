@@ -1,0 +1,8 @@
+name: "tmux1"
+root: "/home/lucifer/Projects/alpha-tmux"
+windows:
+  - name: "alpha-tmux"
+    layout: "c3fd,126x36,0,0,0"
+    panes:
+      - path: "/home/lucifer/Projects/alpha-tmux"
+        command: ""

@@ -1,0 +1,20 @@
+name: "test-alpha"
+root: "/home/lucifer/Projects/alpha-tmux/config"
+windows:
+  - name: "alpha-tmux"
+    layout: "ae80,146x40,0,0,3"
+    panes:
+      - path: "/home/lucifer/Projects/alpha-tmux/config"
+        command: ""
+  - name: "alpha-tmux"
+    layout: "ae81,146x40,0,0,4"
+    panes:
+      - path: "/home/lucifer/Projects/alpha-tmux"
+        command: "agy"
+  - name: "Alpha-Tmux"
+    layout: "2298,146x40,0,0[146x20,0,0,5,146x19,0,21,6]"
+    panes:
+      - path: "/home/lucifer/Music"
+        command: ""
+      - path: "/home/lucifer/Music"
+        command: "curl"

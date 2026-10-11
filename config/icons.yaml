@@ -88,4 +88,8 @@ icons:
   - name: gear
     glyph: "f0493"
   - name: submodule
-    glyph: eaec
+    glyph: "eaec"
+  - name: dot_open
+    glyph: "f4c3"
+  - name: dot_closed
+    glyph: "f444"

@@ -10,6 +10,7 @@ columns:
       - name: "Load from Blueprint"
         icon: "infile"
         key:  "l"
+        popup: "m"
         comm: "$ACTIONS/load_session.sh"
 
       - name: "Edit Blueprint"

@@ -34,8 +34,7 @@ pu_toast() {
   plain_msg="$( stripper "$msg" )"
   msg_w="${#plain_msg}"
   plain_sub="$( stripper "$sub" )"
-  sub_w="${#plain_msg}"
-  pop_w="$(( msg_w + 8 ))"
+  sub_w="${#plain_sub}"
 
   max_w=$(( msg_w > sub_w ? msg_w : sub_w ))
   pop_w="$(( max_w + 8 ))"
@@ -49,14 +48,19 @@ pu_toast() {
 }
 
 pu_toast_view() {
-  local msg duration
+  local msg duration sub
   msg="${1:-$DEFMSG}"
   duration="${2:-$DEFDUR}"
+  sub="$3"
   
   ac; cursor off
   
   printf "\033[2;1H"
   center "$msg"
+  if [[ -n "$sub" ]]; then
+    printf "\033[3;1H"
+    center "$sub" "$MUTEDC"
+  fi
   read -rs -t "$duration" -n 1
 
   cursor on

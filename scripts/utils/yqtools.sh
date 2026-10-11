@@ -33,6 +33,14 @@ yq_find() {
   yq eval "${list}[] | select(.${m_key} == \"${m_val}\") | .${prop}" "$file" 2>/dev/null
 }
 
+## Returns the length of an array in a .yaml file
+# Useage: yq_len ".array" "filename.yaml"
+yq_len() {
+  local expr="$1" file="$2"
+  [[ -f "$file" ]] || return 1
+  yq eval "${expr} | length // 0" "$file" 2>/dev/null
+}
+
 # Update a property of a record in a YAML list in-place
 # Usage: yq_update ".Profiles" "status" "active" "theme" "nord" "$CONF"
 yq_update() {
