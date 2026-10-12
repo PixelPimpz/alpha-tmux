@@ -13,7 +13,7 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 ##------------------------------------------------------
 IMAGE="$PLUGIN_ROOT/img/tmux_2.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
-S_INFO="$( printf "Active Session: %s\n" "$( tmux display -p '#{session_name}' )" )"
+S_INFO="$( printf "Active Session: %s\n" "${KEYC}$( tmux display -p '#{session_name}' )${RESET}" )"
 
 header_gen() {
   while read -r line; do
