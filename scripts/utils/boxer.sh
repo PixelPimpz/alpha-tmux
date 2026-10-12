@@ -72,9 +72,9 @@ boxer() {
     local left_bar right_bar
     printf -v left_bar "%*s" "$left_w" ""
     printf -v right_bar "%*s" "$right_w" ""
-    center "${color}┌${left_bar// /─} ${title} ${color}${right_bar// /─}┐"
+    center "${color}╭${left_bar// /─} ${title} ${color}${right_bar// /─}╮"
   else
-    center "┌${hline}┐" "$color"
+    center "╭${hline}╮" "$color"
   fi
 
   # 5. Print rows with side borders and centered content padding
@@ -90,5 +90,5 @@ boxer() {
   done
 
   # 6. Print bottom border
-  center "└${hline}┘" "$color"
+  center "╰${hline}╯" "$color"
 }
