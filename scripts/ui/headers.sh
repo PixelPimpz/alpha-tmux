@@ -13,12 +13,14 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 ##------------------------------------------------------
 IMAGE="$PLUGIN_ROOT/img/tmux_2.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
-S_INFO="$( printf "Active Session: %s\n" "${KEYC}$( tmux display -p '#{session_name}' )${RESET}" )"
 
 header_gen() {
+  local cur_s s_info
+  cur_s="$(tmux display -p '#{session_name}' )"
+  s_info="$( printf "Active Session: %s\n" "${KEYC}${cur_s}${RESET}" )"
   while read -r line; do
     center "$line" "$HEADERC"
   done <<< "$(ascii-image-converter -b -W 74 "$IMAGE" )" 
   center "$TAGLINE" "$TAGLINEC"
-  center "$S_INFO" "$ACCENTC"
+  center "$s_info" "$ACCENTC"
 }

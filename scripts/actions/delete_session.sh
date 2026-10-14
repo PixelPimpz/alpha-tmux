@@ -2,7 +2,8 @@
 [[ -n "$_ALPHA_DELETE_SESSION_SH" ]] && return 0
 _ALPHA_DELETE_SESSION_SH=1
 
-SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_SELF="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_PATH="$SCRIPT_SELF"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 UTILS="$PLUGIN_ROOT/scripts/utils"
 
@@ -101,7 +102,7 @@ main() {
   local w h
   read -r w h < <( popsizer "Select session to delete" "" "${BLUEPRINTS[@]}" )
 
-  popped "" "Delete Session" "d" "$w" "$h" "$SCRIPT_PATH" view
+  popped "" "Delete Session" "d" "$w" "$h" "$SCRIPT_SELF" view
 }
 
 main "$@"
