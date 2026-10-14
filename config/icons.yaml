@@ -93,3 +93,5 @@ icons:
     glyph: "f4c3"
   - name: dot_closed
     glyph: "f444"
+  - name: swatch
+    glyph: "f012e"

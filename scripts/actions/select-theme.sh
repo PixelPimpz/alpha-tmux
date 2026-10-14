@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2153
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 UTILS="$PLUGIN_ROOT/scripts/utils"
@@ -25,15 +26,16 @@ hex_bg() {
 
 make_swatch() {
   local f="$1"
-  local c1 c2 c3 c4 c5 c6
+  local c1 c2 c3 c4 c5 c6 ico
+  ico="$(get_icon "swatch")"
   read -r c1 c2 c3 c4 c5 c6 < <(yq eval "[.ui.header, .ui.tagline, .ui.accent, .ui.menu_key, .ui.menu_icon, .ui.button_bg] | join(\" \")" "$f" 2>/dev/null)
-  printf "%s %s %s %s %s %s \033[0m" \
-    "$(hex_bg "$c1")" \
-    "$(hex_bg "$c2")" \
-    "$(hex_bg "$c3")" \
-    "$(hex_bg "$c4")" \
-    "$(hex_bg "$c5")" \
-    "$(hex_bg "$c6")"
+  printf "%s%s %s%s %s%s %s%s %s%s %s%s\033[0m" \
+    "$(hex_fg "$c1")" "$ico" \
+    "$(hex_fg "$c2")" "$ico" \
+    "$(hex_fg "$c3")" "$ico" \
+    "$(hex_fg "$c4")" "$ico" \
+    "$(hex_fg "$c5")" "$ico" \
+    "$(hex_fg "$c6")" "$ico"
 }
 
 is_light() {
@@ -133,6 +135,8 @@ show_preview() {
   printf "\n"
 
   local header_c tagline_c btn_bg btn_fg key_c border_c accent_c reset="\033[0m"
+  local ico_swatch
+  ico_swatch="$(get_icon "swatch")"
   header_c="$(hex_fg "$(yq_get ".ui.header" "$theme_file")")"
   tagline_c="$(hex_fg "$(yq_get ".ui.tagline" "$theme_file")")"
   btn_bg="$(hex_bg "$(yq_get ".ui.button_bg" "$theme_file")")"
@@ -151,7 +155,7 @@ show_preview() {
   local p_count=0
   while read -r pname phex; do
     [[ -z "$pname" ]] && continue
-    printf "%b██%b %s " "$(hex_fg "$phex")" "$reset" "$pname"
+    printf "%b%s%b %s " "$(hex_fg "$phex")" "$ico_swatch" "$reset" "$pname"
     (( p_count++ >= 4 )) && break
   done < <(yq eval ".palette | to_entries | .[] | [.key, .value] | join(\" \")" "$theme_file" 2>/dev/null)
   printf "\n"
