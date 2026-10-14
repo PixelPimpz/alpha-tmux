@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2153
-SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_SELF="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_PATH="$SCRIPT_SELF"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 UTILS="$PLUGIN_ROOT/scripts/utils"
 
@@ -11,6 +12,7 @@ source "$UTILS/formats.sh"
 source "$UTILS/errors.sh"
 source "$UTILS/colorizer.sh"
 source "$UTILS/navigator.sh"
+source "$UTILS/pop.sh"
 
 MENU=()
 
@@ -134,31 +136,25 @@ show_preview() {
   center "${HEADERC}Theme Preview: ${TEXTC}${raw_name}${RESET}"
   printf "\n"
 
-  local header_c tagline_c btn_bg btn_fg key_c border_c accent_c reset="\033[0m"
+  local h_c tag_c acc_c key_c ico_c btn_c
   local ico_swatch
   ico_swatch="$(get_icon "swatch")"
-  header_c="$(hex_fg "$(yq_get ".ui.header" "$theme_file")")"
-  tagline_c="$(hex_fg "$(yq_get ".ui.tagline" "$theme_file")")"
-  btn_bg="$(hex_bg "$(yq_get ".ui.button_bg" "$theme_file")")"
-  btn_fg="$(hex_fg "$(yq_get ".ui.menu_text" "$theme_file")")"
-  key_c="$(hex_fg "$(yq_get ".ui.menu_key" "$theme_file")")"
-  accent_c="$(hex_fg "$(yq_get ".ui.accent" "$theme_file")")"
+  h_c="$(yq_get ".ui.header" "$theme_file")"
+  tag_c="$(yq_get ".ui.tagline" "$theme_file")"
+  acc_c="$(yq_get ".ui.accent" "$theme_file")"
+  key_c="$(yq_get ".ui.menu_key" "$theme_file")"
+  ico_c="$(yq_get ".ui.menu_icon" "$theme_file")"
+  btn_c="$(yq_get ".ui.button_bg" "$theme_file")"
 
   local pad
-  printf -v pad "%*s" "$(get_margin 44)" ""
+  printf -v pad "%*s" "$(get_margin 28)" ""
 
-  printf "%s  %sHeader:%s   %balpha-TMUX%b\n" "$pad" "${MUTEDC}" "$reset" "$header_c" "$reset"
-  printf "%s  %sTagline:%s  %bv1.0 • $(date '+%Y')%b\n\n" "$pad" "${MUTEDC}" "$reset" "$tagline_c" "$reset"
-  printf "%s  %sButton:%s   %b 󰉉  Save Session  [%bS%b] %b\n\n" "$pad" "${MUTEDC}" "$reset" "$btn_bg" "$key_c" "$btn_fg" "$reset"
-
-  printf "%s  %sPalette:%s  " "$pad" "${MUTEDC}" "$reset"
-  local p_count=0
-  while read -r pname phex; do
-    [[ -z "$pname" ]] && continue
-    printf "%b%s%b %s " "$(hex_fg "$phex")" "$ico_swatch" "$reset" "$pname"
-    (( p_count++ >= 4 )) && break
-  done < <(yq eval ".palette | to_entries | .[] | [.key, .value] | join(\" \")" "$theme_file" 2>/dev/null)
-  printf "\n"
+  printf "%s  %s%-14s%s %b%s%s %s\n" "$pad" "${MUTEDC}" "Header:" "${RESET}" "$(hex_fg "$h_c")" "$ico_swatch" "${RESET}" "$h_c"
+  printf "%s  %s%-14s%s %b%s%s %s\n" "$pad" "${MUTEDC}" "Tagline:" "${RESET}" "$(hex_fg "$tag_c")" "$ico_swatch" "${RESET}" "$tag_c"
+  printf "%s  %s%-14s%s %b%s%s %s\n" "$pad" "${MUTEDC}" "Accent:" "${RESET}" "$(hex_fg "$acc_c")" "$ico_swatch" "${RESET}" "$acc_c"
+  printf "%s  %s%-14s%s %b%s%s %s\n" "$pad" "${MUTEDC}" "Shortcut Key:" "${RESET}" "$(hex_fg "$key_c")" "$ico_swatch" "${RESET}" "$key_c"
+  printf "%s  %s%-14s%s %b%s%s %s\n" "$pad" "${MUTEDC}" "Menu Icon:" "${RESET}" "$(hex_fg "$ico_c")" "$ico_swatch" "${RESET}" "$ico_c"
+  printf "%s  %s%-14s%s %b%s%s %s\n" "$pad" "${MUTEDC}" "Button Bg:" "${RESET}" "$(hex_fg "$btn_c")" "$ico_swatch" "${RESET}" "$btn_c"
 
   local rows
   rows="$(tput lines)"
@@ -194,7 +190,7 @@ apply_theme() {
   sleep 0.8
 }
 
-main() {
+select_theme_view() {
   trap 'cursor on' EXIT INT TERM
   cursor off
 
@@ -238,4 +234,32 @@ main() {
   ac
 }
 
-main
+main() {
+  if [[ "$1" == "view" ]]; then
+    select_theme_view
+    return
+  fi
+
+  load_themes
+  local legend="[↑/↓] Move  [1-${#MENU[@]}] Jump  [ENTER] View  [SPACE] Pick  [ESC] Quit"
+  local sample_lines=()
+  sample_lines+=("Select Color Theme" "")
+  for item in "${MENU[@]}"; do
+    local raw_name
+    IFS="|" read -r _ raw_name _ <<< "$item"
+    sample_lines+=("  [1]  󰄮 󰄮 󰄮 󰄮 󰄮 󰄮    $raw_name")
+  done
+  sample_lines+=("" "$legend")
+
+  local w h
+  read -r w h < <( popsizer "${sample_lines[@]}" )
+
+  # Ensure minimum height 16 for preview detail view
+  (( h < 16 )) && h=16
+
+  popped "" "Select Color Theme" "d" "$w" "$h" "$SCRIPT_SELF" view
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
