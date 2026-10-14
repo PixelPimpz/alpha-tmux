@@ -69,13 +69,13 @@ main () {
             Stack_push NAV_STACK "$target"
           elif [[ -n "${BTN[popup]}" && "${BTN[popup]}" != "null" ]]; then
             popped "$target" "${BTN[name]}" "${BTN[popup]}"
-            unset _ALPHA_COLORIZER_SH
-            source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
           else
             cursor on 
             eval "${BTN[comm]}"
             cursor off
           fi
+          unset _ALPHA_COLORIZER_SH
+          source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
         fi
         ;;
     esac

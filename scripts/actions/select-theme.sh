@@ -183,6 +183,8 @@ apply_theme() {
   IFS="|" read -r theme_id raw_name _ <<< "$item"
 
   set_option "theme" "$theme_id"
+  unset _ALPHA_COLORIZER_SH
+  source "$UTILS/colorizer.sh"
 
   ac
   printf "\n"

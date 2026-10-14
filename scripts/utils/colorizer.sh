@@ -2,6 +2,12 @@
 [[ -n "$_ALPHA_COLORIZER_SH" ]] && return 0
 _ALPHA_COLORIZER_SH=1
 
+if [[ -z "$PLUGIN_ROOT" ]]; then
+  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )/../.." && pwd )"
+  PLUGIN_ROOT="$_DIR"
+  unset _DIR
+fi
+
 source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
 source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
 
