@@ -18,10 +18,10 @@ columns:
         key:  "e"
         comm: "$ACTIONS/edit_blueprint.sh"
 
-      - name: "Delete Blueprint"
+      - name: "Delete Session"
         icon: "cancel"
         key:  "d"
-        comm: "$ACTIONS/delete_blueprint.sh"
+        comm: "$ACTIONS/delete_session.sh"
 
   - title: "Control"
     buttons:

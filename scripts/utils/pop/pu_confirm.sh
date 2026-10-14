@@ -8,6 +8,7 @@ UTILS="$PLUGIN_ROOT/scripts/utils"
 
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
+# shellcheck source=/dev/null
 source "$UTILS/pop.sh"
 source "$UTILS/pop/pu_buttons.sh"
 
@@ -17,12 +18,9 @@ pu_confirm() {
   local def_idx="${3:-0}"
   local labels=("${@:4}")
   (( ${#labels[@]} == 0 )) && labels=("Yes" "No")
-  local plain len w h
-  plain="$(stripper "$msg")"
-  len="${#plain}"
-  w=$(( len + 8 ))
-  (( w < 38 )) && w=38
-  h=8
+  local b_label="" w h
+  for l in "${labels[@]}"; do b_label+=" [ $l ]"; done
+  read -r w h < <( popsizer "$msg" "" "$b_label" )
 
   popped "" "$title" "d" "$w" "$h" "$UTILS/pop/pu_confirm.sh" pu_confirm_view "$msg" "$def_idx" "${labels[@]}"
   return $?

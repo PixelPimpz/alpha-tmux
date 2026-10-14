@@ -9,6 +9,7 @@ UTILS="$PLUGIN_ROOT/scripts/utils"
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
 source "$UTILS/navigator.sh"
+# shellcheck source=/dev/null
 source "$UTILS/pop.sh"
 
 pu_input() {

@@ -10,6 +10,32 @@ source "$UTILS/colorizer.sh"
 source "$UTILS/navigator.sh"
 source "$UTILS/formats.sh"
 
+popsizer() {
+  local h w cols rows lines=()
+  local plain max_w=0
+  if [[ "$#" -gt 0 ]]; then
+    lines=("$@")
+  else
+    mapfile -t lines
+  fi
+  h="${#lines[@]}"
+  for line in "${lines[@]}"; do
+    plain="$( stripper "$line" )"
+    (( ${#plain} > max_w )) && max_w=${#plain}
+  done
+  # add margins
+  w=$(( max_w + 8 )) 
+  h=$(( h + 4 ))
+  cols="$( tput cols  2>/dev/null || printf 80 )"
+  rows="$( tput lines 2>/dev/null || printf 24 )"
+  (( w > cols * 85 / 100 )) && w=$(( cols * 85 / 100 ))
+  (( h > rows * 85 / 100 )) && h=$(( rows * 88 / 100 ))
+  (( w < 38 )) && w=38
+  (( h < 6 )) && h=6
+
+  printf "%d %d\n" "$w" "$h"
+}
+
 popped() {
   local cmd title size w h dw dh
   cmd="$1"

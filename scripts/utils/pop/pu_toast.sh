@@ -8,6 +8,7 @@ UTILS="$PLUGIN_ROOT/scripts/utils"
 
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
+# shellcheck source=/dev/null
 source "$UTILS/pop.sh"
 
 DEFMSG="Notice"
@@ -29,20 +30,9 @@ pu_toast() {
   [[ -n "$2" && "$title" == "$DEFMSG" ]] && title="$2"
   [[ -n "$3" && "$duration" == "$DEFDUR" ]] && duration="$3"
 
-  local min max plain_msg plain_sub msg_w sub_w max_w pop_w pop_h
-  min=32; max=80
-  plain_msg="$( stripper "$msg" )"
-  msg_w="${#plain_msg}"
-  plain_sub="$( stripper "$sub" )"
-  sub_w="${#plain_sub}"
+  local pop_w pop_h
+  read -r pop_w pop_h < <(popsizer "$msg" "$sub") 
 
-  max_w=$(( msg_w > sub_w ? msg_w : sub_w ))
-  pop_w="$(( max_w + 8 ))"
-  (( pop_w < min )) && pop_w="$min"
-  (( pop_w > max )) && pop_w="$max"
-  
-  pop_h=5
-  [[ -n "$sub" ]] && pop_h=6
   popped "" "$title" "d" "$pop_w" "$pop_h" "$UTILS/pop/pu_toast.sh" pu_toast_view "$msg" "$duration" "$sub"
   return $?
 }
