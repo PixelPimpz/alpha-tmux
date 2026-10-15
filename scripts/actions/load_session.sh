@@ -45,7 +45,7 @@ draw_menu() {
   center "${HEADERC}Select session to load${RESET}"
   printf "\n"
 
-  # Measure max visible width across entries for optical centering
+  # Measure max visible width across entries for visual centering
   for b in "${BLUEPRINTS[@]}"; do
     plain="$(stripper "$b")"
     (( ${#plain} > max_w )) && max_w=${#plain}
