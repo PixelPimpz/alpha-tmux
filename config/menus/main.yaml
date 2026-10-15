@@ -24,20 +24,8 @@ columns:
         popup: "m"
         comm: "$MENUS/session.yaml"
 
-
-  - title: "TPM & Config"
+  - title: "Controls"
     buttons:
-      - name: "TPM Update..."
-        icon: "update"
-        key:  "e"
-        comm: "$ACTIONS/tpm_update_interactive.sh" 
-
-      - name: "TPM Update All"
-        icon: "update"
-        key:  "f"
-        popup: "m"
-        comm: "$ACTIONS/tpm-update.sh"
-
       - name: "TMUX Control..."
         icon: "tmux"
         key:  "g"
@@ -48,44 +36,49 @@ columns:
         key:  "h"
         comm: '$MENUS/preferences.yaml'
 
+      - name: "Git Control..."
+        icon: "git"
+        key:  "i"
+        comm: "$ACTIONS/more_git.sh"
+
+      - name: "System Control..."
+        icon: "gear"
+        key:  "j"
+        comm: '$MENUS/preferences.yaml'
+
   - title: "Git Sync"
     buttons:
       - name: "Push to Remote"
         icon: "github"
-        key:  "i"
+        key:  "k"
         popup: "s"
         comm: "$ACTIONS/push.sh"
 
       - name: "Push all Projects"
         icon: "github"
-        key:  "j"
+        key:  "l"
         popup: "m"
         comm: "$ACTIONS/pushall.sh"
 
       - name: "Push Dotfiles"
         icon: "dotfiles"
-        key:  "k"
+        key:  "m"
         comm: "cd $DOTFILES && push"
-
-      - name: "MOAR Git Stuff..."
-        icon: "git"
-        key:  "l"
-        comm: "$ACTIONS/more_git.sh"
 
   - title: "Lifecycle"
     buttons:
       - name: "New NVIM Session"
         icon: "neovim"
-        key:  "m"
+        key:  "n"
         comm: "nvim"
       
       - name: "Kill Session"
         icon: "kill"
-        key:  "n"
+        key:  "o"
         comm: "tmux kill-session"
         
       - name: "Kill Server"
         icon: "kill"
-        key:  "o"
+        key:  "p"
         comm: "tmux kill-server"
 
