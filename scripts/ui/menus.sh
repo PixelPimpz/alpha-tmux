@@ -12,102 +12,205 @@ source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
 load_button() {
   local KEY="$1" file="${2:-$PLUGIN_ROOT/config/menus/main.yaml}"
   declare -gA BTN=()
-  [[ -f "$file" ]] || return 1
 
+  # Check in-memory registry first
+  if [[ -n "${ACTIVE_MENU_BTNS["${KEY}_name"]}" ]]; then
+    BTN[name]="${ACTIVE_MENU_BTNS["${KEY}_name"]}"
+    BTN[comm]="${ACTIVE_MENU_BTNS["${KEY}_comm"]}"
+    BTN[icon]="${ACTIVE_MENU_BTNS["${KEY}_icon"]}"
+    BTN[state]="${ACTIVE_MENU_BTNS["${KEY}_state"]}"
+    BTN[msg]="${ACTIVE_MENU_BTNS["${KEY}_msg"]}"
+    BTN[alt_comm]="${ACTIVE_MENU_BTNS["${KEY}_alt_comm"]}"
+    BTN[key]="$KEY"
+    return 0
+  fi
+
+  # Fallback query directly via yqtools helper if not cached
+  [[ -f "$file" ]] || return 1
   local k v
   while IFS="=" read -r k v; do
     [[ -n "$k" ]] && BTN["$k"]="$v"
-  done < <(KEY="$KEY" yq e '.columns[].buttons[] | select(.key == env(KEY)) | to_entries | .[] | .key + "=" + .value' "$file")
+  done < <(yq_button_by_key "$KEY" "$file")
 
   if (( ${#BTN[@]} > 0 )); then
     BTN[if]="${BTN[if]:-true}"
+    BTN[state]="enabled"
     return 0
   fi
   return 1
+}
+
+format_button() {
+  local badge="$1" name="$2" icon="$3" state="${4:-enabled}" max="${5:-0}"
+  local glyph
+  glyph="$(get_icon "$icon")"
+
+  local c_icon="$ICONC" c_text="$TEXTC" c_brack="$BRACKETC" c_key="$KEYC"
+  if [[ "$state" == "dimmed" ]]; then
+    c_icon="$MUTEDC"
+    c_text="$MUTEDC"
+    c_brack="$MUTEDC"
+    c_key="$MUTEDC"
+  elif [[ "$state" == "toast" ]]; then
+    c_icon="$MUTEDC"
+    c_text="$TEXTC"
+    c_brack="$BRACKETC"
+    c_key="$ACCENTC"
+  elif [[ "$state" == "install" ]]; then
+    c_icon="$ACCENTC"
+    c_text="$TEXTC"
+    c_brack="$BRACKETC"
+    c_key="$GOLDC"
+  fi
+
+  local lpad=""
+  (( ${#badge} == 1 )) && lpad=" "
+
+  printf "%s %s%s[%s%s%s] %s%-${max}s  %s%s %s" \
+    "$BUTTON_BGC" \
+    "$lpad" \
+    "$c_brack" \
+    "$c_key" "$badge" \
+    "$c_brack" \
+    "$c_text" "$name" \
+    "$c_icon" "$glyph" \
+    "$RESET"
 }
 
 # shellcheck disable=SC2153
 make_button() {
   local KEY="$1" max="${2:-0}" file="${3:-$PLUGIN_ROOT/config/menus/main.yaml}"
   load_button "$KEY" "$file" || return 1
-
-  local name="${BTN[name]}"
-  eval "name=\"$name\""
-  local glyph
-  glyph="$(get_icon "${BTN[icon]}")"
-
-  local c_icon="$ICONC" c_text="$TEXTC" c_brack="$BRACKETC" c_key="$KEYC" badge="${BTN[key]}"
-  if ! eval "${BTN[if]}"; then
-    c_icon="$MUTEDC"
-    c_text="$MUTEDC"
-    c_brack="$MUTEDC"
-    c_key="$MUTEDC"
-    badge="-"
-  fi
-
-  local gap="  "
-  (( ${#badge} == 1 )) && gap="   "
-
-  printf "%s %s  %s%-${max}s%s%s[%s%s%s] %s" \
-    "$BUTTON_BGC" \
-    "$c_icon$glyph" \
-    "$c_text" \
-    "$name" \
-    "$gap" \
-    "$c_brack" \
-    "$c_key" "$badge" "$c_brack" \
-    "$RESET"
+  format_button "${BTN[key]}" "${BTN[name]}" "${BTN[icon]}" "${BTN[state]:-enabled}" "$max"
 }
 
 ## -----------------------------------------------------------------
 # MENUS responsible for generating the main/base alpha-tmux menu
 ## -----------------------------------------------------------------
 menus() {
-  local max=0
   local menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}"
   local title="$2"
   local depth="${3:-1}"
 
-  # 1. Calculate max label width across buttons
-  while read -r name; do
-    eval "name=\"$name\""
-    local len="${#name}"
-    (( len > max )) && max="$len"
-  done < <(yq e '(.Buttons[].name // .columns[].buttons[].name)' "$menu")
+  declare -gA ACTIVE_MENU_BTNS=()
+  declare -gA ACTIVE_MENU_META=()
+  local -A GRID_CELL=()
 
-  # 2. Get button width & placeholder for empty slots
-  local sample_btn clean_sample buttonw empty_btn sample_key
-  sample_key="$(yq e '(.Buttons[0].key // .columns[0].buttons[0].key)' "$menu")"
-  sample_btn="$(make_button "$sample_key" "$max" "$menu")"
+  local num_cols=0
+  num_cols=$(yq_len ".columns" "$menu")
+  (( num_cols == 0 )) && return 1
+
+  local auto_key=0 max_w=0 max_rows=0 has_multi_digit=0
+
+  # Step 1: Pre-scan columns and buttons via yqtools, evaluate active/if/alt, assign auto-keys, and calculate max_w
+  local -A BTN_NAME=() BTN_ICON=() BTN_BADGE=() BTN_STATE=()
+  local -A COL_BTN_COUNTS=()
+
+  for (( c = 0; c < num_cols; c++ )); do
+    local num_btns
+    num_btns=$(yq_len ".columns[$c].buttons" "$menu")
+    local r=0
+
+    for (( b = 0; b < num_btns; b++ )); do
+      local -A BTN=()
+      local k v
+      while IFS="=" read -r k v; do
+        [[ -n "$k" ]] && BTN["$k"]="$v"
+      done < <(yq_button_props "$c" "$b" "$menu")
+
+      [[ -z "${BTN[name]}" ]] && continue
+
+      # Filter: active: [0 | 1] / [false | true]
+      local b_active="${BTN[active]:-1}"
+      if [[ "$b_active" =~ ^(0|false)$ ]]; then
+        continue
+      fi
+
+      # Evaluate runtime condition if:
+      local b_state="enabled"
+      local b_if="${BTN[if]:-true}"
+      local b_alt="${BTN[alt]:-dimmed}"
+
+      if [[ "$b_if" != "true" ]]; then
+        if ! eval "$b_if" 2>/dev/null; then
+          case "$b_alt" in
+            no-display|hide|hidden)
+              continue ;;
+            toast|warning|notice)
+              b_state="toast" ;;
+            install)
+              b_state="install" ;;
+            dimmed|disabled|*)
+              b_state="dimmed" ;;
+          esac
+        fi
+      fi
+
+      # Expand dynamic name (e.g. $(get_option startup))
+      local b_name="${BTN[name]}"
+      eval "b_name=\"$b_name\""
+      local len="${#b_name}"
+      (( len > max_w )) && max_w="$len"
+
+      # Determine badge & key
+      local badge="${BTN[key]}"
+      if [[ -z "$badge" || "$badge" == "null" ]]; then
+        if [[ "$b_state" == "dimmed" ]]; then
+          badge="-"
+        else
+          (( auto_key++ ))
+          badge="$auto_key"
+        fi
+      fi
+
+      (( ${#badge} > 1 )) && has_multi_digit=1
+
+      # Register active key for io-loop
+      if [[ "$b_state" != "dimmed" && "$badge" != "-" ]]; then
+        ACTIVE_MENU_BTNS["${badge}_name"]="$b_name"
+        ACTIVE_MENU_BTNS["${badge}_comm"]="${BTN[comm]}"
+        ACTIVE_MENU_BTNS["${badge}_icon"]="${BTN[icon]}"
+        ACTIVE_MENU_BTNS["${badge}_state"]="$b_state"
+        ACTIVE_MENU_BTNS["${badge}_msg"]="${BTN[msg]}"
+        ACTIVE_MENU_BTNS["${badge}_alt_comm"]="${BTN[alt_comm]}"
+      fi
+
+      BTN_NAME["${c}_${r}"]="$b_name"
+      BTN_ICON["${c}_${r}"]="${BTN[icon]}"
+      BTN_BADGE["${c}_${r}"]="$badge"
+      BTN_STATE["${c}_${r}"]="$b_state"
+
+      (( r++ ))
+    done
+
+    COL_BTN_COUNTS["$c"]="$r"
+    (( r > max_rows )) && max_rows="$r"
+  done
+
+  ACTIVE_MENU_META["has_multi_digit"]="$has_multi_digit"
+  ACTIVE_MENU_META["total_keys"]="$auto_key"
+
+  # Step 2: Format buttons and compute placeholder for empty slots
+  local sample_btn clean_sample buttonw empty_btn
+  sample_btn="$(format_button "1" "Sample Button" "gear" "enabled" "$max_w")"
   clean_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
   buttonw="${#clean_sample}"
   printf -v empty_btn "%*s" "$buttonw" ""
 
-  # 3. Determine grid dimensions (columns and max rows)
-  local num_cols max_rows=0
-  num_cols=$(yq e '.columns | length' "$menu")
-
   for (( c = 0; c < num_cols; c++ )); do
-    local colc
-    colc=$(yq e ".columns[$c].buttons | length" "$menu")
-    (( colc > max_rows )) && max_rows="$colc"
+    local cnt="${COL_BTN_COUNTS["$c"]:-0}"
+    for (( r = 0; r < cnt; r++ )); do
+      GRID_CELL["${c}_${r}"]="$(format_button "${BTN_BADGE["${c}_${r}"]}" "${BTN_NAME["${c}_${r}"]}" "${BTN_ICON["${c}_${r}"]}" "${BTN_STATE["${c}_${r}"]}" "$max_w")"
+    done
   done
 
-  # 4. Build 2D grid row-by-row across columns
+  # Step 3: Build 2D grid row-by-row across columns
   local menu_text=""
   for (( r = 0; r < max_rows; r++ )); do
     local rstring=""
     for (( c = 0; c < num_cols; c++ )); do
-      local key
-      key=$(yq e ".columns[$c].buttons[$r].key" "$menu")
-
       (( c > 0 )) && rstring+=" "
-
-      if [[ -n "$key" && "$key" != "null" ]]; then
-        rstring+="$(make_button "$key" "$max" "$menu")"
-      else
-        rstring+="$empty_btn"
-      fi
+      rstring+="${GRID_CELL["${c}_${r}"]:-$empty_btn}"
     done
 
     if [[ -z "$menu_text" ]]; then
@@ -117,7 +220,7 @@ menus() {
     fi
   done
 
-  # 5. Draw box & print selection prompt
+  # Step 4: Draw box & print selection prompt
   boxer "$BORDERC" "$menu_text" "$title"
   if (( depth > 1 )); then
     center -n "Enter menu selection or press $(keys "ESC")${PROMPTC} to return to main menu." "$PROMPTC"

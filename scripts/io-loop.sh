@@ -45,7 +45,7 @@ main () {
     
     # READ INPUT
     read -r -n 1 -s pressed
-    if [[ "$pressed" == "1" ]]; then
+    if [[ "${ACTIVE_MENU_META["has_multi_digit"]:-1}" == "1" && "$pressed" == "1" ]]; then
       # allow for multi-digit entry
       if read -rt 0.25 -n 1 -s key && [[ "$key" =~ [0-9] ]]; then
         pressed="${pressed}${key}"
@@ -66,24 +66,41 @@ main () {
           continue
         fi
 
-        if ! eval "${BTN[if]}"; then
-          continue
-        fi
-
-        eval "target=\"${BTN[comm]}\""
-        if [[ -n "$target" && "$target" != "null" ]]; then
-          if is_yaml "$target"; then
-            Stack_push NAV_STACK "$target"
-          elif [[ -n "${BTN[popup]}" && "${BTN[popup]}" != "null" ]]; then
-            popped "$target" "${BTN[name]}" "${BTN[popup]}"
-          else
-            cursor on 
-            eval "${BTN[comm]}"
-            cursor off
-          fi
-          unset _ALPHA_COLORIZER_SH
-          source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
-        fi
+        case "${BTN[state]}" in
+          dimmed)
+            continue
+            ;;
+          toast)
+            pu_toast -t "${BTN[name]}" -d 2.0 "${BTN[msg]:-Option is currently unavailable.}"
+            continue
+            ;;
+          install)
+            if [[ -n "${BTN[alt_comm]}" && "${BTN[alt_comm]}" != "null" ]]; then
+              cursor on
+              eval "${BTN[alt_comm]}"
+              cursor off
+            else
+              pu_toast -t "${BTN[name]}" -d 2.0 "Install action not configured."
+            fi
+            continue
+            ;;
+          enabled|*)
+            eval "target=\"${BTN[comm]}\""
+            if [[ -n "$target" && "$target" != "null" ]]; then
+              if is_yaml "$target"; then
+                Stack_push NAV_STACK "$target"
+              elif [[ -n "${BTN[popup]}" && "${BTN[popup]}" != "null" ]]; then
+                popped "$target" "${BTN[name]}" "${BTN[popup]}"
+              else
+                cursor on 
+                eval "${BTN[comm]}"
+                cursor off
+              fi
+              unset _ALPHA_COLORIZER_SH
+              source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+            fi
+            ;;
+        esac
         ;;
     esac
   done

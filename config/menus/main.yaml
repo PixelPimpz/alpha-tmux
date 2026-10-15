@@ -4,81 +4,51 @@ columns:
     buttons:
       - name: "Load Session..."
         icon: "new_session"
-        key:  "1"
         comm: "$ACTIONS/load_session.sh"
 
       - name: "Load Project..."
         icon: "jump"
-        key:  "2"
-        popup: "m"
         comm: "$ACTIONS/to_project.sh" 
 
       - name: "Save Session"
         icon: "floppy"
-        key:  "3"
         comm: "$ACTIONS/save_session.sh"
 
       - name: "Session Manager"
         icon: "submodule"
-        key:  "4"
-        popup: "m"
         comm: "$MENUS/session.yaml"
 
   - title: "Controls"
     buttons:
       - name: "TMUX Control..."
         icon: "tmux"
-        key:  "5"
         comm: '$MENUS/tmux_control.yaml'
 
       - name: "aTMUX Preferences..."
         icon: "settings"
-        key:  "6"
         comm: '$MENUS/preferences.yaml'
 
       - name: "Git Control..."
         icon: "git"
-        key:  "7"
-        comm: "$ACTIONS/more_git.sh"
+        comm: "$MENUS/git_control.yaml"
 
       - name: "System Control..."
         icon: "gear"
-        key:  "8"
         comm: '$MENUS/preferences.yaml'
-
-  - title: "Git Sync"
-    buttons:
-      - name: "Push to Remote"
-        icon: "github"
-        key:  "9"
-        popup: "s"
-        comm: "$ACTIONS/push.sh"
-
-      - name: "Push all Projects"
-        icon: "github"
-        key:  "10"
-        popup: "m"
-        comm: "$ACTIONS/pushall.sh"
-
-      - name: "Push Dotfiles"
-        icon: "dotfiles"
-        key:  "11"
-        comm: "cd $DOTFILES && push"
 
   - title: "Lifecycle"
     buttons:
       - name: "New NVIM Session"
         icon: "neovim"
-        key:  "12"
+        if: "command -v nvim"
+        alt: "dimmed"
         comm: "nvim"
       
       - name: "Kill Session"
         icon: "kill"
-        key:  "13"
         comm: "tmux kill-session"
         
       - name: "Kill Server"
         icon: "kill"
-        key:  "14"
         comm: "tmux kill-server"
 

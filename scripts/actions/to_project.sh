@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_SELF="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_PATH="$SCRIPT_SELF"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 UTILS="$PLUGIN_ROOT/scripts/utils"
 
@@ -10,17 +11,18 @@ source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
 source "$UTILS/navigator.sh"
 source "$UTILS/boxer.sh"
+source "$UTILS/pop.sh"
 
 MODE="$( get_option "mode" "window" )"
 PROJECTS=()
 PROJECTS_D=""
 USE="jump"
+IS_VIEW=0
 
-if (( "$#" == 0 )); then
-  USE="jump"
-elif [[ "$1" =~ --default ]]; then
-  USE="default"
-fi
+for arg in "$@"; do
+  [[ "$arg" == "view" ]] && IS_VIEW=1
+  [[ "$arg" == "--default" ]] && USE="default"
+done
 
 load_projects() {
   local p_name dir
@@ -105,8 +107,13 @@ draw_menu() {
   printf "\n"
 
   # calculate margin and pad lines
+  local max_len=0 p_base
+  for p in "${PROJECTS[@]}"; do
+    p_base="${p##*/}"
+    (( ${#p_base} > max_len )) && max_len=${#p_base}
+  done
   local margin pad
-  margin="$(get_margin 24)"
+  margin="$(get_margin $(( max_len + 12 )))"
   printf -v pad "%*s" "$margin" ""
 
   local num=0 icon dirty cursor def_proj star
@@ -129,7 +136,7 @@ draw_menu() {
   fi
 }
 
-main() {
+to_project_view() {
   trap 'cursor on' EXIT INT TERM
   cursor off
 
@@ -167,4 +174,51 @@ main() {
   ac
 }
 
-main "$@"
+main() {
+  if (( IS_VIEW == 1 )); then
+    to_project_view
+    return
+  fi
+
+  load_projects
+  if (( ${#PROJECTS[@]} == 0 )); then
+    pu_toast -t "Projects" -d 2.0 "No project directories in $PROJECTS_D."
+    exit 0
+  fi
+
+  local sample_lines=()
+  if [[ "$USE" == "default" ]]; then
+    sample_lines+=("Select Default Project." "")
+  else
+    sample_lines+=("[ ✔ Window ]    [   Session ]" "")
+  fi
+
+  local p_name
+  for p in "${PROJECTS[@]}"; do
+    p_name="${p##*/}"
+    sample_lines+=("      [99]  $p_name *  ")
+  done
+  sample_lines+=("")
+  if [[ "$USE" == "default" ]]; then
+    sample_lines+=("[ENTER] to set default • [ESC] to cancel")
+  else
+    sample_lines+=("[TAB] to toggle mode: Window 󰧎 Session")
+  fi
+
+  local w h
+  read -r w h < <( popsizer "${sample_lines[@]}" )
+  (( w < 48 )) && w=48
+  (( h < 10 )) && h=10
+
+  local title="Load Project"
+  [[ "$USE" == "default" ]] && title="Default Project"
+
+  local view_args=("view")
+  [[ "$USE" == "default" ]] && view_args+=("--default")
+
+  popped "" "$title" "d" "$w" "$h" "$SCRIPT_SELF" "${view_args[@]}"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

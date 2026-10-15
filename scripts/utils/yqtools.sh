@@ -83,3 +83,19 @@ yqshow() {
 is_yaml() {
   [[ "$1" == *.yaml || "$1" == *.yml ]]
 }
+
+# Read all properties of a button as key=value pairs by column and button index
+# Usage: yq_button_props <col_idx> <btn_idx> <file>
+yq_button_props() {
+  local col="$1" idx="$2" file="$3"
+  [[ -f "$file" ]] || return 1
+  yq eval ".columns[$col].buttons[$idx] | to_entries | .[] | .key + \"=\" + .value" "$file" 2>/dev/null
+}
+
+# Read all properties of a button as key=value pairs matching key property
+# Usage: yq_button_by_key <key> <file>
+yq_button_by_key() {
+  local KEY="$1" file="$2"
+  [[ -f "$file" ]] || return 1
+  KEY="$KEY" yq eval '.columns[].buttons[] | select(.key == env(KEY)) | to_entries | .[] | .key + "=" + .value' "$file" 2>/dev/null
+}

@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
+SCRIPT_SELF="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_PATH="$SCRIPT_SELF"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
+UTILS="$PLUGIN_ROOT/scripts/utils"
 
-source "$PLUGIN_ROOT/scripts/utils/errors.sh"
-source "$PLUGIN_ROOT/scripts/utils/formats.sh"
-source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+source "$UTILS/errors.sh"
+source "$UTILS/formats.sh"
+source "$UTILS/colorizer.sh"
+source "$UTILS/pop.sh"
 
 check_git_repo() {
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -41,7 +44,7 @@ do_push() {
   fi
 }
 
-main() {
+push_view() {
   check_git_repo || exit 1
 
   local repo branch changes confirm
@@ -76,4 +79,42 @@ main() {
   pause
 }
 
-main "$@"
+main() {
+  if [[ "$1" == "view" ]]; then
+    push_view
+    return
+  fi
+
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    pu_toast -t "Sync Project" -d 2.0 "'$PWD' is not a git-managed directory."
+    exit 1
+  fi
+
+  local changes repo branch
+  changes="$(git status --short)"
+  if [[ -z "$changes" ]]; then
+    pu_toast -t "Sync Project" -d 2.0 "Clean working tree. Nothing to push."
+    exit 0
+  fi
+
+  repo="$(basename "$PWD")"
+  branch="$(git branch --show-current 2>/dev/null || echo "HEAD")"
+
+  local sample_lines=()
+  sample_lines+=("Repo: $repo ($branch)" "" "Changes:")
+  while IFS= read -r chg; do
+    [[ -n "$chg" ]] && sample_lines+=("    $chg")
+  done <<< "$changes"
+  sample_lines+=("" "Commit message or [Enter] for default:" "Push to $repo? [Y|n]" "✔ Push to remote successful!")
+
+  local w h
+  read -r w h < <( popsizer "${sample_lines[@]}" )
+  (( w < 50 )) && w=50
+  (( h < 12 )) && h=12
+
+  popped "" "Sync Project" "d" "$w" "$h" "$SCRIPT_SELF" view
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

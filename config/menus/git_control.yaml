@@ -1,0 +1,15 @@
+title: "Git Control"
+columns:
+  - title: Remote
+    buttons:
+    - name: "Sync Project"
+      icon: "github"
+      comm: "$ACTIONS/push.sh"
+
+    - name: "Sync All"
+      icon: "github"
+      comm: "$ACTIONS/pushall.sh"
+
+    - name: "Sync Dotfiles"
+      icon: "dotfiles"
+      comm: "cd $DOTFILES && push"

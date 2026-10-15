@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
-SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]}" )"
+SCRIPT_SELF="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
+SCRIPT_PATH="$SCRIPT_SELF"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 CONF="$PLUGIN_ROOT/config/settings.yaml"
+UTILS="$PLUGIN_ROOT/scripts/utils"
 
-source "$PLUGIN_ROOT/scripts/utils/yqtools.sh"
-source "$PLUGIN_ROOT/scripts/utils/profiler.sh"
-source "$PLUGIN_ROOT/scripts/utils/icons.sh"
-source "$PLUGIN_ROOT/scripts/utils/formats.sh"
-source "$PLUGIN_ROOT/scripts/utils/errors.sh"
-source "$PLUGIN_ROOT/scripts/utils/gitools.sh"
-source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
+source "$UTILS/yqtools.sh"
+source "$UTILS/profiler.sh"
+source "$UTILS/icons.sh"
+source "$UTILS/formats.sh"
+source "$UTILS/errors.sh"
+source "$UTILS/gitools.sh"
+source "$UTILS/colorizer.sh"
+source "$UTILS/pop.sh"
 
 render_list() {
   printf "\n"
@@ -28,7 +31,7 @@ render_list() {
   printf "\n"
 }
 
-main() {
+pushall_view() {
   trap 'cursor on' INT EXIT TERM
   local key msg dir dirty=()
   local go pass projects
@@ -51,7 +54,6 @@ main() {
     linew="${#line}"
     (( "$linew" > "$longest" )) && longest="$linew"
   done
-  
   
   # 2. Render initial list
   local marginw
@@ -109,4 +111,36 @@ main() {
   return 0
 }
 
-main
+main() {
+  if [[ "$1" == "view" ]]; then
+    pushall_view
+    return
+  fi
+
+  local projects
+  projects="$( get_projects )"
+  if [[ ! -d "$projects" ]]; then
+    pu_toast -t "Sync All" -d 2.0 "Projects dir not found."
+    exit 1
+  fi
+
+  local sample_lines=()
+  sample_lines+=("Sync All Projects" "")
+  for repo in "${projects%/}"/*; do
+    [[ -d "$repo" ]] || continue
+    is_git "$repo" &>/dev/null || continue
+    sample_lines+=("    ✔   ${repo/$HOME/\~}")
+  done
+  sample_lines+=("" "Push dirty project(s)? [Y]/[n]" "Done. Press any key to return to main menu... ")
+
+  local w h
+  read -r w h < <( popsizer "${sample_lines[@]}" )
+  (( w < 54 )) && w=54
+  (( h < 12 )) && h=12
+
+  popped "" "Sync All Projects" "d" "$w" "$h" "$SCRIPT_SELF" view
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

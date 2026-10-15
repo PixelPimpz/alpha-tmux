@@ -1,24 +1,7 @@
-Tmux:
+title: "TMUX Settings"
 columns:
-  - title: "Tmux Control Center"
-  buttons: 
-    - name: "TPM Update..."
-      icon: "update"
-      key:  "1"
-      comm: "$ACTIONS/tpm_update_interactive.sh" 
-
-    - name: "TPM Update All"
-      icon: "update"
-      key:  "2"
-      popup: "m"
-      comm: "$ACTIONS/tpm-update.sh"
-    
-    - name: "Reload TMUX config"
-      icon: "undo"
-      key:  "3"
-      comm: '$ACTIONS/reload-tmux.sh'
-
-    - name: "TMUX Settings..."
-      icon: "settings"
-      key: "4"
-      comm: "$MENUS/
+  - title: "Settings"
+    buttons:
+      - name: "Reload TMUX config"
+        icon: "undo"
+        comm: '$ACTIONS/reload-tmux.sh'

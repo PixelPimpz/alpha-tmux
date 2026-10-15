@@ -7,34 +7,27 @@ columns:
     buttons:
     - name: "Select Color Theme"
       icon: "color"
-      key:  "1"
       comm: "$ACTIONS/select-theme.sh"
 
     - name: "Install Theme"
       icon: "infile"
-      key:  "2"
       comm:
 
     - name: "Edit Color Theme"
       icon: "pencil"
-      key:  "3"
       comm:
 
     - name: "Save Color Theme"
       icon: "floppy"
-      key:  "4"
       comm:
 
   - title: "Behavior"
     buttons:
       - name: 'On Startup: $(get_option startup "[4 Options...]")'
         icon: "settings"
-        key:  "5"
         comm: '$UTILS/profiler.sh step_option startup none last default menu'
 
       - name: "Default Proj: $(get_option defaultd)"
         icon: "folder-plus"
-        key:  "6"
         if: '[[ "$(get_option startup)" == "default" ]]'
-        popup: "m"
         comm: "$ACTIONS/to_project.sh --default"
