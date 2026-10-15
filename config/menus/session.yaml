@@ -4,48 +4,48 @@ columns:
     buttons:
       - name: "Load Session"
         icon: "infile"
-        key:  "l"
+        key:  "1"
         comm: "$ACTIONS/load_session.sh"
 
       - name: "Save Session"
         icon: "floppy"
-        key:  "s"
+        key:  "2"
         comm: "$ACTIONS/save_session.sh"
 
       - name: "Save Session as..."
         icon: "floppy"
-        key:  "S"
+        key:  "3"
         comm: "$ACTIONS/save_session.sh --as"
 
       - name: "Delete Session"
         icon: "cancel"
-        key:  "d"
+        key:  "4"
         comm: "$ACTIONS/delete_session.sh"
 
   - title: "Control"
     buttons:
       - name: "New Session"
         icon: "new_session"
-        key:  "n"
+        key:  "5"
         comm: "tmux new-session"
 
       - name: "Rename Session"
         icon: "rename"
-        key:  "r"
+        key:  "6"
         comm: "$ACTIONS/rename_session.sh"
 
       - name: "Detach from Session"
         icon: "pause"
-        key:  "D"
+        key:  "7"
         comm: "tmux detach-client"
 
       - name: "Kill Session"
         icon: "kill"
-        key:  "k"
+        key:  "8"
         comm: "tmux kill-session"
 
       - name: "Kill Server"
         icon: "kill"
-        key:  "K"
+        key:  "9"
         comm: "tmux kill-server"
 
