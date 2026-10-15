@@ -45,11 +45,15 @@ make_button() {
     badge="-"
   fi
 
-  printf "%s %s  %s%-${max}s  %s[%s%s%s] %s" \
+  local gap="  "
+  (( ${#badge} == 1 )) && gap="   "
+
+  printf "%s %s  %s%-${max}s%s%s[%s%s%s] %s" \
     "$BUTTON_BGC" \
     "$c_icon$glyph" \
     "$c_text" \
     "$name" \
+    "$gap" \
     "$c_brack" \
     "$c_key" "$badge" "$c_brack" \
     "$RESET"

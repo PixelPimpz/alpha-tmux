@@ -4,23 +4,23 @@ columns:
     buttons:
       - name: "Load Session..."
         icon: "new_session"
-        key:  "a"
+        key:  "1"
         comm: "$ACTIONS/load_session.sh"
 
       - name: "Load Project..."
         icon: "jump"
-        key:  "b"
+        key:  "2"
         popup: "m"
         comm: "$ACTIONS/to_project.sh" 
 
       - name: "Save Session"
         icon: "floppy"
-        key:  "c"
+        key:  "3"
         comm: "$ACTIONS/save_session.sh"
 
       - name: "Session Manager"
         icon: "submodule"
-        key:  "d"
+        key:  "4"
         popup: "m"
         comm: "$MENUS/session.yaml"
 
@@ -28,57 +28,57 @@ columns:
     buttons:
       - name: "TMUX Control..."
         icon: "tmux"
-        key:  "g"
+        key:  "5"
         comm: '$MENUS/tmux_control.yaml'
 
       - name: "aTMUX Preferences..."
         icon: "settings"
-        key:  "h"
+        key:  "6"
         comm: '$MENUS/preferences.yaml'
 
       - name: "Git Control..."
         icon: "git"
-        key:  "i"
+        key:  "7"
         comm: "$ACTIONS/more_git.sh"
 
       - name: "System Control..."
         icon: "gear"
-        key:  "j"
+        key:  "8"
         comm: '$MENUS/preferences.yaml'
 
   - title: "Git Sync"
     buttons:
       - name: "Push to Remote"
         icon: "github"
-        key:  "k"
+        key:  "9"
         popup: "s"
         comm: "$ACTIONS/push.sh"
 
       - name: "Push all Projects"
         icon: "github"
-        key:  "l"
+        key:  "10"
         popup: "m"
         comm: "$ACTIONS/pushall.sh"
 
       - name: "Push Dotfiles"
         icon: "dotfiles"
-        key:  "m"
+        key:  "11"
         comm: "cd $DOTFILES && push"
 
   - title: "Lifecycle"
     buttons:
       - name: "New NVIM Session"
         icon: "neovim"
-        key:  "n"
+        key:  "12"
         comm: "nvim"
       
       - name: "Kill Session"
         icon: "kill"
-        key:  "o"
+        key:  "13"
         comm: "tmux kill-session"
         
       - name: "Kill Server"
         icon: "kill"
-        key:  "p"
+        key:  "14"
         comm: "tmux kill-server"
 

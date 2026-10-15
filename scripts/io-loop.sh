@@ -42,8 +42,15 @@ main () {
     fi
     center " "
     menus "$current_menu" "$trail" "$depth"
-    #
+    
+    # READ INPUT
     read -r -n 1 -s pressed
+    if [[ "$pressed" == "1" ]]; then
+      # allow for multi-digit entry
+      if read -rt 0.25 -n 1 -s key && [[ "$key" =~ [0-9] ]]; then
+        pressed="${pressed}${key}"
+      fi
+    fi
     case "$pressed" in
       q|Q|"")
         cursor on
