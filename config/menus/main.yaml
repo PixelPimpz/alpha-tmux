@@ -2,25 +2,25 @@ title: "Main Menu"
 columns:
   - title: "Workspace"
     buttons:
-      - name: "Load Session"
+      - name: "Load Session..."
         icon: "new_session"
-        key:  "l"
-        comm: "tmux new-session"
+        key:  "a"
+        comm: "$ACTIONS/load_session.sh"
 
       - name: "Load Project..."
         icon: "jump"
-        key:  "p"
+        key:  "b"
         popup: "m"
         comm: "$ACTIONS/to_project.sh" 
 
       - name: "Save Session"
         icon: "floppy"
-        key:  "s"
+        key:  "c"
         comm: "$ACTIONS/save_session.sh"
 
       - name: "Session Manager"
         icon: "submodule"
-        key:  "S"
+        key:  "d"
         popup: "m"
         comm: "$MENUS/session.yaml"
 
@@ -29,63 +29,63 @@ columns:
     buttons:
       - name: "TPM Update..."
         icon: "update"
-        key:  "u"
+        key:  "e"
         comm: "$ACTIONS/tpm_update_interactive.sh" 
 
       - name: "TPM Update All"
         icon: "update"
-        key:  "U"
+        key:  "f"
         popup: "m"
         comm: "$ACTIONS/tpm-update.sh"
 
       - name: "Reload TMUX config"
         icon: "undo"
-        key:  "r"
+        key:  "g"
         comm: '$ACTIONS/reload-tmux.sh'
 
-      - name: "Alpha Settings..."
+      - name: "aTMUX Preferences..."
         icon: "settings"
-        key:  "A"
+        key:  "h"
         comm: '$MENUS/preferences.yaml'
 
   - title: "Git Sync"
     buttons:
       - name: "Push to Remote"
         icon: "github"
-        key:  "G"
+        key:  "i"
         popup: "s"
         comm: "$ACTIONS/push.sh"
 
       - name: "Push all Projects"
         icon: "github"
-        key:  "g"
+        key:  "j"
         popup: "m"
         comm: "$ACTIONS/pushall.sh"
 
       - name: "Push Dotfiles"
         icon: "dotfiles"
-        key:  "d"
+        key:  "k"
         comm: "cd $DOTFILES && push"
 
       - name: "MOAR Git Stuff..."
         icon: "git"
-        key:  "R"
+        key:  "l"
         comm: "$ACTIONS/more_git.sh"
 
   - title: "Lifecycle"
     buttons:
       - name: "New NVIM Session"
         icon: "neovim"
-        key:  "N"
+        key:  "m"
         comm: "nvim"
       
       - name: "Kill Session"
         icon: "kill"
-        key:  "k"
+        key:  "n"
         comm: "tmux kill-session"
         
       - name: "Kill Server"
         icon: "kill"
-        key:  "K"
+        key:  "o"
         comm: "tmux kill-server"
 
