@@ -10,7 +10,7 @@ columns:
       - name: "Save Session"
         icon: "floppy"
         key:  "S"
-        comm: "$ACTIONS/session-save.sh"
+        comm: "$ACTIONS/save_session.sh"
 
       - name: "New NVIM Session"
         icon: "neovim"

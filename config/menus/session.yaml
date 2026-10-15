@@ -2,21 +2,21 @@ title: "Sessions"
 columns:
   - title: "Management"
     buttons:
-      - name: "Save as Blueprint"
+      - name: "Save Session"
         icon: "floppy"
         key:  "s"
         comm: "$ACTIONS/save_session.sh"
 
-      - name: "Load from Blueprint"
+      - name: "Save Session as..."
+        icon: "floppy"
+        key:  "S"
+        comm: "$ACTIONS/save_session.sh --as"
+
+      - name: "Load Session"
         icon: "infile"
         key:  "l"
         popup: "m"
         comm: "$ACTIONS/load_session.sh"
-
-      - name: "Edit Blueprint"
-        icon: "pencil"
-        key:  "e"
-        comm: "$ACTIONS/edit_blueprint.sh"
 
       - name: "Delete Session"
         icon: "cancel"
@@ -28,7 +28,7 @@ columns:
       - name: "New Session"
         icon: "new_session"
         key:  "n"
-        comm: "$ACTIONS/new_session.sh"
+        comm: "tmux new-session"
 
       - name: "Rename Session"
         icon: "rename"
