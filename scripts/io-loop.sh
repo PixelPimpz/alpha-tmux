@@ -49,7 +49,7 @@ main () {
         cursor on
         ac 
         exec "$SHELL" ;;
-      b|B|$'\e')
+      $'\e')
         Stack_size NAV_STACK depth 
         (( depth > 1 )) && Stack_pop NAV_STACK discarded
         ;;
