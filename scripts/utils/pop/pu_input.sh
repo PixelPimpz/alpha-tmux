@@ -20,18 +20,14 @@ pu_input() {
   labels=("${@:4}")
   (( "${#labels[@]}" == 0 )) && labels=("Save" "Cancel")
 
-  local msg_l val_l max_l
-  msg_l="$(stripper "${msg}")"
-  msg_l="${#msg_l}" 
-  val_l="${init}"
-  val_l="${#val_l}"
-  max_l="$(( msg_l > val_l ? msg_l : val_l))"
-  
+  local b_label=""
+  for l in "${labels[@]}"; do b_label+=" [ $l ]"; done
+
   local w h
-  w="$(( max_l + 12 ))"
+  read -r w h < <( popsizer "$msg" "$init" "" "$b_label" )
   (( w < 48 )) && w=48
   (( w > 64 )) && w=64
-  h=9
+  (( h < 9 )) && h=9
 
   popped "" "$title" "d" "$w" "$h" "$UTILS/pop/pu_input.sh" pu_input_view "$msg" "$init" "${labels[@]}"
   

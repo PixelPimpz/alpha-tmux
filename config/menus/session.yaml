@@ -2,6 +2,11 @@ title: "Sessions"
 columns:
   - title: "Management"
     buttons:
+      - name: "Load Session"
+        icon: "infile"
+        key:  "l"
+        comm: "$ACTIONS/load_session.sh"
+
       - name: "Save Session"
         icon: "floppy"
         key:  "s"
@@ -11,12 +16,6 @@ columns:
         icon: "floppy"
         key:  "S"
         comm: "$ACTIONS/save_session.sh --as"
-
-      - name: "Load Session"
-        icon: "infile"
-        key:  "l"
-        popup: "m"
-        comm: "$ACTIONS/load_session.sh"
 
       - name: "Delete Session"
         icon: "cancel"
