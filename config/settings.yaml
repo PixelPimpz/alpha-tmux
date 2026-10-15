@@ -8,4 +8,12 @@ Profiles:
     projects: "/home/lucifer/Projects/"
     defaultd: "alpha-tmux"
     ai_default: "agy"
+    packages: "paru"
     startup: ""
+    Toggles:
+      - theme_to_nvim: "true"
+        install_theme: "true"
+        fetch: "true"
+        which_fetch: "fetch"
+        top: "true"
+        which_top: "bfetch"

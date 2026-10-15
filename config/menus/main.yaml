@@ -38,10 +38,10 @@ columns:
         popup: "m"
         comm: "$ACTIONS/tpm-update.sh"
 
-      - name: "Reload TMUX config"
-        icon: "undo"
+      - name: "TMUX Control..."
+        icon: "tmux"
         key:  "g"
-        comm: '$ACTIONS/reload-tmux.sh'
+        comm: '$MENUS/tmux_control.yaml'
 
       - name: "aTMUX Preferences..."
         icon: "settings"
