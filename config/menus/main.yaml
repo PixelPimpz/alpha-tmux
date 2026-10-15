@@ -2,33 +2,35 @@ title: "Main Menu"
 columns:
   - title: "Workspace"
     buttons:
-      - name: "New Session"
+      - name: "Load Session"
         icon: "new_session"
-        key:  "s"
+        key:  "l"
         comm: "tmux new-session"
+
+      - name: "Load Project..."
+        icon: "jump"
+        key:  "p"
+        popup: "m"
+        comm: "$ACTIONS/to_project.sh" 
 
       - name: "Save Session"
         icon: "floppy"
-        key:  "S"
+        key:  "s"
         comm: "$ACTIONS/save_session.sh"
 
-      - name: "New NVIM Session"
-        icon: "neovim"
-        key:  "N"
-        comm: "nvim"
-      
-      - name: "Jump To Project..."
-        icon: "jump"
-        key:  "j"
+      - name: "Session Manager"
+        icon: "submodule"
+        key:  "S"
         popup: "m"
-        comm: "$ACTIONS/to_project.sh" 
+        comm: "$MENUS/session.yaml"
+
 
   - title: "TPM & Config"
     buttons:
       - name: "TPM Update..."
         icon: "update"
         key:  "u"
-        comm: "$ACTIONS/tpm_update_interactive.sh" # placeholder
+        comm: "$ACTIONS/tpm_update_interactive.sh" 
 
       - name: "TPM Update All"
         icon: "update"
@@ -50,13 +52,13 @@ columns:
     buttons:
       - name: "Push to Remote"
         icon: "github"
-        key:  "p"
+        key:  "G"
         popup: "s"
         comm: "$ACTIONS/push.sh"
 
       - name: "Push all Projects"
         icon: "github"
-        key:  "P"
+        key:  "g"
         popup: "m"
         comm: "$ACTIONS/pushall.sh"
 
@@ -67,16 +69,16 @@ columns:
 
       - name: "MOAR Git Stuff..."
         icon: "git"
-        key:  "g"
+        key:  "R"
         comm: "$ACTIONS/more_git.sh"
 
   - title: "Lifecycle"
     buttons:
-      - name: "Detach Session"
-        icon: "pause"
-        key:  "D"
-        comm: "tmux detach-client"
-
+      - name: "New NVIM Session"
+        icon: "neovim"
+        key:  "N"
+        comm: "nvim"
+      
       - name: "Kill Session"
         icon: "kill"
         key:  "k"
@@ -87,8 +89,3 @@ columns:
         key:  "K"
         comm: "tmux kill-server"
 
-      - name: "Session Control"
-        icon: "submodule"
-        key:  "w"
-        popup: "m"
-        comm: "$MENUS/session.yaml"
