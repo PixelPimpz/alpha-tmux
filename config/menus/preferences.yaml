@@ -9,14 +9,6 @@ columns:
       icon: "color"
       comm: "$ACTIONS/select-theme.sh"
 
-    - name: "Install Theme"
-      icon: "infile"
-      comm:
-
-    - name: "Edit Color Theme"
-      icon: "pencil"
-      comm:
-
     - name: "Save Color Theme"
       icon: "floppy"
       comm:
