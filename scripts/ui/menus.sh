@@ -132,7 +132,7 @@ menus() {
       local b_alt="${BTN[alt]:-dimmed}"
 
       if [[ "$b_if" != "true" ]]; then
-        if ! eval "$b_if" 2>/dev/null; then
+        if ! eval "$b_if" &>/dev/null; then
           case "$b_alt" in
             no-display|hide|hidden)
               continue ;;
