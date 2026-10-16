@@ -95,3 +95,5 @@ icons:
     glyph: "f444"
   - name: swatch
     glyph: "f012e"
+  - name: logout
+    glyph: f0343

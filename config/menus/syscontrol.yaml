@@ -1,0 +1,10 @@
+# ===================================================================== #
+# syscontrol.yaml
+# Quit to Desktop 
+# Save (session) + Quit to Desktop 
+# Logout current user 
+# Restart System
+# Run full system update (use package manager in preferences)
+# Install package(s) 
+#
+# ===================================================================== #
