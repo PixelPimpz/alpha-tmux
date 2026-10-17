@@ -46,7 +46,7 @@ columns:
 
       - name: "New AI Session"
         icon: "ai" 
-        comm: "agy"
+        comm: "ac; agy"
       
       - name: "Kill Session"
         icon: "kill"
