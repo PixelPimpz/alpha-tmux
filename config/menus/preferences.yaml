@@ -18,6 +18,7 @@ columns:
       - name: 'On Startup: $(get_option startup "[4 Options...]")'
         icon: "settings"
         comm: '$UTILS/profiler.sh step_option startup none last default menu'
+        stay: 1
 
       - name: "Default Proj: $(get_option defaultd)"
         icon: "folder-plus"

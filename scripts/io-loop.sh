@@ -89,13 +89,13 @@ main () {
             if [[ -n "$target" && "$target" != "null" ]]; then
               if is_yaml "$target"; then
                 Stack_push NAV_STACK "$target"
-              elif [[ -n "${BTN[popup]}" && "${BTN[popup]}" != "null" ]]; then
-                popped "$target" "${BTN[name]}" "${BTN[popup]}"
               else
                 cursor on 
                 eval "${BTN[comm]}"
+                local exit_c="$?"
                 cursor off
-              fi
+                (( exit_c == 0 )) && [[ ! "${BTN[stay]:-0}" =~ ^(1|true)$ ]] && NAV_STACK=("$menu")
+               fi
               unset _ALPHA_COLORIZER_SH
               source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
             fi

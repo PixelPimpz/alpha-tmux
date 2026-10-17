@@ -21,6 +21,7 @@ load_button() {
     BTN[state]="${ACTIVE_MENU_BTNS["${KEY}_state"]}"
     BTN[msg]="${ACTIVE_MENU_BTNS["${KEY}_msg"]}"
     BTN[alt_comm]="${ACTIVE_MENU_BTNS["${KEY}_alt_comm"]}"
+    BTN[stay]="${ACTIVE_MENU_BTNS["${KEY}_stay"]}"
     BTN[key]="$KEY"
     return 0
   fi
@@ -173,6 +174,7 @@ menus() {
         ACTIVE_MENU_BTNS["${badge}_state"]="$b_state"
         ACTIVE_MENU_BTNS["${badge}_msg"]="${BTN[msg]}"
         ACTIVE_MENU_BTNS["${badge}_alt_comm"]="${BTN[alt_comm]}"
+        ACTIVE_MENU_BTNS["${badge}_stay"]="${BTN[stay]:-0}"
       fi
 
       BTN_NAME["${c}_${r}"]="$b_name"
