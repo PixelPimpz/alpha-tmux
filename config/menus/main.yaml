@@ -43,6 +43,10 @@ columns:
         if: "command -v nvim"
         alt: "dimmed"
         comm: "nvim"
+
+      - name: "New AI Session"
+        icon: "ai" 
+        comm: "agy"
       
       - name: "Kill Session"
         icon: "kill"
