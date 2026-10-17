@@ -8,3 +8,11 @@
 # Install package(s) 
 #
 # ===================================================================== #
+title: "System Control"
+columns:
+  - title: "System"
+    buttons:
+      - name: "Desktop Logout"
+        icon: "logout"
+        comm: "$ACTIONS/syscontrol.sh"
+        active: 0
