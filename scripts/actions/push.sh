@@ -8,111 +8,101 @@ source "$UTILS/errors.sh"
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
 source "$UTILS/pop.sh"
+source "$UTILS/icons.sh"
+source "$UTILS/gitools.sh"
 
-check_git_repo() {
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    echo ""
-    say "${ACCENTC}Error:${RESET} '$PWD' is not a git-managed directory.\n"
-    pause
-    return 1
-  fi
-  return 0
-}
+dirty=()
+render_list() {
+  printf "\n"
+  local MARGIN file
+  local go pass 
 
-stage_and_commit() {
-  local usr_msg commit_msg
-  echo ""
-  say "${HEADERC}Commit message or [Enter] for default:${RESET}"
-  prompt "${PROMPTC}Message: ${RESET}" usr_msg
-  commit_msg="${usr_msg:-Routine push: $(date "+%Y-%m-%d %H:%M:%S")}"
-  git add .
-  git commit -m "$commit_msg" >/dev/null 2>&1
-}
+  go="$(get_icon "prog_up")"
+  pass="$(get_icon "pass")"
 
-do_push() {
-  local branch="$1" push_output
-  echo ""
-  say "${PROMPTC}Pushing to origin/${branch}...${RESET}"
-  if push_output="$(git push origin "$branch" 2>&1)"; then
-    echo ""
-    say "${SUCCESSC}✔ Push to remote successful!${RESET}\n"
-  else
-    echo ""
-    say "${ACCENTC}✖ Push failed:${RESET}"
-    echo "$push_output" | sed "s/^/    ${MUTEDC}/; s/$/${RESET}/"
-    echo ""
-  fi
+  printf -v MARGIN "%*s" "${1:-8}" ""
+
+  for file in "${dirty[@]}"; do
+    if is_dirty "$PWD" >/dev/null; then
+      printf "%s%s%s   %s %s%s%s\n" "${MARGIN}" "${ACCENTC}" "$go" "$RESET" "$TEXTC" "$file" "$RESET"
+    else
+      printf "%s%s%s   %s %s%s%s\n" "${MARGIN}" "${SUCCESSC}" "$pass" "$RESET" "$TEXTC" "$file" "$RESET"
+    fi
+  done
+  printf "\n"
 }
 
 push_view() {
-  check_git_repo || exit 1
-
-  local repo branch changes confirm
+  trap 'cursor on' INT EXIT TERM
+  local key msg repo branch
   repo="$(basename "$PWD")"
   branch="$(git branch --show-current 2>/dev/null || echo "HEAD")"
-  changes="$(git status --short)"
 
-  echo ""
-  say "${HEADERC}Repo:${RESET} ${TEXTC}$repo${RESET} ${BRACKETC}(${KEYC}$branch${BRACKETC})${RESET}\n"
+  # 1. Put each changed filename into dirty=() and find the longest one
+  local line file longest=0
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    file="${line:3}"
+    dirty+=("$file")
+    (( ${#file} > longest )) && longest="${#file}"
+    done < <(is_dirty "$PWD")
 
-  if [[ -n "$changes" ]]; then
-    say "${HEADERC}Changes:${RESET}"
-    echo "$changes" | sed "s/^/    ${TEXTC}/; s/$/${RESET}/"
+    # 2. Draw the file list (centered)
+    local marginw
+    marginw=$(get_margin $(( longest + 6 )))
+    render_list "$marginw"
+
+    # 3. Commit message first, confirmation second
+    prompt "  ${PROMPTC}Commit message (optional): ${RESET}" msg
     echo ""
-  else
-    say "${TEXTC}Clean working tree. There is nothing to do.${RESET}\n"
-    pause
-    exit 0
-  fi
-
-  # Confirm push
-  prompt "${PROMPTC}Push to ${TEXTC}${repo}${PROMPTC}? ${BRACKETC}[${KEYC}Y${BRACKETC}|${KEYC}n${BRACKETC}] ${RESET}" confirm
-  confirm="${confirm:-Y}"
-  if [[ "$confirm" =~ ^[nN]$ ]]; then
+    cursor "off"
+    read -rp "  ${PROMPTC}Push ${#dirty[@]} changed file(s) to ${repo} (${branch})? $(keys "Y" "$PROMPTC")/$(keys "n" "$PROMPTC"): ${RESET}" -n1 key
     echo ""
-    say "${ACCENTC}Cancelled.${RESET}\n"
-    exit 0
-  fi
+    [[ "$key" =~ ^[nN]$ ]] && exit 1
 
-  stage_and_commit
-  do_push "$branch"
-  pause
+      # 4. Push, then redraw the list (now with green checkmarks!)
+    push_repo "$PWD" "$msg"
+    ac
+    render_list "$marginw"
+
+    say "  ${SUCCESSC}✔ ${repo} pushed!${RESET}\n"
+    pause -b "Done. Press any key to return to main menu... "
+    cursor "on"
 }
-
+ 
 main() {
   if [[ "$1" == "view" ]]; then
     push_view
     return
   fi
 
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if ! is_git "$PWD" &>/dev/null; then
     pu_toast -t "Sync Project" -d 2.0 "'$PWD' is not a git-managed directory."
     exit 1
   fi
 
   local changes repo branch
-  changes="$(git status --short)"
+  changes="$(is_dirty "$PWD")"
   if [[ -z "$changes" ]]; then
     pu_toast -t "Sync Project" -d 2.0 "Clean working tree. Nothing to push."
-    exit 0
+    exit 1
   fi
 
   repo="$(basename "$PWD")"
   branch="$(git branch --show-current 2>/dev/null || echo "HEAD")"
 
-  local sample_lines=()
-  sample_lines+=("Repo: $repo ($branch)" "" "Changes:")
+  local sample_lines=("Sync Project: $repo" "")
   while IFS= read -r chg; do
-    [[ -n "$chg" ]] && sample_lines+=("    $chg")
+    [[ -n "$chg" ]] && sample_lines+=("    ✔   ${chg:3}")
   done <<< "$changes"
-  sample_lines+=("" "Commit message or [Enter] for default:" "Push to $repo? [Y|n]" "✔ Push to remote successful!")
+  sample_lines+=("" "  Push changed file(s) to $repo ($branch)? [Y]/[n]" "Done. Press any key to return to main menu...")
 
   local w h
   read -r w h < <( popsizer "${sample_lines[@]}" )
-  (( w < 50 )) && w=50
+  (( w < 54 )) && w=54
   (( h < 12 )) && h=12
 
-  popped "" "Sync Project" "d" "$w" "$h" "$SCRIPT_SELF" view
+  popped "" "Sync Project: $repo" "d" "$w" "$h" "$SCRIPT_SELF" view
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
