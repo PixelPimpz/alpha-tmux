@@ -42,11 +42,11 @@ load_button() {
 }
 
 format_button() {
-  local badge="$1" name="$2" icon="$3" state="${4:-enabled}" max="${5:-0}"
+  local badge="$1" name="$2" icon="$3" state="${4:-enabled}" max="${5:-0}" selected="${6:-0}"
   local glyph
   glyph="$(get_icon "$icon")"
 
-  local c_icon="$ICONC" c_text="$TEXTC" c_brack="$BRACKETC" c_key="$KEYC"
+  local bg="$BUTTON_BGC" c_icon="$ICONC" c_text="$TEXTC" c_brack="$BRACKETC" c_key="$KEYC"
   if [[ "$state" == "dimmed" ]]; then
     c_icon="$MUTEDC"
     c_text="$MUTEDC"
@@ -67,8 +67,16 @@ format_button() {
   local lpad=""
   (( ${#badge} == 1 )) && lpad=" "
 
+  if (( selected == 1 )) &&  [[ "$state" != "dimmed" ]]; then
+    bg="${ACTIVE_BGC:-$BUTTON_BGC}"
+    c_brack="$TEXTC"
+    c_key="$KEYC"
+    c_text="$ACCENTC"
+    c_icon="$HEADERC"
+  fi
+ 
   printf "%s %s%s[%s%s%s] %s%-${max}s  %s%s %s" \
-    "$BUTTON_BGC" \
+    "$bg" \
     "$lpad" \
     "$c_brack" \
     "$c_key" "$badge" \
@@ -92,6 +100,7 @@ menus() {
   local menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}"
   local title="$2"
   local depth="${3:-1}"
+  local selected="${4:-1}"
 
   declare -gA ACTIVE_MENU_BTNS=()
   declare -gA ACTIVE_MENU_META=()
@@ -175,6 +184,9 @@ menus() {
         ACTIVE_MENU_BTNS["${badge}_msg"]="${BTN[msg]}"
         ACTIVE_MENU_BTNS["${badge}_alt_comm"]="${BTN[alt_comm]}"
         ACTIVE_MENU_BTNS["${badge}_stay"]="${BTN[stay]:-0}"
+        ACTIVE_MENU_META["key_${badge}_col"]="$c"
+        ACTIVE_MENU_META["key_${badge}_row"]="$r"
+        ACTIVE_MENU_META["cell_${c}_${r}"]="$badge"
       fi
 
       BTN_NAME["${c}_${r}"]="$b_name"
@@ -191,6 +203,7 @@ menus() {
 
   ACTIVE_MENU_META["has_multi_digit"]="$has_multi_digit"
   ACTIVE_MENU_META["total_keys"]="$auto_key"
+  ACTIVE_MENU_META["num_cols"]="$num_cols"
 
   # Step 2: Format buttons and compute placeholder for empty slots
   local sample_btn clean_sample buttonw empty_btn
@@ -202,7 +215,9 @@ menus() {
   for (( c = 0; c < num_cols; c++ )); do
     local cnt="${COL_BTN_COUNTS["$c"]:-0}"
     for (( r = 0; r < cnt; r++ )); do
-      GRID_CELL["${c}_${r}"]="$(format_button "${BTN_BADGE["${c}_${r}"]}" "${BTN_NAME["${c}_${r}"]}" "${BTN_ICON["${c}_${r}"]}" "${BTN_STATE["${c}_${r}"]}" "$max_w")"
+      local is_sel=0
+      [[ "${BTN_BADGE["${c}_${r}"]}" == "$selected" ]] && is_sel=1
+      GRID_CELL["${c}_${r}"]="$(format_button "${BTN_BADGE["${c}_${r}"]}" "${BTN_NAME["${c}_${r}"]}" "${BTN_ICON["${c}_${r}"]}" "${BTN_STATE["${c}_${r}"]}" "$max_w" "$is_sel")"
     done
   done
 
@@ -227,6 +242,6 @@ menus() {
   if (( depth > 1 )); then
     center -n "Enter menu selection or press $(keys "ESC")${PROMPTC} to return to main menu." "$PROMPTC"
   else
-    center -n "Enter menu selection or press $(keys "ENTER 󰌑")${PROMPTC} for a ${SHELL##*/} prompt." "$PROMPTC"
+    center -n "Select an option or press $(keys "q")${PROMPTC} for a ${SHELL##*/} prompt." "$PROMPTC"
   fi
 }

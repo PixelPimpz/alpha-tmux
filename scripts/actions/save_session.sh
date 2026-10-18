@@ -102,14 +102,14 @@ main() {
     local prompt_title="Save Session"
     [[ "$mode" == "save_as" ]] && prompt_title="Save Session As"
 
-    bp_name="$(pu_input "Session name:" "$init_val" "$prompt_title")" || return 0
-    [[ -z "$bp_name" ]] && return 0
+    bp_name="$(pu_input "Session name:" "$init_val" "$prompt_title")" || return 1
+    [[ -z "$bp_name" ]] && return 1
 
     bp_file="$BLUEPRINTS_D/${bp_name}.yaml"
 
     # Collision guard: warn and confirm before overwriting an existing blueprint
     if [[ -f "$bp_file" ]]; then
-      pu_confirm "Session '$bp_name' exists. Overwrite?" "Overwrite Session" 1 "Overwrite" "Cancel" || return 0
+      pu_confirm "Session '$bp_name' exists. Overwrite?" "Overwrite Session" 1 "Overwrite" "Cancel" || return 1
     fi
 
     # Synchronize live tmux session name if saving under a new name

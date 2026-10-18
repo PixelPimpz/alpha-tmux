@@ -14,5 +14,16 @@ columns:
     buttons:
       - name: "Desktop Logout"
         icon: "logout"
-        comm: "$ACTIONS/syscontrol.sh"
-        active: 0
+        comm: "$ACTIONS/syscontrol.sh logout"
+
+      - name: "System Reboot"
+        icon: "restart"
+        comm: "$ACTIONS/syscontrol.sh reboot"
+
+      - name: "Reboot to EFI/BIOS"
+        icon: "chip"
+        comm: "$ACTIONS/syscontrol.sh bios"
+
+      - name: "Soft System Reboot"
+        icon: "restart"
+        comm: "$ACTIONS/syscontrol.sh soft-reboot"

@@ -54,3 +54,34 @@ nav_nxt() {
   esac
   printf "%d\n" "$nxt"
 }
+
+grid_nav() {
+  local cur="$1" key="$2"
+  local total="${ACTIVE_MENU_META[total_keys]:-1}"
+  local num_cols="${ACTIVE_MENU_META[num_cols]:-1}"
+  local c="${ACTIVE_MENU_META["key_${cur}_col"]:-0}"
+  local r="${ACTIVE_MENU_META["key_${cur}_row"]:-0}"
+  local nxt="$cur"
+
+  case "$key" in
+    DOWN|j|J)
+      nxt=$(( cur < total ? cur + 1 : 1 )) ;;
+    UP|k|K)
+      nxt=$(( cur > 1 ? cur - 1 : total )) ;;
+    RIGHT|l|L|TAB|LEFT|h|H)
+      local dir=1
+      [[ "$key" =~ ^(LEFT|h|H)$ ]] && dir=-1
+      local step nc nr cand
+      for (( step = 1; step < num_cols; step++ )); do
+        nc=$(( (c + step * dir + num_cols) % num_cols ))
+        for (( nr = r; nr >= 0; nr-- )); do
+          cand="${ACTIVE_MENU_META["cell_${nc}_${nr}"]}"
+          if [[ -n "$cand" ]]; then
+            nxt="$cand"
+            break 2
+          fi
+        done
+      done ;;
+  esac
+  printf "%s\n" "$nxt"
+}

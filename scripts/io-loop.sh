@@ -21,7 +21,7 @@ source "$UI/headers.sh"
 source "$UI/menus.sh"
 
 main () {
-  local menu pressed comm current_menu depth
+  local menu pressed comm current_menu depth selected=1 last_menu=""
   local NAV_STACK=()
   menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}" 
   [[ ! -f  $menu ]] && fatal "$menu not found"
@@ -31,6 +31,10 @@ main () {
   #
   while true; do 
     Stack_peek NAV_STACK current_menu
+    if [[ "$current_menu" != "$last_menu" ]]; then
+      selected=1
+      last_menu="$current_menu"
+    fi
     ac                                            # deep clear screen
     header_gen
     Stack_size NAV_STACK depth
@@ -41,10 +45,10 @@ main () {
        trail="${ICONC}$(get_icon "folder")  ${TEXTC}~${PWD#"$HOME"}${RESET}"
     fi
     center " "
-    menus "$current_menu" "$trail" "$depth"
+    menus "$current_menu" "$trail" "$depth" "$selected"
     
     # READ INPUT
-    read -r -n 1 -s pressed
+    cap_key pressed
     if [[ "${ACTIVE_MENU_META["has_multi_digit"]:-1}" == "1" && "$pressed" == "1" ]]; then
       # allow for multi-digit entry
       if read -rt 0.25 -n 1 -s key && [[ "$key" =~ [0-9] ]]; then
@@ -52,15 +56,19 @@ main () {
       fi
     fi
     case "$pressed" in
-      q|Q|"")
+      UP|DOWN|LEFT|RIGHT|TAB|h|j|k|l|H|J|K|L)
+        selected="$(grid_nav "$selected" "$pressed")"
+        continue ;;
+      q|Q)
         cursor on
-        ac 
+        ac
         exec "$SHELL" ;;
-      $'\e')
-        Stack_size NAV_STACK depth 
+      ESC)
+        Stack_size NAV_STACK depth
         (( depth > 1 )) && Stack_pop NAV_STACK discarded
         ;;
       *)
+        [[ "$pressed" == "ENTER" ]] && pressed="$selected"
         if ! load_button "$pressed" "$current_menu"; then
           tmux status "Key $pressed not recognized."
           continue

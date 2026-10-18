@@ -33,7 +33,7 @@ pu_confirm_view() {
   (( ${#labels[@]} == 0 )) && labels=("Yes" "No")
 
   ac
-  printf "\033[3;1H"
+  printf "\033[2;1H"
   center "$msg"
   pu_buttons "$def_idx" "${labels[@]}"
 }

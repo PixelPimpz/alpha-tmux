@@ -94,6 +94,7 @@ ENTRY
   TEXTC          .ui.menu_text
   ICONC          .ui.menu_icon
   BUTTON_BGC     .ui.button_bg // .palette.bg1
+  ACTIVE_BGC     .ui.active_bg // .palette.bg2
   ACCENTC        .ui.accent
   PROMPTC        .ui.accent
   SUCCESSC       .ui.success

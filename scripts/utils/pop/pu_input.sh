@@ -87,7 +87,7 @@ pu_input_view() {
     local idx label plain b_pad buttons=""
     for (( idx=0; idx<"${#labels[@]}"; idx++ )) do
       label="${labels[$idx]}"
-      if [[ "$mode" == "buttons"  && "$idx" == "$btn_idx" ]]; then
+      if (( idx == btn_idx )); then
         button="${ACCENTC}[ $label ]${RESET}"
       else
         button="${MUTEDC}[ $label ]${RESET}"
@@ -124,6 +124,7 @@ pu_input_view() {
           TAB | DOWN)
             overwrite=0
             mode="buttons"
+            btn_idx=1
             draw_field
             draw_buttons ;;
           LEFT)
@@ -174,6 +175,7 @@ pu_input_view() {
       case "$key" in
         UP)
           mode="input"
+          btn_idx=0
           draw_buttons
           draw_field ;;
         TAB)

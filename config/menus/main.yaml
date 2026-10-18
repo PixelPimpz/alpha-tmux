@@ -34,7 +34,7 @@ columns:
 
       - name: "System Control..."
         icon: "gear"
-        comm: '$MENUS/preferences.yaml'
+        comm: '$MENUS/syscontrol.yaml'
 
   - title: "Lifecycle"
     buttons:

@@ -99,3 +99,7 @@ icons:
     glyph: f0343
   - name: ai
     glyph: f09d1
+  - name: restart
+    glyph: ead2
+  - name: chip
+    glyph: ec19
