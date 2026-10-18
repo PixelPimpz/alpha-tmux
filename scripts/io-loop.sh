@@ -21,7 +21,7 @@ source "$UI/headers.sh"
 source "$UI/menus.sh"
 
 main () {
-  local menu pressed comm current_menu depth selected=1 last_menu=""
+  local menu pressed comm current_menu depth selected=1 last_menu="" refresh=1 trail=""
   local NAV_STACK=()
   menu="${1:-$PLUGIN_ROOT/config/menus/main.yaml}" 
   [[ ! -f  $menu ]] && fatal "$menu not found"
@@ -34,18 +34,25 @@ main () {
     if [[ "$current_menu" != "$last_menu" ]]; then
       selected=1
       last_menu="$current_menu"
+      refresh=1
     fi
-    ac                                            # deep clear screen
-    header_gen
     Stack_size NAV_STACK depth
-    local trail=""
-    if (( depth > 1 )); then
-      breadcrumbs NAV_STACK trail
+    if (( refresh == 1 )); then
+      ac                                            # deep clear screen
+      header_gen
+      trail=""
+      if (( depth > 1 )); then
+        breadcrumbs NAV_STACK trail
+      else
+        trail="${ICONC}$(get_icon "folder")  ${TEXTC}~${PWD#"$HOME"}${RESET}"
+      fi
+      center " "
+      printf "\033[s"                               # save cursor above menu box
     else
-       trail="${ICONC}$(get_icon "folder")  ${TEXTC}~${PWD#"$HOME"}${RESET}"
+      printf "\033[u"                               # restore cursor above menu box
     fi
-    center " "
-    menus "$current_menu" "$trail" "$depth" "$selected"
+    menus "$current_menu" "$trail" "$depth" "$selected" "$refresh"
+    refresh=1
     
     # READ INPUT
     cap_key pressed
@@ -58,6 +65,7 @@ main () {
     case "$pressed" in
       UP|DOWN|LEFT|RIGHT|TAB|h|j|k|l|H|J|K|L)
         selected="$(grid_nav "$selected" "$pressed")"
+        refresh=0
         continue ;;
       q|Q)
         cursor on

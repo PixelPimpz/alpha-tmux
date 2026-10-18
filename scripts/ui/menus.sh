@@ -101,133 +101,139 @@ menus() {
   local title="$2"
   local depth="${3:-1}"
   local selected="${4:-1}"
+  local refresh="${5:-1}"
 
-  declare -gA ACTIVE_MENU_BTNS=()
-  declare -gA ACTIVE_MENU_META=()
-  local -A GRID_CELL=()
+  if (( refresh == 1 )); then
+    declare -gA ACTIVE_MENU_BTNS=()
+    declare -gA ACTIVE_MENU_META=()
+    declare -gA BTN_BADGE=() COL_BTN_COUNTS=() CELL_NORM=() CELL_HIGH=()
 
-  local num_cols=0
-  num_cols=$(yq_len ".columns" "$menu")
-  (( num_cols == 0 )) && return 1
+    local num_cols=0
+    num_cols=$(yq_len ".columns" "$menu")
+    (( num_cols == 0 )) && return 1
 
-  local auto_key=0 max_w=0 max_rows=0 has_multi_digit=0
+    local auto_key=0 max_w=0 max_rows=0 has_multi_digit=0
 
-  # Step 1: Pre-scan columns and buttons via yqtools, evaluate active/if/alt, assign auto-keys, and calculate max_w
-  local -A BTN_NAME=() BTN_ICON=() BTN_BADGE=() BTN_STATE=()
-  local -A COL_BTN_COUNTS=()
+    # Step 1: Pre-scan columns and buttons via yqtools, evaluate active/if/alt, assign auto-keys, and calculate max_w
+    local -A BTN_NAME=() BTN_ICON=() BTN_STATE=()
 
-  for (( c = 0; c < num_cols; c++ )); do
-    local num_btns
-    num_btns=$(yq_len ".columns[$c].buttons" "$menu")
-    local r=0
+    for (( c = 0; c < num_cols; c++ )); do
+      local num_btns
+      num_btns=$(yq_len ".columns[$c].buttons" "$menu")
+      local r=0
 
-    for (( b = 0; b < num_btns; b++ )); do
-      local -A BTN=()
-      local k v
-      while IFS="=" read -r k v; do
-        [[ -n "$k" ]] && BTN["$k"]="$v"
-      done < <(yq_button_props "$c" "$b" "$menu")
+      for (( b = 0; b < num_btns; b++ )); do
+        local -A BTN=()
+        local k v
+        while IFS="=" read -r k v; do
+          [[ -n "$k" ]] && BTN["$k"]="$v"
+        done < <(yq_button_props "$c" "$b" "$menu")
 
-      [[ -z "${BTN[name]}" ]] && continue
+        [[ -z "${BTN[name]}" ]] && continue
 
-      # Filter: active: [0 | 1] / [false | true]
-      local b_active="${BTN[active]:-1}"
-      if [[ "$b_active" =~ ^(0|false)$ ]]; then
-        continue
-      fi
-
-      # Evaluate runtime condition if:
-      local b_state="enabled"
-      local b_if="${BTN[if]:-true}"
-      local b_alt="${BTN[alt]:-dimmed}"
-
-      if [[ "$b_if" != "true" ]]; then
-        if ! eval "$b_if" &>/dev/null; then
-          case "$b_alt" in
-            no-display|hide|hidden)
-              continue ;;
-            toast|warning|notice)
-              b_state="toast" ;;
-            install)
-              b_state="install" ;;
-            dimmed|disabled|*)
-              b_state="dimmed" ;;
-          esac
+        # Filter: active: [0 | 1] / [false | true]
+        local b_active="${BTN[active]:-1}"
+        if [[ "$b_active" =~ ^(0|false)$ ]]; then
+          continue
         fi
-      fi
 
-      # Expand dynamic name (e.g. $(get_option startup))
-      local b_name="${BTN[name]}"
-      eval "b_name=\"$b_name\""
-      local len="${#b_name}"
-      (( len > max_w )) && max_w="$len"
+        # Evaluate runtime condition if:
+        local b_state="enabled"
+        local b_if="${BTN[if]:-true}"
+        local b_alt="${BTN[alt]:-dimmed}"
 
-      # Determine badge & key
-      local badge="${BTN[key]}"
-      if [[ -z "$badge" || "$badge" == "null" ]]; then
-        if [[ "$b_state" == "dimmed" ]]; then
-          badge="-"
-        else
-          (( auto_key++ ))
-          badge="$auto_key"
+        if [[ "$b_if" != "true" ]]; then
+          if ! eval "$b_if" &>/dev/null; then
+            case "$b_alt" in
+              no-display|hide|hidden)
+                continue ;;
+              toast|warning|notice)
+                b_state="toast" ;;
+              install)
+                b_state="install" ;;
+              dimmed|disabled|*)
+                b_state="dimmed" ;;
+            esac
+          fi
         fi
-      fi
 
-      (( ${#badge} > 1 )) && has_multi_digit=1
+        # Expand dynamic name (e.g. $(get_option startup))
+        local b_name="${BTN[name]}"
+        eval "b_name=\"$b_name\""
+        local len="${#b_name}"
+        (( len > max_w )) && max_w="$len"
 
-      # Register active key for io-loop
-      if [[ "$b_state" != "dimmed" && "$badge" != "-" ]]; then
-        ACTIVE_MENU_BTNS["${badge}_name"]="$b_name"
-        ACTIVE_MENU_BTNS["${badge}_comm"]="${BTN[comm]}"
-        ACTIVE_MENU_BTNS["${badge}_icon"]="${BTN[icon]}"
-        ACTIVE_MENU_BTNS["${badge}_state"]="$b_state"
-        ACTIVE_MENU_BTNS["${badge}_msg"]="${BTN[msg]}"
-        ACTIVE_MENU_BTNS["${badge}_alt_comm"]="${BTN[alt_comm]}"
-        ACTIVE_MENU_BTNS["${badge}_stay"]="${BTN[stay]:-0}"
-        ACTIVE_MENU_META["key_${badge}_col"]="$c"
-        ACTIVE_MENU_META["key_${badge}_row"]="$r"
-        ACTIVE_MENU_META["cell_${c}_${r}"]="$badge"
-      fi
+        # Determine badge & key
+        local badge="${BTN[key]}"
+        if [[ -z "$badge" || "$badge" == "null" ]]; then
+          if [[ "$b_state" == "dimmed" ]]; then
+            badge="-"
+          else
+            (( auto_key++ ))
+            badge="$auto_key"
+          fi
+        fi
 
-      BTN_NAME["${c}_${r}"]="$b_name"
-      BTN_ICON["${c}_${r}"]="${BTN[icon]}"
-      BTN_BADGE["${c}_${r}"]="$badge"
-      BTN_STATE["${c}_${r}"]="$b_state"
+        (( ${#badge} > 1 )) && has_multi_digit=1
 
-      (( r++ ))
+        # Register active key for io-loop
+        if [[ "$b_state" != "dimmed" && "$badge" != "-" ]]; then
+          ACTIVE_MENU_BTNS["${badge}_name"]="$b_name"
+          ACTIVE_MENU_BTNS["${badge}_comm"]="${BTN[comm]}"
+          ACTIVE_MENU_BTNS["${badge}_icon"]="${BTN[icon]}"
+          ACTIVE_MENU_BTNS["${badge}_state"]="$b_state"
+          ACTIVE_MENU_BTNS["${badge}_msg"]="${BTN[msg]}"
+          ACTIVE_MENU_BTNS["${badge}_alt_comm"]="${BTN[alt_comm]}"
+          ACTIVE_MENU_BTNS["${badge}_stay"]="${BTN[stay]:-0}"
+          ACTIVE_MENU_META["key_${badge}_col"]="$c"
+          ACTIVE_MENU_META["key_${badge}_row"]="$r"
+          ACTIVE_MENU_META["cell_${c}_${r}"]="$badge"
+        fi
+
+        BTN_NAME["${c}_${r}"]="$b_name"
+        BTN_ICON["${c}_${r}"]="${BTN[icon]}"
+        BTN_BADGE["${c}_${r}"]="$badge"
+        BTN_STATE["${c}_${r}"]="$b_state"
+
+        (( r++ ))
+      done
+
+      COL_BTN_COUNTS["$c"]="$r"
+      (( r > max_rows )) && max_rows="$r"
     done
 
-    COL_BTN_COUNTS["$c"]="$r"
-    (( r > max_rows )) && max_rows="$r"
-  done
+    ACTIVE_MENU_META["has_multi_digit"]="$has_multi_digit"
+    ACTIVE_MENU_META["total_keys"]="$auto_key"
+    ACTIVE_MENU_META["num_cols"]="$num_cols"
+    ACTIVE_MENU_META["max_rows"]="$max_rows"
 
-  ACTIVE_MENU_META["has_multi_digit"]="$has_multi_digit"
-  ACTIVE_MENU_META["total_keys"]="$auto_key"
-  ACTIVE_MENU_META["num_cols"]="$num_cols"
+    # Step 2: Pre-format both normal and highlighted states once
+    local sample_btn clean_sample buttonw
+    sample_btn="$(format_button "1" "Sample Button" "gear" "enabled" "$max_w" 0)"
+    clean_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
+    buttonw="${#clean_sample}"
+    printf -v EMPTY_BTN_CACHE "%*s" "$buttonw" ""
 
-  # Step 2: Format buttons and compute placeholder for empty slots
-  local sample_btn clean_sample buttonw empty_btn
-  sample_btn="$(format_button "1" "Sample Button" "gear" "enabled" "$max_w")"
-  clean_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
-  buttonw="${#clean_sample}"
-  printf -v empty_btn "%*s" "$buttonw" ""
-
-  for (( c = 0; c < num_cols; c++ )); do
-    local cnt="${COL_BTN_COUNTS["$c"]:-0}"
-    for (( r = 0; r < cnt; r++ )); do
-      local is_sel=0
-      [[ "${BTN_BADGE["${c}_${r}"]}" == "$selected" ]] && is_sel=1
-      GRID_CELL["${c}_${r}"]="$(format_button "${BTN_BADGE["${c}_${r}"]}" "${BTN_NAME["${c}_${r}"]}" "${BTN_ICON["${c}_${r}"]}" "${BTN_STATE["${c}_${r}"]}" "$max_w" "$is_sel")"
+    for (( c = 0; c < num_cols; c++ )); do
+      local cnt="${COL_BTN_COUNTS["$c"]:-0}"
+      for (( r = 0; r < cnt; r++ )); do
+        CELL_NORM["${c}_${r}"]="$(format_button "${BTN_BADGE["${c}_${r}"]}" "${BTN_NAME["${c}_${r}"]}" "${BTN_ICON["${c}_${r}"]}" "${BTN_STATE["${c}_${r}"]}" "$max_w" 0)"
+        CELL_HIGH["${c}_${r}"]="$(format_button "${BTN_BADGE["${c}_${r}"]}" "${BTN_NAME["${c}_${r}"]}" "${BTN_ICON["${c}_${r}"]}" "${BTN_STATE["${c}_${r}"]}" "$max_w" 1)"
+      done
     done
-  done
+  fi
 
-  # Step 3: Build 2D grid row-by-row across columns
+  # Step 3: Build 2D grid row-by-row across columns from cached cells
+  local num_cols="${ACTIVE_MENU_META["num_cols"]:-1}"
+  local max_rows="${ACTIVE_MENU_META["max_rows"]:-0}"
   local menu_text=""
   for (( r = 0; r < max_rows; r++ )); do
     local rstring=""
     for (( c = 0; c < num_cols; c++ )); do
       (( c > 0 )) && rstring+=" "
-      rstring+="${GRID_CELL["${c}_${r}"]:-$empty_btn}"
+      local cell="${CELL_NORM["${c}_${r}"]:-$EMPTY_BTN_CACHE}"
+      [[ "${BTN_BADGE["${c}_${r}"]}" == "$selected" ]] && cell="${CELL_HIGH["${c}_${r}"]}"
+      rstring+="$cell"
     done
 
     if [[ -z "$menu_text" ]]; then
