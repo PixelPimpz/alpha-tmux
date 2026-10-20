@@ -2,6 +2,10 @@ title: "Sessions"
 columns:
   - title: "Management"
     buttons:
+      - name: "New Session"
+        icon: "new_session"
+        comm: "tmux new-session"
+
       - name: "Load Session"
         icon: "infile"
         comm: "$ACTIONS/load_session.sh"
@@ -14,20 +18,16 @@ columns:
         icon: "floppy"
         comm: "$ACTIONS/save_session.sh --as"
 
+      - name: "Rename Session"
+        icon: "rename"
+        comm: "$ACTIONS/rename_session.sh"
+
       - name: "Delete Session"
         icon: "cancel"
         comm: "$ACTIONS/delete_session.sh"
 
   - title: "Control"
     buttons:
-      - name: "New Session"
-        icon: "new_session"
-        comm: "tmux new-session"
-
-      - name: "Rename Session"
-        icon: "rename"
-        comm: "$ACTIONS/rename_session.sh"
-
       - name: "Detach from Session"
         icon: "pause"
         comm: "tmux detach-client"
