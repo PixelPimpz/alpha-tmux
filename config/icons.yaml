@@ -103,3 +103,5 @@ icons:
     glyph: ead2
   - name: chip
     glyph: ec19
+  - name: palette
+    glyph: e22b

@@ -40,3 +40,18 @@ columns:
         icon: "kill"
         comm: "tmux kill-server"
 
+  - title: "Look & Feel"
+    buttons:
+      - name: "Color Themes..." 
+        icon: "color"
+        comm: "$ACTIONS/select-theme.sh"
+
+      - name: 'On Startup: $(get_option startup "[4 Options...]")'
+        icon: "settings"
+        comm: '$UTILS/profiler.sh step_option startup none last default menu'
+        stay: 1
+
+      - name: "Default Proj: $(get_option defaultd)"
+        icon: "folder-plus"
+        if: '[[ "$(get_option startup)" == "default" ]]'
+        comm: "$ACTIONS/to_project.sh --default"

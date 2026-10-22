@@ -24,10 +24,6 @@ columns:
         icon: "tmux"
         comm: '$MENUS/tmux_control.yaml'
 
-      - name: "aTMUX Preferences..."
-        icon: "settings"
-        comm: '$MENUS/preferences.yaml'
-
       - name: "Git Control..."
         icon: "git"
         comm: "$MENUS/git_control.yaml"
