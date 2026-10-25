@@ -12,4 +12,4 @@ columns:
 
     - name: "Sync Dotfiles"
       icon: "dotfiles"
-      comm: "cd $DOTFILES && push"
+      comm: "cd $DOTFILES && $ACTIONS/push.sh"

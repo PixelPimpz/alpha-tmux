@@ -14,12 +14,12 @@ columns:
         icon: "floppy"
         comm: "$ACTIONS/save_session.sh"
 
-      - name: "Session Manager"
+  - title: "Controls"
+    buttons:
+      - name: "Session Manager..."
         icon: "submodule"
         comm: "$MENUS/session.yaml"
 
-  - title: "Controls"
-    buttons:
       - name: "TMUX Control..."
         icon: "tmux"
         comm: '$MENUS/tmux_control.yaml'
