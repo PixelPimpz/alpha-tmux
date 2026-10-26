@@ -44,6 +44,14 @@ hex2ansi() {
   printf '%s' "\e[${mode};2;${Rd};${Gd};${Bd}m"
 }
 
+brighten_hex() {
+  local hex="${1:-#3c3836}" delta="${2:-38}" r g b
+  r=$(( 16#${hex:1:2} + delta )); (( r > 255 )) && r=255; (( r < 0 )) && r=0
+  g=$(( 16#${hex:3:2} + delta )); (( g > 255 )) && g=255; (( g < 0 )) && g=0
+  b=$(( 16#${hex:5:2} + delta )); (( b > 255 )) && b=255; (( b < 0 )) && b=0
+  printf "#%02x%02x%02x" "$r" "$g" "$b"
+}
+  
 loader() {
   local old 
   old="$( head -n1 "$HIGHLIGHT" 2>/dev/null | awk '{print $NF}')"
@@ -68,7 +76,11 @@ highlighter() {
 
   local group color hex ansi 
   while read -r group color; do
-    hex="$(yq_get "$color" "$THEME")"
+    if [[ "$group" == "ACTIVE_BGC" ]]; then
+      hex="$(brighten_hex "$(yq_get "$color" "$THEME")" 38)"
+    else
+      hex="$(yq_get "$color" "$THEME")"
+    fi   
     [[ -z "$hex" || "$hex" == "null" ]] && continue
     if [[ "$color" =~ bg ]]; then
       ansi="$(hex2ansi -bg "$hex")"
@@ -94,7 +106,7 @@ ENTRY
   TEXTC          .ui.menu_text
   ICONC          .ui.menu_icon
   BUTTON_BGC     .ui.button_bg // .palette.bg1
-  ACTIVE_BGC     .ui.active_bg // .palette.bg2
+  ACTIVE_BGC     .ui.button_bg // .palette.bg1
   ACCENTC        .ui.accent
   PROMPTC        .ui.accent
   SUCCESSC       .ui.success

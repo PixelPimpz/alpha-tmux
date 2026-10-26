@@ -97,5 +97,5 @@ yq_button_props() {
 yq_button_by_key() {
   local KEY="$1" file="$2"
   [[ -f "$file" ]] || return 1
-  KEY="$KEY" yq eval '.columns[].buttons[] | select(.key == env(KEY)) | to_entries | .[] | .key + "=" + .value' "$file" 2>/dev/null
+  KEY="$KEY" yq eval '.columns[].buttons[] | select(.key == strenv(KEY)) | to_entries | .[] | .key + "=" + .value' "$file" 2>/dev/null
 }

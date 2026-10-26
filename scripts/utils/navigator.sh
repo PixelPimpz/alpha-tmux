@@ -13,12 +13,17 @@ cap_key() {
   case "$_k" in
     $'\x1b')
       IFS= read -rsn2 -t 0.05 _rest
+      local _extra
+      while IFS= read -rsn1 -t 0.01 _extra; do
+        _rest+="$_extra"
+      done     
       case "$_rest" in
         "[A"|"OA") _out="UP" ;;
         "[B"|"OB") _out="DOWN" ;;
         "[C"|"OC") _out="RIGHT" ;;
         "[D"|"OD") _out="LEFT" ;;
-        *)         _out="ESC" ;;
+        "")        _out="ESC" ;;
+        *)         _out="IGNORE" ;;
       esac ;;
     ""|$'\n'|$'\r')
       _out="ENTER" ;;

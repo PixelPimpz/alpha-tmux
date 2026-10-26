@@ -75,10 +75,12 @@ main () {
         Stack_size NAV_STACK depth
         (( depth > 1 )) && Stack_pop NAV_STACK discarded
         ;;
+      IGNORE) refresh=0; continue ;;
       *)
         [[ "$pressed" == "ENTER" ]] && pressed="$selected"
         if ! load_button "$pressed" "$current_menu"; then
           tmux status "Key $pressed not recognized."
+          refresh=0
           continue
         fi
 
