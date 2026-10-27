@@ -36,3 +36,31 @@ step_opt() {
   nxt="$(stepper "$cur" "$@")"
   set_opt "$plug" "$prop" "$nxt"
 }
+
+unit() {
+  local target="$1" depth="${2:-1}"
+  local pdir plug enabled punit only_main start draw
+  for pdir in "$PLUGINS_D"/*; do 
+    [[ -f "$pdir/plugin.yaml" ]] || continue
+    plug="$( basename "$pdir" )"
+    
+    enabled="$( get_opt "$plug" "enabled" "ON" )"
+    [[ "$enabled" =~ ^(ON|1|true)$ ]] || continue
+    
+    punit="$( get_opt "$plug" "unit" "none" )"
+    [[ "$punit" == "$target" ]] || continue
+
+    only_main="$( get_opt "$plug" "only_main" "1" )" 
+    if [[ "$only_main" =~ ^(ON|1|true)$ ]] && (( depth >1 )); then
+      continue
+    fi
+
+    start="$( get_opt "$plug" "entry" "init.sh" )" ## i would like start instead of entry
+    draw="$( get_opt "$plug" "render" "${plug}_render" )" ## also "draw" > "render"
+
+    if [[ -f "$pdir/$start" ]]; then
+      source "$pdir/$start";
+      declare -F "$draw" >/dev/null && "$draw"
+    fi
+  done
+}
