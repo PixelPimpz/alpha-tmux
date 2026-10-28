@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-[[ -n "$_ALPHA_PLUGMAN_SH" ]] && return 0
-_ALPHA_PLUGMAN_SH=1
+[[ -n "$_ALPHA_PLUGTOOLS_SH" ]] && return 0
+_ALPHA_PLUGTOOLS_SH=1
 
 SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
@@ -55,8 +55,8 @@ unit() {
       continue
     fi
 
-    start="$( get_opt "$plug" "entry" "init.sh" )" ## i would like start instead of entry
-    draw="$( get_opt "$plug" "render" "${plug}_render" )" ## also "draw" > "render"
+    start="$( get_opt "$plug" "start" "init.sh" )" ## i would like start instead of start
+    draw="$( get_opt "$plug" "draw" "${plug}_draw" )" ## also "draw" > "draw"
 
     if [[ -f "$pdir/$start" ]]; then
       source "$pdir/$start";
@@ -64,3 +64,7 @@ unit() {
     fi
   done
 }
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  "$@"
+fi

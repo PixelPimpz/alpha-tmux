@@ -13,7 +13,3 @@ columns:
     - name: "Reload TMUX config"
       icon: "undo"
       comm: '$ACTIONS/reload-tmux.sh'
-
-    - name: "TMUX Settings..."
-      icon: "settings"
-      comm: "$MENUS/tmux-preferences.yaml"

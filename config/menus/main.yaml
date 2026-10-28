@@ -24,6 +24,10 @@ columns:
         icon: "tmux"
         comm: '$MENUS/tmux_control.yaml'
 
+      - name: "aTmux Prefs..."
+        icon: "alpha"
+        comm: '$MENUS/preferences.yaml'
+
       - name: "Git Control..."
         icon: "git"
         comm: "$MENUS/git_control.yaml"

@@ -13,7 +13,7 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 boxer() {
   local color="${1:-$BORDERC}"
   local lines=()
-  local max_len=0 plain len
+  local max_len="${4:-0}" plain len
 
   # 1. Read input lines from stdin or argument
   if [[ -n "$2" ]]; then
@@ -54,11 +54,14 @@ boxer() {
       plain_title=$(echo -e "$title" | sed -E 's/\x1b\[[0-9;]*m//g')
       title_len="${#plain_title}"
     fi
-
-    (( title_len + 6 > max_len )) && max_len=$(( title_len + 6 ))
-    (( (max_len - title_len) % 2 != 0 )) && (( max_len++ ))
+    if [[ -z "$4" ]]; then
+      (( title_len + 6 > max_len )) && max_len=$(( title_len + 6 ))
+      (( (max_len - title_len) % 2 != 0 )) && (( max_len++ ))
+    fi
   fi
 
+  LAST_BOX_W="$max_len"
+  
   # 3. Build horizontal top and bottom border bars
   local hline
   printf -v hline "%*s" "$((max_len + 2))" ""

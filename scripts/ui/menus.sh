@@ -245,9 +245,4 @@ menus() {
 
   # Step 4: Draw box & print selection prompt
   boxer "$BORDERC" "$menu_text" "$title"
-  if (( depth > 1 )); then
-    center -n "Enter menu selection or press $(keys "ESC")${PROMPTC} to return to main menu." "$PROMPTC"
-  else
-    center -n "Select an option or press $(keys "q")${PROMPTC} for a ${SHELL##*/} prompt." "$PROMPTC"
-  fi
 }

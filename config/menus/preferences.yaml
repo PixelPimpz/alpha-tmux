@@ -1,26 +1,30 @@
 #settings menu
 # choose theme
-#
-title: "Alpha Settings"
+# 
+title: "aTmux Prefs"
 columns:
-  - title: "Theme"
+  - title: "Plugin Manager"
     buttons:
-    - name: "Select Color Theme"
-      icon: "color"
-      comm: "$ACTIONS/select-theme.sh"
+      - name: "Toggle Plugins..."
+        icon: "plug"
+        comm: "$ACTIONS/plugman.sh list"
 
-    - name: "Save Color Theme"
-      icon: "floppy"
-      comm:
+      - name: "Install Plugin..."
+        icon: "download"
+        comm: "$ACTIONS/plugman.sh get_new"
 
-  - title: "Behavior"
-    buttons:
-      - name: 'On Startup: $(get_option startup "[4 Options...]")'
-        icon: "settings"
-        comm: '$UTILS/profiler.sh step_option startup none last default menu'
-        stay: 1
+      - name: "Update Plugins"
+        icon: "update"
+        comm: "$ACTIONS/plugman.sh update"
 
-      - name: "Default Proj: $(get_option defaultd)"
-        icon: "folder-plus"
-        if: '[[ "$(get_option startup)" == "default" ]]'
-        comm: "$ACTIONS/to_project.sh --default"
+      - name: "Delete Plugin..."
+        icon: "cancel"
+        comm: "$ACTIONS/plugman.sh delete"
+
+      - title: "Plugin Settings"
+        buttons:
+          - name: 'Wisdom: $(get_opt qotd source)'
+            icon: "om"
+            if: '[[ "$(get_opt qotd enabled ON)" == "ON" ]]'
+            comm: '$UTILS/plugtools.sh step_opt qotd source dharma newage'
+            stay: 1

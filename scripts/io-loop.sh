@@ -16,6 +16,7 @@ source "$UTILS/errors.sh"
 source "$UTILS/formats.sh"
 source "$UTILS/Stack.sh"
 source "$UTILS/yqtools.sh"
+source "$UTILS/plugtools.sh"
 source "$UI/breadcrumbs.sh"
 source "$UI/headers.sh"
 source "$UI/menus.sh"
@@ -52,6 +53,7 @@ main () {
       printf "\033[u"                               # restore cursor above menu box
     fi
     menus "$current_menu" "$trail" "$depth" "$selected" "$refresh"
+    (( refresh == 1 )) && unit "pre-foot" "$depth"
     refresh=1
     
     # READ INPUT
@@ -73,7 +75,13 @@ main () {
         exec "$SHELL" ;;
       ESC)
         Stack_size NAV_STACK depth
-        (( depth > 1 )) && Stack_pop NAV_STACK discarded
+        if (( depth > 1 )); then
+          Stack_pop NAV_STACK discarded
+        else
+          cursor on
+          ac
+          exec "$SHELL"
+        fi
         ;;
       IGNORE) refresh=0; continue ;;
       *)

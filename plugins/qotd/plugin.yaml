@@ -1,0 +1,9 @@
+name: "qotd"
+title: "Daily Wisdom"
+icon: "ai"
+enabled: "ON"
+unit: "pre-foot" 
+only_main: 1
+start: "init.sh"
+draw: "qotd_draw"
+source: "dharma" 

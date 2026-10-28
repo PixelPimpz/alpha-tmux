@@ -16,6 +16,11 @@ yq_get() {
   yq eval "$expr" "$file"
 }
 
+yq_each() {
+  local expr="$1" file="${2:--}"
+  yq eval "$expr" "$file" 2>/dev/null
+}
+
 # Write a value to a YAML file in-place
 # Usage: yq_set ".Profiles[0].theme" "nord" "$CONFIG_FILE"
 yq_set() {
