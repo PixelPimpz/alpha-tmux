@@ -21,10 +21,10 @@ columns:
         icon: "cancel"
         comm: "$ACTIONS/plugman.sh delete"
 
-      - title: "Plugin Settings"
-        buttons:
-          - name: 'Wisdom: $(get_opt qotd source)'
-            icon: "om"
-            if: '[[ "$(get_opt qotd enabled ON)" == "ON" ]]'
-            comm: '$UTILS/plugtools.sh step_opt qotd source dharma newage'
-            stay: 1
+  - title: "Plugin Settings"
+    buttons:
+      - name: 'Wisdom: $(get_opt qotd source)'
+        icon: "om"
+        if: '[[ "$(get_opt qotd enabled ON)" == "ON" ]]'
+        comm: '$UTILS/plugtools.sh step_opt qotd source dharma newage'
+        stay: 1
