@@ -10,7 +10,7 @@ columns:
         comm: "$ACTIONS/plugman.sh list"
 
       - name: "Install Plugin..."
-        icon: "download"
+        icon: "plug"
         comm: "$ACTIONS/plugman.sh get_new"
 
       - name: "Update Plugins"

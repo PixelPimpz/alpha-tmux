@@ -109,3 +109,5 @@ icons:
     glyph: eed4
   - name: alpha
     glyph: f002b
+  - name: plug
+    glyph: f1e6
