@@ -212,8 +212,7 @@ menus() {
     sample_btn="$(format_button "1" "Sample Button" "gear" "enabled" "$max_w" 0)"
     clean_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
     buttonw="${#clean_sample}"
-    printf -v EMPTY_BTN_CACHE "%*s" "$buttonw" ""
-
+    printf -v EMPTY_BTN_CACHE "%s%*s%s" "$BUTTON_BGC" "$buttonw" "" "$RESET"
     for (( c = 0; c < num_cols; c++ )); do
       local cnt="${COL_BTN_COUNTS["$c"]:-0}"
       for (( r = 0; r < cnt; r++ )); do
