@@ -74,7 +74,7 @@ qotd_draw() {
   local src header quote icon
   icon="$( get_icon "om" )"
   src="$( get_opt "qotd" "source" "dharma" )"
-  case "$src" in
+  case "${src,,}" in
     off|none|0) return 0 ;;
     dharma) 
       header="Daily Dharma"

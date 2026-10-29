@@ -104,3 +104,9 @@ yq_button_by_key() {
   [[ -f "$file" ]] || return 1
   KEY="$KEY" yq eval '.columns[].buttons[] | select(.key == strenv(KEY)) | to_entries | .[] | .key + "=" + .value' "$file" 2>/dev/null
 }
+
+yq_plug_opts() {
+  local file="$1"
+  [[ -f "$file" ]] || return 1
+  yq eval '.options[]? | [.prop, .label, .icon, .values] | join("|")' "$file" 2>/dev/null
+}

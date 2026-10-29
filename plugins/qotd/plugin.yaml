@@ -1,9 +1,13 @@
 name: "qotd"
-title: "Daily Wisdom"
-icon: "ai"
+title: "QOTD"
 enabled: "ON"
 unit: "pre-foot" 
 only_main: 1
 start: "init.sh"
 draw: "qotd_draw"
-source: "dharma" 
+source: "Dharma" 
+options:
+  - prop:   "source"
+    label:  "QOTD Source: "
+    icon:   "quote"
+    values: "Dharma Newage OFF"

@@ -1,0 +1,31 @@
+title: "Plugin Manager"
+columns:
+  - title: "Plugin Manager"
+    buttons:
+      - name: "Get New Plugins..."
+        icon: "package_plus"
+        comm: "detail:catalog"
+
+      - name: "Plugin From File..."
+        icon: "infile"
+        comm: "detail:file"
+
+      - name: "Update Plugins"
+        icon: "update"
+        comm: "run:update"
+
+      - name: "Uninstall Plugin..."
+        icon: "package_remove"
+        comm: "mode:uninstall"
+
+      - name: "Health Check"
+        icon: "pass"
+        comm: "detail:health"
+
+      - name: "Clear Plugin Cache"
+        icon: "trash"
+        comm: "run:clear_cache"
+
+      - name: "New Plugin..."
+        icon: "pencil"
+        comm: "detail:scaffold"
