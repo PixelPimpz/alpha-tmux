@@ -117,3 +117,5 @@ icons:
     glyph: f19d6
   - name: trash
     glyph: ea81
+  - name: quote
+    glyph: f1021
