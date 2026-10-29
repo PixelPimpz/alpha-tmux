@@ -24,9 +24,9 @@ columns:
         icon: "tmux"
         comm: '$MENUS/tmux_control.yaml'
 
-      - name: "aTmux Prefs..."
+      - name: "aTmux Plugman..."
         icon: "alpha"
-        comm: '$MENUS/preferences.yaml'
+        comm: '$ACTIONS/plugman.sh'
 
       - name: "Git Control..."
         icon: "git"
