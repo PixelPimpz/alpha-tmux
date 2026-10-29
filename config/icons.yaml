@@ -111,3 +111,9 @@ icons:
     glyph: f002b
   - name: plug
     glyph: f1e6
+  - name: package_plus
+    glyph: f19d5
+  - name: package_remove
+    glyph: f19d6
+  - name: trash
+    glyph: ea81
