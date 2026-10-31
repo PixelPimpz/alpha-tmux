@@ -119,3 +119,5 @@ icons:
     glyph: ea81
   - name: quote
     glyph: f1021
+  - name: heart
+    glyph: ec04
