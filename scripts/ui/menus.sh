@@ -208,10 +208,14 @@ menus() {
     ACTIVE_MENU_META["max_rows"]="$max_rows"
 
     # Step 2: Pre-format both normal and highlighted states once
-    local sample_btn clean_sample buttonw
+    local plain_title min_w
+        plain_title="$(stripper "$title")"
+        min_w=$(( ( ${#plain_title} + 7 - (num_cols - 1) ) / num_cols - 11 ))
+        (( min_w > max_w )) && max_w="$min_w"
+    local sample_btn plain_sample buttonw
     sample_btn="$(format_button "1" "Sample Button" "gear" "enabled" "$max_w" 0)"
-    clean_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
-    buttonw="${#clean_sample}"
+    plain_sample=$(echo -e "$sample_btn" | sed -E 's/\x1b\[[0-9;]*m//g')
+    buttonw="${#plain_sample}"
     printf -v EMPTY_BTN_CACHE "%s%*s%s" "$BUTTON_BGC" "$buttonw" "" "$RESET"
     for (( c = 0; c < num_cols; c++ )); do
       local cnt="${COL_BTN_COUNTS["$c"]:-0}"

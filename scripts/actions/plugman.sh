@@ -55,3 +55,18 @@ right_menu() {
     fi
   done
 }
+
+box_col() {
+  local  col max_rows selected title max_w plain_title
+  local -n items="$1"
+  local -n out_body="$6"
+  col="$2" max_rows="$3" 
+  selected="$4" title="$5"
+  plain_title="$(stripper "$title")"
+  local min_w=$(( "${#plain_title}" - 4))
+  max_w=$min_w
+  for item in "${items[@]}"; do
+  IFS="|" read -r name _ <<< "$item"
+    (( "${#name}" > max_w )) && max_w="${#name}"
+  done
+}
