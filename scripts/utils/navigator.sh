@@ -62,10 +62,10 @@ nav_nxt() {
 
 grid_nav() {
   local cur="$1" key="$2"
-  local total="${ACTIVE_MENU_META[total_keys]:-1}"
-  local num_cols="${ACTIVE_MENU_META[num_cols]:-1}"
-  local c="${ACTIVE_MENU_META["key_${cur}_col"]:-0}"
-  local r="${ACTIVE_MENU_META["key_${cur}_row"]:-0}"
+  local total="${NAV_GRID[total_keys]:-1}"
+  local num_cols="${NAV_GRID[num_cols]:-1}"
+  local c="${NAV_GRID["key_${cur}_col"]:-0}"
+  local r="${NAV_GRID["key_${cur}_row"]:-0}"
   local nxt="$cur"
 
   case "$key" in
@@ -80,7 +80,7 @@ grid_nav() {
       for (( step = 1; step < num_cols; step++ )); do
         nc=$(( (c + step * dir + num_cols) % num_cols ))
         for (( nr = r; nr >= 0; nr-- )); do
-          cand="${ACTIVE_MENU_META["cell_${nc}_${nr}"]}"
+          cand="${NAV_GRID["cell_${nc}_${nr}"]}"
           if [[ -n "$cand" ]]; then
             nxt="$cand"
             break 2

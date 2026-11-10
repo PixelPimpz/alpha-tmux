@@ -1,13 +1,13 @@
 name: "qotd"
 title: "QOTD"
 enabled: "ON"
-unit: "pre-foot" 
+unit: "pre-foot"
 only_main: 1
 start: "init.sh"
 draw: "qotd_draw"
-source: "Dharma" 
+source: "Dharma"
 options:
-  - prop:   "source"
-    label:  "QOTD Source: "
-    icon:   "quote"
+  - prop: "source"
+    label: "QOTD Source: "
+    icon: "quote"
     values: "Dharma Newage OFF"

@@ -75,7 +75,7 @@ format_button() {
     c_icon="$HEADERC"
   fi
  
-  printf "%s %s%s[%s%s%s] %s%-${max}s  %s%s %s" \
+  printf "%s %s%s[%s%s%s] %s%-${max}s  %s%s  %s" \
     "$bg" \
     "$lpad" \
     "$c_brack" \
@@ -105,7 +105,7 @@ menus() {
 
   if (( refresh == 1 )); then
     declare -gA ACTIVE_MENU_BTNS=()
-    declare -gA ACTIVE_MENU_META=()
+    declare -gA NAV_GRID=()
     declare -gA BTN_BADGE=() COL_BTN_COUNTS=() CELL_NORM=() CELL_HIGH=()
 
     local num_cols=0
@@ -185,9 +185,9 @@ menus() {
           ACTIVE_MENU_BTNS["${badge}_msg"]="${BTN[msg]}"
           ACTIVE_MENU_BTNS["${badge}_alt_comm"]="${BTN[alt_comm]}"
           ACTIVE_MENU_BTNS["${badge}_stay"]="${BTN[stay]:-0}"
-          ACTIVE_MENU_META["key_${badge}_col"]="$c"
-          ACTIVE_MENU_META["key_${badge}_row"]="$r"
-          ACTIVE_MENU_META["cell_${c}_${r}"]="$badge"
+          NAV_GRID["key_${badge}_col"]="$c"
+          NAV_GRID["key_${badge}_row"]="$r"
+          NAV_GRID["cell_${c}_${r}"]="$badge"
         fi
 
         BTN_NAME["${c}_${r}"]="$b_name"
@@ -202,10 +202,10 @@ menus() {
       (( r > max_rows )) && max_rows="$r"
     done
 
-    ACTIVE_MENU_META["has_multi_digit"]="$has_multi_digit"
-    ACTIVE_MENU_META["total_keys"]="$auto_key"
-    ACTIVE_MENU_META["num_cols"]="$num_cols"
-    ACTIVE_MENU_META["max_rows"]="$max_rows"
+    NAV_GRID["has_multi_digit"]="$has_multi_digit"
+    NAV_GRID["total_keys"]="$auto_key"
+    NAV_GRID["num_cols"]="$num_cols"
+    NAV_GRID["max_rows"]="$max_rows"
 
     # Step 2: Pre-format both normal and highlighted states once
     local plain_title min_w
@@ -227,8 +227,8 @@ menus() {
   fi
 
   # Step 3: Build 2D grid row-by-row across columns from cached cells
-  local num_cols="${ACTIVE_MENU_META["num_cols"]:-1}"
-  local max_rows="${ACTIVE_MENU_META["max_rows"]:-0}"
+  local num_cols="${NAV_GRID["num_cols"]:-1}"
+  local max_rows="${NAV_GRID["max_rows"]:-0}"
   local menu_text=""
   for (( r = 0; r < max_rows; r++ )); do
     local rstring=""

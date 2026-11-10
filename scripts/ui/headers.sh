@@ -14,7 +14,7 @@ source "$PLUGIN_ROOT/scripts/utils/colorizer.sh"
 IMAGE="$PLUGIN_ROOT/img/tmux_2.png"
 TAGLINE="$( printf "Welcome to %s, %s! | %s" "$(tmux -V)" "$USER" "$(date "+%A, %b %d %Y")" )"
 
-header_gen() {
+header() {
   local cur_s s_info
   cur_s="$(tmux display -p '#{session_name}' )"
   s_info="$( printf "Active Session: %s\n" "${KEYC}${cur_s}${RESET}" )"

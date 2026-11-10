@@ -40,7 +40,7 @@ main () {
     Stack_size NAV_STACK depth
     if (( refresh == 1 )); then
       ac                                            # deep clear screen
-      header_gen
+      header
       trail=""
       if (( depth > 1 )); then
         breadcrumbs NAV_STACK trail
@@ -58,7 +58,7 @@ main () {
     
     # READ INPUT
     cap_key pressed
-    if [[ "${ACTIVE_MENU_META["has_multi_digit"]:-1}" == "1" && "$pressed" == "1" ]]; then
+    if [[ "${NAV_GRID["has_multi_digit"]:-1}" == "1" && "$pressed" == "1" ]]; then
       # allow for multi-digit entry
       if read -rt 0.25 -n 1 -s key && [[ "$key" =~ [0-9] ]]; then
         pressed="${pressed}${key}"
