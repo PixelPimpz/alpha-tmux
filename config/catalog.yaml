@@ -1,4 +1,11 @@
-plugins:
+installed:
+  - name: "qotd"
+    title: "QOTD"
+    icon: "quote"
+    repo: "PixelPimpz/alpha-qotd"
+    desc: "Daily Dharma & New Age wisdom below the main menu"
+
+available:
   - name: "qotd"
     title: "QOTD"
     icon: "quote"

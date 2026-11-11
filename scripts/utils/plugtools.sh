@@ -7,6 +7,9 @@ PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 PLUGINS_D="$PLUGIN_ROOT/plugins"
 A_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/alpha-tmux"
 UTILS="$PLUGIN_ROOT/scripts/utils"
+CONFIG="$PLUGIN_ROOT/config"
+
+CATALOG="$CONFIG/catalog.yaml"
 
 source "$UTILS/yqtools.sh"
 source "$UTILS/stepper.sh"
@@ -39,10 +42,10 @@ step_opt() {
 
 unit() {
   local target="$1" depth="${2:-1}"
-  local pdir plug enabled punit only_main start draw
-  for pdir in "$PLUGINS_D"/*; do 
-    [[ -f "$pdir/plugin.yaml" ]] || continue
-    plug="$( basename "$pdir" )"
+  local plugd plug enabled punit only_main start draw
+  for plugd in "$PLUGINS_D"/*; do 
+    [[ -f "$plugd/plugin.yaml" ]] || continue
+    plug="$( basename "$plugd" )"
     
     enabled="$( get_opt "$plug" "enabled" "ON" )"
     [[ "$enabled" =~ ^(ON|1|true)$ ]] || continue
@@ -58,10 +61,58 @@ unit() {
     start="$( get_opt "$plug" "start" "init.sh" )" ## i would like start instead of start
     draw="$( get_opt "$plug" "draw" "${plug}_draw" )" ## also "draw" > "draw"
 
-    if [[ -f "$pdir/$start" ]]; then
-      source "$pdir/$start";
+    if [[ -f "$plugd/$start" ]]; then
+      source "$plugd/$start";
       declare -F "$draw" >/dev/null && "$draw"
     fi
+  done
+}
+
+# synchronize 
+sync() {
+  :
+}
+
+remove() {
+  local plug
+  for plug in "$@"; do
+    [[ -n "$plug" ]] || continue
+    rm -rf "${PLUGINS_D:?}/$plug"
+    yq_delete ".installed" "name" "$plug" "$CATALOG"
+  done
+}
+
+update() {
+  local plug plugd
+  for plug in "$@"; do 
+    plugd="${PLUGINS_D}/$plug"
+    [[ -d "$plugd/.git" ]] || continue
+    if type -P "pv" &>/dev/null; then
+      git -C "$plugd" pull --ff-only --progress 2>&1 | pv -t -N "$plug" >/dev/null
+      :
+    else
+      git -C "$plugd" pull --ff-only
+    fi
+  done
+}
+
+install() {
+  local repo plug plugd url title ico desc
+  for repo in "$@"; do
+    plug="${repo##*/}"
+    plugd="${PLUGINS_D}/$plug"
+    url="https://github.com/${repo}.git"
+    if type -P "pv" &>/dev/null; then
+      git clone --progress "$url" "$plugd" 2>&1 | pv -t -N "$plug" >/dev/null
+    else 
+      git clone -q "$url" "$plugd"
+    fi
+    [[ -f "$plugd/plugin.yaml" ]] || continue
+    title="$(get_opt "$plug" "title" "$plug")"
+    ico="$(get_opt "$plug" "icon" "plug")"
+    desc="$(get_opt "$plug" "desc" "")"
+    yq_delete ".installed" "name" "$plug" "$CATALOG"
+    yq_add ".installed" "$CATALOG" "name=$plug" "title=$title" "icon=$ico" "repo=$repo" "desc=$desc" 
   done
 }
 

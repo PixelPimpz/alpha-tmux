@@ -6,6 +6,9 @@ SCRIPT_PATH="$( readlink -f "${BASH_SOURCE[0]:-$0}" )"
 PLUGIN_ROOT="$( cd "$( dirname "$SCRIPT_PATH" )/../.." && pwd )"
 UTILS="$PLUGIN_ROOT/scripts/utils"
 UI="$PLUGIN_ROOT/scripts/ui"
+CONFIG="$PLUGIN_ROOT/config"
+
+CATALOG="$CONFIG/catalog/yaml"
 
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"
@@ -192,5 +195,6 @@ main () {
     esac
   done
 }
+
 
 main "$@"
