@@ -70,7 +70,26 @@ unit() {
 
 # synchronize 
 sync() {
-  :
+  local to_install=() to_update=() to_remove=()
+  local repo plug plugd
+  for repo in $( yq_each ".installed[].repo" "$CATALOG" ); do
+    plug="${repo##*/}"
+    if [[ -d "$PLUGINS_D/$plug" ]]; then
+      to_update+=("$plug")
+    else
+      to_install+=("$repo")
+    fi
+  done
+  for plugd in "$PLUGINS_D"/*; do
+    [[ -d "$plugd" ]] || continue
+    plug="${plugd##*/}"
+    if [[ -z "$(yq_find ".installed" "name" "$plug" "name" "$CATALOG")" ]]; then
+      to_remove+=("$plug")
+    fi
+  done
+  (( "${#to_install[@]}" > 0 )) && install "${to_install[@]}"
+  (( "${#to_update[@]}" > 0 )) && update "${to_update[@]}"
+  (( "${#to_remove[@]}" > 0 )) && remove "${to_remove[@]}"
 }
 
 remove() {

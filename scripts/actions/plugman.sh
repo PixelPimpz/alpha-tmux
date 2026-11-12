@@ -8,7 +8,7 @@ UTILS="$PLUGIN_ROOT/scripts/utils"
 UI="$PLUGIN_ROOT/scripts/ui"
 CONFIG="$PLUGIN_ROOT/config"
 
-CATALOG="$CONFIG/catalog/yaml"
+CATALOG="$CONFIG/catalog.yaml"
 
 source "$UTILS/formats.sh"
 source "$UTILS/colorizer.sh"

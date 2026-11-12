@@ -9,7 +9,7 @@ available:
   - name: "qotd"
     title: "QOTD"
     icon: "quote"
-    repo: "PixelPimpz/alpha-qotd"
+    repo: "PixelPimpz/qotd"
     desc: "Daily Dharma & New Age wisdom below the main menu"
 
   - name: "crashtest-dummy"
