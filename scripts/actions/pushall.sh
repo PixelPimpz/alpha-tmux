@@ -42,11 +42,12 @@ pushall_view() {
 
   [[ ! -d "$projects" ]] && error "Projects dir not found."
 
-  # 1. Scan for dirty repos
-  local linew line longest=0
+  # 1. Scan for dirty repos and count rendered list rows
+  local linew line longest=0 list_rows=0
   for repo in "${projects%/}"/*; do
     [[ -d "$repo" ]] || continue
     is_git "$repo" &>/dev/null || continue
+    (( list_rows++ ))
     is_dirty "$repo" >/dev/null && dirty+=("$repo")
 
     # get the width of the longest line in the list
@@ -66,13 +67,14 @@ pushall_view() {
     return 0
   fi
 
-  # 3. Prompts
-  prompt "  ${PROMPTC}Commit message (optional): ${RESET}" msg
-  echo ""
+  # 3. Commit message & confirmation via pu_input_view
+  local inp_row=$(( list_rows + 5 ))
+  if ! pu_input_view -r "$inp_row" "${PROMPTC}Commit message (optional):${RESET}" "" "Push" "Cancel"; then
+    exit 0
+  fi
+  msg="$(tmux show-buffer -b alpha_input 2>/dev/null)"
+  tmux delete-buffer -b alpha_input 2>/dev/null
   cursor "off"
-  read -rp "  ${PROMPTC}Push ${#dirty[@]} dirty project(s)? $(keys "Y" "$PROMPTC")/$(keys "n" "$PROMPTC"): ${RESET}" -n1 key 
-  echo ""
-  [[ "$key" =~ ^[nN]$ ]] && exit 0
 
   # 4. Live update push loop!
   local tplugs=()
@@ -131,7 +133,7 @@ main() {
     is_git "$repo" &>/dev/null || continue
     sample_lines+=("    ✔   ${repo/$HOME/\~}")
   done
-  sample_lines+=("" "Push dirty project(s)? [Y]/[n]" "Done. Press any key to return to main menu... ")
+  sample_lines+=("" "Commit message (optional):" "" "" "[ Push ]  [ Cancel ]")
 
   local w h
   read -r w h < <( popsizer "${sample_lines[@]}" )

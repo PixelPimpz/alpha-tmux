@@ -41,19 +41,26 @@ pu_input() {
 }
 
 pu_input_view() {
+  local inp_row="" inline=0
+  if [[ "$1" == "-r" ]]; then
+    inp_row="$2"
+    inline=1
+    shift 2
+  fi
+
   local msg init labels=()
   msg="${1:-Input}"
   init="${2:-}"
   labels=("${@:3}")
   (( "${#labels[@]}" == 0 )) && labels=("Save" "Cancel")
 
-  local p_width p_height field_w pad inp_row btn_row
+  local p_width p_height field_w pad btn_row
   p_width="$(tput cols)"
   p_height="$(tput lines)"
   field_w="$(( p_width - 8 ))"
   pad="$(( ( p_width - field_w ) / 2 ))"
-  inp_row=4
-  btn_row="$(( p_height -1 ))"
+  [[ -z "$inp_row" ]] && inp_row=4
+  btn_row="$(( p_height - 1 ))"
 
   local mode buffer cursor_idx btn_idx overwrite
   mode="input"
@@ -100,7 +107,11 @@ pu_input_view() {
     printf "\033[%d;1H\033[K%*s%s" "$btn_row" "$b_pad" "" "$buttons"
   }
 
-  ac
+  if (( inline )); then
+    printf "\033[%d;1H" "$(( inp_row - 2 ))"
+  else
+    ac
+  fi
   center "$msg"
   draw_buttons
   draw_field

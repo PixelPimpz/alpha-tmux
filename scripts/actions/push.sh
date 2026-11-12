@@ -52,13 +52,14 @@ push_view() {
     marginw=$(get_margin $(( longest + 6 )))
     render_list "$marginw"
 
-    # 3. Commit message first, confirmation second
-    prompt "  ${PROMPTC}Commit message (optional): ${RESET}" msg
-    echo ""
+    # 3. Commit message & confirmation via pu_input_view
+    local inp_row=$(( ${#dirty[@]} + 5 ))
+    if ! pu_input_view -r "$inp_row" "${PROMPTC}Commit message (optional):${RESET}" "" "Push" "Cancel"; then
+      exit 0
+    fi
+    msg="$(tmux show-buffer -b alpha_input 2>/dev/null)"
+    tmux delete-buffer -b alpha_input 2>/dev/null
     cursor "off"
-    read -rp "  ${PROMPTC}Push ${#dirty[@]} changed file(s) to ${repo} (${branch})? $(keys "Y" "$PROMPTC")/$(keys "n" "$PROMPTC"): ${RESET}" -n1 key
-    echo ""
-    [[ "$key" =~ ^[nN]$ ]] && exit 1
 
       # 4. Push, then redraw the list (now with green checkmarks!)
     push_repo "$PWD" "$msg"
@@ -95,7 +96,7 @@ main() {
   while IFS= read -r chg; do
     [[ -n "$chg" ]] && sample_lines+=("    ✔   ${chg:3}")
   done <<< "$changes"
-  sample_lines+=("" "  Push changed file(s) to $repo ($branch)? [Y]/[n]" "Done. Press any key to return to main menu...")
+  sample_lines+=("" "Commit message (optional):" "" "" "[ Push ]  [ Cancel ]")
 
   local w h
   read -r w h < <( popsizer "${sample_lines[@]}" )
