@@ -89,7 +89,6 @@ update() {
     [[ -d "$plugd/.git" ]] || continue
     if type -P "pv" &>/dev/null; then
       git -C "$plugd" pull --ff-only --progress 2>&1 | pv -t -N "$plug" >/dev/null
-      :
     else
       git -C "$plugd" pull --ff-only
     fi
