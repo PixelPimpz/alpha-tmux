@@ -1,3 +1,5 @@
 .trash
 config/highlights.yaml
 *.txt
+plugins/*
+!plugins/qotd/
