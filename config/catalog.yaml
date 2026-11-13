@@ -4,14 +4,17 @@ installed:
     icon: "quote"
     repo: "PixelPimpz/alpha-qotd"
     desc: "Daily Dharma & New Age wisdom below the main menu"
-
+  - name: crashtest-dummy
+    title: Crashtest Dummy
+    icon: plug
+    repo: PixelPimpz/crashtest-dummy
+    desc: ""
 available:
   - name: "qotd"
     title: "QOTD"
     icon: "quote"
     repo: "PixelPimpz/qotd"
     desc: "Daily Dharma & New Age wisdom below the main menu"
-
   - name: "crashtest-dummy"
     title: "Crashtest Dummy"
     icon: "plug"

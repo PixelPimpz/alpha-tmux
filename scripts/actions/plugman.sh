@@ -47,8 +47,10 @@ right_menu() {
     state="$(get_opt "$plug" "enabled" "ON")"
     ui="$(get_opt "$plug" "ui" "")"
 
-    local opts=()
-    mapfile -t opts < <(yq_plug_opts "$pdir/plugin.yaml")
+    local opts=() line
+    while IFS= read -r line; do
+      [[ -n "$line" ]] && opts+=("$line")
+    done < <(yq_plug_opts "$pdir/plugin.yaml")
 
     if [[ -n "$ui" ]] || (( ${#opts[@]} > 1 )); then
       RIGHT_ITEMS+=("${title}: ${state}|${ico}|detail:plug_ui:${plug}|${plug}")
@@ -59,6 +61,20 @@ right_menu() {
       RIGHT_ITEMS+=("${title}: ${state}|${ico}|step_opt $plug enabled ON OFF|${plug}")
     fi
   done
+}
+
+catalog() {
+  LEFT_ITEMS=()
+  local plug title ico repo
+  for plug in $( yq_each ".available[].name" "$CATALOG" ); do
+    [[ -d "$PLUGINS_D/$plug" ]] && continue 
+    title="$( yq_find ".available" "name" "$plug" "title" "$CATALOG")"
+    ico="$( yq_find ".available" "name" "$plug" "icon" "$CATALOG")"
+    repo="$( yq_find ".available" "name" "$plug" "repo" "$CATALOG")"
+    LEFT_ITEMS+=("${title}|${ico}|install:${repo}|${plug}")
+  done
+  (( "${#LEFT_ITEMS[@]}" == 0 )) && return 1
+  return 0
 }
 
 box_col() {
@@ -110,8 +126,11 @@ plugman () {
   (( "${#RIGHT_ITEMS[@]}" > max_rows )) && max_rows="${#RIGHT_ITEMS[@]}"
   title_l="${ICONC}$(get_icon "plug")  ${TEXTC}Plugin Manager${RESET}"
   title_r="${ICONC}$(get_icon "settings")  ${TEXTC}Installed Plugins${RESET}"
+  if [[ "$mode_l" == "catalog" ]]; then
+    title_l="${ICONC}$(get_icon "package_plus")  ${TEXTC}Available Plugins${RESET}"
+  fi
   if [[ "$mode_r" == "uninstall" ]]; then
-    title_r="${WARNC}$(get_icon "package_remove")  Select Plugin to Uninstall${RESET}"
+    title_r="${FAILC}$(get_icon "package_remove")  Select Plugin to Uninstall${RESET}"
   fi
 
   box_col LEFT_ITEMS  0 "$max_rows" "$selected" "$title_l" text_l
@@ -128,7 +147,7 @@ plugman () {
   else
     border_r="$ACCENTC"
   fi
-  [[ "$mode_r" == "uninstall" ]] && border_r="$WARNC"
+  [[ "$mode_r" == "uninstall" ]] && border_r="$FAILC"
 
   boxer -r 2 "$border_l" "$text_l" "$title_l"
   boxer -r 2 "$border_r" "$text_r" "$title_r"
@@ -138,11 +157,17 @@ main () {
   local selected=1 mode_l="menu" mode_r="normal" refresh=1 pressed comm key
   trap 'cursor on' EXIT INT TERM
   cursor off
-  left_menu
-
   # event loop
   while true;  do
     if [[ "$refresh" == 1 ]]; then
+      if [[ "$mode_l" == "catalog" ]]; then 
+        if ! catalog; then
+          mode_l="menu"
+          left_menu
+        fi
+      else
+        left_menu
+      fi
       right_menu; ac
       header
       center " "
@@ -164,7 +189,7 @@ main () {
         refresh=0
         continue ;;
       ESC|Q|q)
-        [[ "$mode_r" == "uninstall" ]] && { mode_r="normal"; continue; }
+        [[ "$mode_r" == "uninstall" ]] && { mode_r="normal"; selected=4; continue; }
         if [[ "$mode_l" != "menu" ]]; then 
           mode_l="menu"
           continue
@@ -183,11 +208,43 @@ main () {
           refresh=0
           continue 
         fi
+        if [[ "$mode_r" == "uninstall" && "${NAV_GRID["key_${pressed}_col"]}" == "1" && -n "${TARGET[$pressed]}" ]];then
+           if pu_confirm "Uninstall '${TARGET[$pressed]}'?" "Uninstall Plugin" 1 "Uninstall" "Cancel"; then
+             remove "${TARGET[$pressed]}"  
+             mode_r="normal"
+             selected=1
+           fi
+           continue
+        fi
+
         case "$comm" in
           step_opt*)
             eval "$comm" ;;
           mode:uninstall)
             mode_r="$( stepper "$mode_r" "normal" "uninstall")"
+            [[ "$mode_r" == "uninstall" ]] && selected="${NAV_GRID["cell_1_0"]:-$selected}"
+            ;;
+          detail:catalog)
+            if catalog; then
+              mode_l="catalog"
+              selected=1
+            else
+              left_menu
+              pu_toast -t "Catalog" -d 1.5 "All available plugins are already installed."
+              refresh=0
+            fi
+            ;;
+          install:*)
+            install "${comm#install:}"
+            pu_toast "Installed: ${TARGET[$pressed]}"
+            if ! catalog; then
+              mode_l="menu"
+              selected=1
+            fi
+            ;;
+          run:update)
+            sync
+            pu_toast "Plugins sync'd"
             ;;
           *)
             pu_toast -t "Plugman" -d 1.5 "TODO: $comm" ;;
