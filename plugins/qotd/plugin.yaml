@@ -5,7 +5,7 @@ unit: "pre-foot"
 only_main: 1
 start: "init.sh"
 draw: "qotd_draw"
-source: "Dharma"
+source: "Newage"
 options:
   - prop: "source"
     label: "QOTD Source: "
