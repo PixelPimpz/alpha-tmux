@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+[[ -n "{{GUARD}}" ]] && return 0
+{{GUARD}}=1
+
+{{DRAW}}() {
+  center "${ACCENTC}$(get_icon "plug")  ${TEXTC}{{TITLE}} active!${RESET}"
+}

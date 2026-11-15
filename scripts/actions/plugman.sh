@@ -255,6 +255,21 @@ main () {
           detail:health)
             "$PLUGIN_ROOT/scripts/actions/checkhealth.sh"
             ;;
+          detail:scaffold)
+            local new_plug
+            if new_plug="$(pu_input "Plugin name (e.g. my-plugin):" "" "New Plugin" "Create" "Cancel")"; then
+              new_plug="${new_plug// /-}"
+              if [[ ! "$new_plug" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+                pu_toast -t "New Plugin" -d 2.0 "Invalid name. Use letters, numbers, - or _."
+              elif [[ -d "$PLUGINS_D/$new_plug" ]]; then
+                pu_toast -t "New Plugin" -d 2.0 "Plugin '$new_plug' already exists."
+              elif scaffold_plugin "$new_plug"; then
+                pu_toast -t "New Plugin" -d 1.5 "Created plugins/$new_plug"
+              else
+                pu_toast -t "New Plugin" -d 2.0 "Failed to scaffold '$new_plug'."
+              fi
+            fi
+            ;;
           *)
             pu_toast -t "Plugman" -d 1.5 "TODO: $comm" ;;
         esac

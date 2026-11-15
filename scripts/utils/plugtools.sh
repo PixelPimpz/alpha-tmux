@@ -146,6 +146,37 @@ install() {
   done
 }
 
+scaffold_plugin() {
+  local plug="$1"
+  [[ -n "$plug" ]] || return 1
+
+  local plugd="$PLUGINS_D/$plug"
+  local tmpl_d="$PLUGIN_ROOT/config/templates/plugin"
+  [[ -d "$plugd" ]] && return 1
+  [[ -d "$tmpl_d" ]] || return 1
+
+  local fn_prefix="${plug//-/_}"
+  local draw="${fn_prefix}_draw"
+  local guard="_ALPHA_${fn_prefix^^}_SH"
+  local title="${plug//-/ }"
+  title="${title^}"
+
+  mkdir -p "$plugd"
+  sed -e "s|{{NAME}}|$plug|g" \
+      -e "s|{{TITLE}}|$title|g" \
+      -e "s|{{DRAW}}|$draw|g" \
+      "$tmpl_d/plugin.yaml.tmpl" > "$plugd/plugin.yaml"
+
+  sed -e "s|{{GUARD}}|$guard|g" \
+      -e "s|{{TITLE}}|$title|g" \
+      -e "s|{{DRAW}}|$draw|g" \
+      "$tmpl_d/init.sh.tmpl" > "$plugd/init.sh"
+  chmod +x "$plugd/init.sh"
+
+  yq_delete ".installed" "name" "$plug" "$CATALOG"
+  yq_add ".installed" "$CATALOG" "name=$plug" "title=$title" "icon=plug" "repo=local/$plug" "desc=Local plugin"
+}
+
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   "$@"
 fi
