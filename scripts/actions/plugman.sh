@@ -154,8 +154,10 @@ plugman () {
 }
 
 main () {
-  local selected=1 mode_l="menu" mode_r="normal" refresh=1 pressed comm key
+  local selected=1 mode_l="menu" mode_r="normal" refresh=1 
+  local cnt pressed comm key
   trap 'cursor on' EXIT INT TERM
+  clear_cache 7 >/dev/null
   cursor off
   # event loop
   while true;  do
@@ -245,6 +247,10 @@ main () {
           run:update)
             sync
             pu_toast "Plugins sync'd"
+            ;;
+          run:clear_cache)
+            cnt="$( clear_cache )"
+            pu_toast -t "Cache Cleared" -d 1.5 "Cleared ${cnt} cache files."
             ;;
           *)
             pu_toast -t "Plugman" -d 1.5 "TODO: $comm" ;;

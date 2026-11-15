@@ -97,8 +97,20 @@ remove() {
   for plug in "$@"; do
     [[ -n "$plug" ]] || continue
     rm -rf "${PLUGINS_D:?}/$plug"
+    rm -rf "$A_CACHE/${plug}_"*
     yq_delete ".installed" "name" "$plug" "$CATALOG"
   done
+}
+
+clear_cache() {
+  local mtime_arg=() days="${1:-}" cnt=0
+  [[ -d "$A_CACHE" ]] || { echo 0; return 0; }
+  [[ -n "$days" ]] && mtime_arg=(-mtime "+$days")
+  while read -r item; do
+    (( cnt++ ))
+    rm -f "$item"
+  done < <( find "$A_CACHE" -maxdepth 1 -type f ! -name 'highlights.yaml' ! -name 'state_*.yaml' "${mtime_arg[@]}" )
+  printf "%d\n" "$cnt"
 }
 
 update() {

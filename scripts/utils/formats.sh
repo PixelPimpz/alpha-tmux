@@ -60,6 +60,27 @@ say() {
   printf "  %b\n" "$*"
 }
 
+section() {
+  printf "\n  %b## %s%b\n" "${HEADERC}" "$1" "${RESET}"
+}
+
+declare -gA _STATUS_ICONS=()
+_status_line() {
+  local color="$1" icon_name="$2" fallback="$3" label="$4" msg="$5"
+  if [[ -z "${_STATUS_ICONS[$icon_name]}" ]]; then
+    if declare -F get_icon >/dev/null; then
+      _STATUS_ICONS[$icon_name]="$(get_icon "$icon_name")"
+    else
+      _STATUS_ICONS[$icon_name]="$fallback"
+    fi
+  fi
+  printf "  %b%s %-7s%b  %s\n" "$color" "${_STATUS_ICONS[$icon_name]}" "$label" "${RESET}" "$msg"
+}
+
+ok()   { _status_line "${SUCCESSC}" "pass"   "v" "OK"      "$1"; }
+warn() { _status_line "${GOLDC}"    "active" "!" "WARNING" "$1"; }
+err()  { _status_line "${FAILC}"    "fail"   "x" "ERROR"   "$1"; }
+
 prompt() {
   local msg="$1" var="$2"
   read -rp "$msg" "${var?}" 
