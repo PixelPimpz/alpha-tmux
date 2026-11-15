@@ -252,6 +252,9 @@ main () {
             cnt="$( clear_cache )"
             pu_toast -t "Cache Cleared" -d 1.5 "Cleared ${cnt} cache files."
             ;;
+          detail:health)
+            "$PLUGIN_ROOT/scripts/actions/checkhealth.sh"
+            ;;
           *)
             pu_toast -t "Plugman" -d 1.5 "TODO: $comm" ;;
         esac

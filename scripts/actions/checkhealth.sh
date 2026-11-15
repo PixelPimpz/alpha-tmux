@@ -38,29 +38,61 @@ dep_chk() {
 }
 
 env_chk() {
- local theme
+ local theme cnt
  section "Environment and Cache"
  if [[ -f "$CATALOG" ]] && yq_get "." "$CATALOG" &>/dev/null; then 
-   ok "catalog.yaml found."
- else err "Catalog file not found."
+   ok "Plugin Catalog: OK."
+ else err "Plugin catalog file not found."
  fi
 
- if [[ -d "$PLUGINS_D" ]]; then ok 
+ if [[ -d "$PLUGINS_D" ]]; then ok "Plugins Directory: OK"
  else err "Plugins directory not found."
  fi
 
  if [[ -d "$A_CACHE" ]]; then
-   [[ -f "$A_CACHE/highlights.yaml" ]] && yq_get "." "$A_CACHE/highlights.yaml" &>/dev/null 
+   if [[ -f "$A_CACHE/highlights.yaml" ]] && yq_get "." "$A_CACHE/highlights.yaml" &>/dev/null; then
    theme="$(head -n1 "$A_CACHE/highlights.yaml")"
-   ok "highlights.yaml theme: $theme."
+   ok "Theme file OK: ${theme#*: }."
+ else
+   warn "Theme file not found."
+   fi
+   cnt="$( find "$A_CACHE" -maxdepth 1 -type f ! -name 'highlights.yaml' ! -name 'state_*.yaml' | wc -l)" 
+   ok "Plugin cache: ${cnt} file(s)"
  fi
 }
 
 plug_chk() {
- section "Plugins"
- :
+  local plugd plug enabled start draw plugc=0
+  section "Plugins"
+  for plugd in "${PLUGINS_D}"/*; do
+    [[ -d "$plugd" ]] || continue
+    (( plugc++ ))
+    plug="${plugd##*/}"
+    if [[ ! -f "$plugd/plugin.yaml" ]]; then
+      err "$plugd/plugin.yaml not found"
+      continue
+    else
+      enabled="$(get_opt "$plug" "enabled" "ON")"
+      start="$(get_opt "$plug" "start" "init.sh")"
+      draw="$(get_opt "$plug" "draw" "${plug}_draw")"
+      [[ -f "$plugd/$start" ]] || { err "${plug^}: ${draw}() not found in $start"; continue; }
+      if grep -qE "^[[:space:]]*${draw}[[:space:]]*\(\)" "$plugd/$start" >/dev/null; then
+        ok "$plug (enabled: $enabled)"
+      else
+        err "${plug^} not enabled."
+      fi
+    fi
+  done
+  (( plugc == 0 )) && warn "No plugins installed." 
 }
 
 main () {
- :
+  ac
+  center "alpha-tmux: checkhealth" "$HEADERC"
+  dep_chk
+  env_chk
+  plug_chk
+  pause -b "Press any key to continue."
 }
+
+ [[ "${BASH_SOURCE[0]}" == "${0}" ]] && main "$@"
