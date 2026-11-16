@@ -156,7 +156,8 @@ plugman () {
 main () {
   local selected=1 mode_l="menu" mode_r="normal" refresh=1 
   local cnt pressed comm key
-  trap 'cursor on' EXIT INT TERM
+  trap 'stty echo 2>/dev/null; cursor on' EXIT INT TERM
+  stty -echo 2>/dev/null
   clear_cache 7 >/dev/null
   cursor off
   # event loop
@@ -252,19 +253,54 @@ main () {
             cnt="$( clear_cache )"
             pu_toast -t "Cache Cleared" -d 1.5 "Cleared ${cnt} cache files."
             ;;
+          detail:file)
+            local src="" new_plug="" rc=0
+            if command -v fzf &>/dev/null; then
+              cursor on
+              src="$(find "$HOME/Downloads" "$PWD" -maxdepth 3 \( -name "*.tar.gz" -o -name "*.tgz" -o -name "*.tar.xz" -o -name "*.zip" -o -name "plugin.yaml" \) 2>/dev/null \
+                | sed 's|/plugin\.yaml$||' \
+                | awk '!seen[$0]++' \
+                | fzf --prompt="Plugin > " --reverse --height=60% --header="Select plugin folder or archive")"
+              cursor off
+            else
+              src="$(pu_input "Path to plugin folder or archive:" "" "Install From File" "Install" "Cancel")"
+            fi
+            if [[ -n "$src" ]]; then
+              new_plug="$(install_file "$src")"
+              rc=$?
+              if (( rc == 0 )); then
+                pu_toast -t "Install" -d 1.5 "Installed $new_plug"
+              elif (( rc == 2 )); then
+                pu_toast -t "Install" -d 2.0 "Plugin already exists."
+              else
+                pu_toast -t "Install" -d 2.0 "Invalid plugin folder or archive."
+              fi
+            fi
+            ;;
           detail:health)
             "$PLUGIN_ROOT/scripts/actions/checkhealth.sh"
             ;;
           detail:scaffold)
-            local new_plug
-            if new_plug="$(pu_input "Plugin name (e.g. my-plugin):" "" "New Plugin" "Create" "Cancel")"; then
+            local new_plug out_d arc rc
+            new_plug="$(pu_input "Plugin name (e.g. my-plugin):" "" "New Plugin" "Create" "Create + Pack" "Cancel")"
+            rc=$?
+            if (( rc != 1 )); then
               new_plug="${new_plug// /-}"
               if [[ ! "$new_plug" =~ ^[a-zA-Z0-9_-]+$ ]]; then
                 pu_toast -t "New Plugin" -d 2.0 "Invalid name. Use letters, numbers, - or _."
               elif [[ -d "$PLUGINS_D/$new_plug" ]]; then
                 pu_toast -t "New Plugin" -d 2.0 "Plugin '$new_plug' already exists."
               elif scaffold_plugin "$new_plug"; then
-                pu_toast -t "New Plugin" -d 1.5 "Created plugins/$new_plug"
+                if (( rc == 2 )); then
+                  if out_d="$(pu_input "Archive output directory:" "$HOME/Downloads" "Package Plugin" "Package" "Skip")" && [[ -n "$out_d" ]]; then
+                    arc="$(packer "$new_plug" "$out_d")"
+                    pu_toast -t "New Plugin" -d 2.0 "Packed ${arc/#$HOME/\~}"
+                  else
+                    pu_toast -t "New Plugin" -d 1.5 "Created plugins/$new_plug"
+                  fi
+                else
+                  pu_toast -t "New Plugin" -d 1.5 "Created plugins/$new_plug"
+                fi
               else
                 pu_toast -t "New Plugin" -d 2.0 "Failed to scaffold '$new_plug'."
               fi

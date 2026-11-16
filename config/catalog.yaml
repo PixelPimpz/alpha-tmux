@@ -4,11 +4,11 @@ installed:
     icon: "quote"
     repo: "PixelPimpz/alpha-qotd"
     desc: "Daily Dharma & New Age wisdom below the main menu"
-  - name: crashtest-dummy
-    title: Crashtest Dummy
+  - name: alpha-tetris
+    title: Alpha tetris
     icon: plug
-    repo: PixelPimpz/crashtest-dummy
-    desc: ""
+    repo: local/alpha-tetris
+    desc: Local plugin
 available:
   - name: "qotd"
     title: "QOTD"

@@ -177,6 +177,64 @@ scaffold_plugin() {
   yq_add ".installed" "$CATALOG" "name=$plug" "title=$title" "icon=plug" "repo=local/$plug" "desc=Local plugin"
 }
 
+packer() {
+  local plug="$1" out_d="${2:-$PWD}"
+  out_d="${out_d/#\~/$HOME}"
+  [[ -n "$plug" && -f "$PLUGINS_D/$plug/plugin.yaml" ]] || return 1
+  mkdir -p "$out_d"
+  local archive="${out_d%/}/${plug}.tar.gz"
+  tar -czf "$archive" -C "$PLUGINS_D" "$plug" || return 1
+  printf "%s\n" "$archive"
+}
+
+install_file() {
+  local src="${1/#\~/$HOME}"
+  [[ -n "$src" ]] || return 1
+
+  local stage="" tmp_d="" yaml=""
+  if [[ -d "$src" ]]; then
+    [[ -f "$src/plugin.yaml" ]] || return 1
+    stage="$src"
+  elif [[ -f "$src" ]]; then
+    tmp_d="$(mktemp -d)"
+    case "$src" in
+      *.tar.gz|*.tgz|*.tar.xz|*.tar.bz2|*.tar)
+        tar -xf "$src" -C "$tmp_d" 2>/dev/null || { rm -rf "$tmp_d"; return 1; } ;;
+      *.zip)
+        unzip -q "$src" -d "$tmp_d" 2>/dev/null || { rm -rf "$tmp_d"; return 1; } ;;
+      *)
+        rm -rf "$tmp_d"; return 1 ;;
+    esac
+    yaml="$(find "$tmp_d" -maxdepth 2 -name "plugin.yaml" -print -quit)"
+    [[ -n "$yaml" ]] || { rm -rf "$tmp_d"; return 1; }
+    stage="$(dirname "$yaml")"
+  else
+    return 1
+  fi
+
+  local plug title ico desc start
+  plug="$(yq_get ".name" "$stage/plugin.yaml")"
+  [[ -z "$plug" || "$plug" == "null" ]] && plug="$(basename "$stage")"
+
+  if [[ -d "$PLUGINS_D/$plug" ]]; then
+    [[ -n "$tmp_d" ]] && rm -rf "$tmp_d"
+    return 2
+  fi
+
+  cp -r "$stage" "$PLUGINS_D/$plug"
+  [[ -n "$tmp_d" ]] && rm -rf "$tmp_d"
+
+  start="$(get_opt "$plug" "start" "init.sh")"
+  [[ -f "$PLUGINS_D/$plug/$start" ]] && chmod +x "$PLUGINS_D/$plug/$start"
+
+  title="$(get_opt "$plug" "title" "$plug")"
+  ico="$(get_opt "$plug" "icon" "plug")"
+  desc="$(get_opt "$plug" "desc" "")"
+  yq_delete ".installed" "name" "$plug" "$CATALOG"
+  yq_add ".installed" "$CATALOG" "name=$plug" "title=$title" "icon=$ico" "repo=local/$plug" "desc=$desc"
+  printf "%s\n" "$plug"
+}
+
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   "$@"
 fi

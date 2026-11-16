@@ -32,10 +32,10 @@ pu_input() {
   popped "" "$title" "d" "$w" "$h" "$UTILS/pop/pu_input.sh" pu_input_view "$msg" "$init" "${labels[@]}"
   
   local rc=$?
-  if (( rc == 0 )); then
+  if (( rc != 1 )); then
     tmux show-buffer -b alpha_input 2>/dev/null
     tmux delete-buffer -b alpha_input 2>/dev/null
-    return 0
+    return "$rc"
   fi
   return 1
 }
@@ -206,16 +206,13 @@ pu_input_view() {
           btn_idx=$(( (btn_idx - 1 + ${#labels[@]}) % ${#labels[@]} ))
           draw_buttons ;;
         ENTER)
-          if (( "$btn_idx" == 0 )); then
-            tmux set-buffer -b alpha_input "$buffer"
-            printf "\033[0 q"
-            cursor on
-            return 0
-          else 
-            printf "\033[0 q"
-            cursor on
+          printf "\033[0 q"
+          cursor on
+          if (( btn_idx == ${#labels[@]} - 1 )); then
             return 1
-          fi ;;
+          fi
+          tmux set-buffer -b alpha_input "$buffer"
+          return "$(( btn_idx == 0 ? 0 : btn_idx + 1 ))" ;;
         esac
       ;;
     esac
