@@ -306,6 +306,14 @@ main () {
               fi
             fi
             ;;
+          detail:plug_ui:*)
+            local plug start ui
+            plug="${comm#detail:plug_ui:}"
+            start="$( get_opt "$plug" "start" "init.sh")"
+            ui="$( get_opt "$plug" "ui" "")"
+            [[ -n "$ui" ]] && declare -F "$ui" >/dev/null && "$ui"
+            [[ -f "$PLUGINS_D/$plug/$start" ]] && source "$PLUGINS_D/$plug/$start"
+            ;;
           *)
             pu_toast -t "Plugman" -d 1.5 "TODO: $comm" ;;
         esac
