@@ -151,6 +151,11 @@ plugman () {
 
   boxer -r 2 "$border_l" "$text_l" "$title_l"
   boxer -r 2 "$border_r" "$text_r" "$title_r"
+  local hint total_w r_pad
+  hint="$(keys "SPACE" "$MUTEDC") Toggle   $(keys "ENTER" "$MUTEDC") Run"
+  total_w=$(( LAST_BOX_WIDTHS[0] + 2 + LAST_BOX_WIDTHS[1] ))
+  r_pad=$(( $(get_margin "$total_w") + LAST_BOX_WIDTHS[0] + 2 ))
+  printf "%*s%b%s%b\n" "$r_pad" "" "$MUTEDC" "$hint" "$RESET"
 }
 
 main () {
@@ -203,6 +208,10 @@ main () {
         refresh=0; continue
         ;;
       *)
+        if [[ "$pressed" == "SPACE" && "${NAV_GRID["key_${selected}_col"]}" == "1" && -n "${TARGET[$selected]}" ]]; then
+          step_opt "${TARGET[$selected]}" enabled ON OFF
+          continue
+        fi
         if [[ "$pressed" =~ ^(ENTER|SPACE)$ ]];then 
           pressed="$selected"
         fi
@@ -311,8 +320,8 @@ main () {
             plug="${comm#detail:plug_ui:}"
             start="$( get_opt "$plug" "start" "init.sh")"
             ui="$( get_opt "$plug" "ui" "")"
-            [[ -n "$ui" ]] && declare -F "$ui" >/dev/null && "$ui"
             [[ -f "$PLUGINS_D/$plug/$start" ]] && source "$PLUGINS_D/$plug/$start"
+            [[ -n "$ui" ]] && declare -F "$ui" >/dev/null && "$ui"
             ;;
           *)
             pu_toast -t "Plugman" -d 1.5 "TODO: $comm" ;;

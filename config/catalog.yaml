@@ -4,6 +4,11 @@ installed:
     icon: "quote"
     repo: "PixelPimpz/alpha-qotd"
     desc: "Daily Dharma & New Age wisdom below the main menu"
+  - name: "alpha-tetris"
+    title: "aTetris"
+    icon: "plug"
+    repo: "PixelPimpz/alpha-tetris"
+    desc: "Pure-Bash Tetris in a vertical tmux popup"
   - name: alpha-tetris
     title: Alpha tetris
     icon: plug
@@ -20,3 +25,8 @@ available:
     icon: "plug"
     repo: "PixelPimpz/crashtest-dummy"
     desc: "Crashtest dummy plugin for alpha-tmux Plugin Manager"
+  - name: "alpha-tetris"
+    title: "aTetris"
+    icon: "plug"
+    repo: "PixelPimpz/alpha-tetris"
+    desc: "Pure-Bash Tetris in a vertical tmux popup"

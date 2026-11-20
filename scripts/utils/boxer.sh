@@ -141,6 +141,7 @@ flush_boxes() {
     center "$row_str"
   done
 
+    LAST_BOX_WIDTHS=("${BOX_WIDTHS[@]}")
     BOX_QUEUE=()
     BOX_WIDTHS=()
 }
